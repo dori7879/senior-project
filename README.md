@@ -1,8 +1,8 @@
 ## senior-project
 ##
-### **Title of the project:** “PWA for effortlessly taking homeworks/quizzes/attendance”
-### **Team members:** Yermek Menzhessarov, Dariya Shakenova
-### **Project Advisor/Co-Advisors:** Mona Rizvi, Dimitrios Zorbas
+### *Title of the project:* “PWA for effortlessly taking homeworks/quizzes/attendance”
+### *Team members:* Yermek Menzhessarov, Dariya Shakenova
+### *Project Advisor/Co-Advisors:* Mona Rizvi, Dimitrios Zorbas
 #
 #
 ### *Kickoff Document:*
