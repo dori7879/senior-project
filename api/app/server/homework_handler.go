@@ -48,10 +48,7 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 	}
 
 	if err := server.validator.Struct(form); err != nil {
-		server.logger.Warn().Err(err).Msg("")
-
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		fmt.Fprintf(w, `{"error": "%v"}`, err.Error())
+		handleHomeworkValidationError(w, server.logger, err)
 		return
 	}
 
@@ -129,10 +126,7 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 	}
 
 	if err := server.validator.Struct(form); err != nil {
-		server.logger.Warn().Err(err).Msg("")
-
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		fmt.Fprintf(w, `{"error": "%v"}`, err.Error())
+		handleHomeworkValidationError(w, server.logger, err)
 		return
 	}
 

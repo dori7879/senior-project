@@ -8,11 +8,12 @@ import (
 )
 
 const (
-	serverErrDataAccessFailure   = "data access failure"
-	serverErrJsonCreationFailure = "json creation failure"
-	serverErrDataCreationFailure = "data creation failure"
-	serverErrFormDecodingFailure = "form decoding failure"
-	serverErrDataUpdateFailure   = "data update failure"
+	serverErrDataAccessFailure      = "data access failure"
+	serverErrJsonCreationFailure    = "json creation failure"
+	serverErrDataCreationFailure    = "data creation failure"
+	serverErrFormDecodingFailure    = "form decoding failure"
+	serverErrDataUpdateFailure      = "data update failure"
+	serverErrFormErrResponseFailure = "form error response failure"
 )
 
 type Server struct {

@@ -25,9 +25,9 @@ type HomeworkDto struct {
 }
 
 type HomeworkForm struct {
-	Title     string `json:"title" form:"required, max=255"`
-	Content   string `json:"content" form:"required, max=255"`
-	LockingAt string `json:"locking_at" form:"required"`
+	Title     string `json:"title" form:"required,alpha_space,max=255"`
+	Content   string `json:"content" form:"required,max=255"`
+	LockingAt string `json:"locking_at" form:"required,date"`
 }
 
 func (hw Homework) ToDto() *HomeworkDto {
