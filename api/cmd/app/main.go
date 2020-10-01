@@ -9,6 +9,7 @@ import (
 	"api/app/server"
 	"api/config"
 	lr "api/util/logger"
+	vr "api/util/validator"
 )
 
 func main() {
@@ -25,7 +26,9 @@ func main() {
 		db.LogMode(true)
 	}
 
-	server := server.New(logger, db)
+	validator := vr.New()
+
+	server := server.New(logger, db, validator)
 
 	appRouter := router.New(server)
 

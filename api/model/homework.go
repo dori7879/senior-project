@@ -24,6 +24,12 @@ type HomeworkDto struct {
 	LockingAt string `json:"locking_at"`
 }
 
+type HomeworkForm struct {
+	Title     string `json:"title" form:"required, max=255"`
+	Content   string `json:"content" form:"required, max=255"`
+	LockingAt string `json:"locking_at" form:"required"`
+}
+
 func (hw Homework) ToDto() *HomeworkDto {
 	return &HomeworkDto{
 		ID:        hw.ID,
@@ -39,4 +45,17 @@ func (hws Homeworks) ToDto() HomeworkDtos {
 		dtos[i] = hw.ToDto()
 	}
 	return dtos
+}
+
+func (f *HomeworkForm) ToModel() (*Homework, error) {
+	lockingAt, err := time.Parse("2008-01-23", f.LockingAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Homework{
+		Title:     f.Title,
+		Content:   f.Content,
+		LockingAt: lockingAt,
+	}, nil
 }
