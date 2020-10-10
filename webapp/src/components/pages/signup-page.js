@@ -1,7 +1,11 @@
+import Footer from '../footer';
+import Header from '../header';
 import React from 'react';
 
 const SignUpPage = () => {
     return(
+    <div>
+        <Header />
         <div className="min-h-screen flex items-center justify-center bg-purple-100 py-8 px-4 sm:px-6 lg:px-8">
             <div className="border border-purple-300">
                 <div className="max-w-md w-64 mx-4">
@@ -29,8 +33,12 @@ const SignUpPage = () => {
                                 <label className="text-sm text-gray-500">Password</label>
                                 <input aria-label="Password" name="password" type="password" required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-purple-200 placeholder-purple-400 text-gray-800 rounded focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"/>
                             </div>
+                            <div>
+                                <label className="text-sm text-gray-500">Confirm Password</label>
+                                <input aria-label="Password" name="password" type="password" required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-purple-200 placeholder-purple-400 text-gray-800 rounded focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"/>
+                            </div>
                         </div>
-                        <div className="mt-4">
+                        <div className="mt-4 pb-4">
                             <button type="submit" className="mb-2 relative w-full flex justify-center py-2 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-600 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
                                 Sign up
                             </button>
@@ -39,6 +47,8 @@ const SignUpPage = () => {
                 </div>    
             </div>
         </div>
+        <Footer />
+    </div>    
     )
 }
 

@@ -9,14 +9,14 @@ const Header = () => {
             <div className="max-w-3xl w-full ">
                 <div className="flex items-center justify-between text-purple-200">
                     <Link to='/'>
-                        <div className="text-purple-900 font-bold text-lg font-mono hover:text-purple-800 cursor-pointer select-none">EasySubmit</div>
+                        <div className="text-purple-900  text-2xl font-mono hover:text-purple-200 cursor-pointer select-none">EasySubmit</div>
                     </Link>
                     <div className="flex">
                         <Link to="/signin">
-                            <button type="button" className="border-2 border-purple-200 rounded-lg  text-xs mr-2 font-thin p-1 ">Sign in</button>
+                            <button type="button" className="focus:outline-none active:border-purple-900 w-16 h-8 border-2 border-purple-200 rounded-lg  text-xs mr-2 font-thin p-1 ">Sign in</button>
                         </Link>
                         <Link to='/signup'>
-                            <button type="button" className="border-2 border-purple-200 rounded-lg  text-xs font-thin p-1">Sign up</button>                    
+                            <button type="button" className="focus:outline-none w-16 h-8 border-2 border-purple-200 rounded-lg  text-xs font-thin p-1">Sign up</button>                    
                         </Link>
                     </div>
                 </div>
