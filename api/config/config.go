@@ -7,6 +7,7 @@ import (
 	"github.com/joeshaw/envdecode"
 )
 
+// Conf is a the main config struct.
 type Conf struct {
 	Debug  bool `env:"DEBUG,required"`
 	Server serverConf
@@ -22,12 +23,13 @@ type dbConf struct {
 }
 
 type serverConf struct {
-	Port         int           `env:"SERVER_PORT,required"`
+	Port         int           `env:"PORT,required"`
 	TimeoutRead  time.Duration `env:"SERVER_TIMEOUT_READ,required"`
 	TimeoutWrite time.Duration `env:"SERVER_TIMEOUT_WRITE,required"`
 	TimeoutIdle  time.Duration `env:"SERVER_TIMEOUT_IDLE,required"`
 }
 
+// AppConfig is a function to create a config struct and read env variables into it.
 func AppConfig() *Conf {
 	var c Conf
 	if err := envdecode.StrictDecode(&c); err != nil {
