@@ -16,17 +16,17 @@ const HomePage = () => {
                         </div>
                         <div className="lg:mt-20 ml-10 sm:mt-10">
                             <Link to="/homework">
-                                <button type="button" className="h-10 items-center mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-600 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
+                                <button type="button" className="h-10 items-center mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
                                     Create homework page
                                 </button>
                             </Link>
                             <Link to="/quiz">
-                                <button type="button" className="h-10 items-center mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-600 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
+                                <button type="button" className="h-10 items-center mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
                                     Create quiz page
                                 </button>
                             </Link>
                             <Link to="/attendance">
-                                <button type="button" className="h-10 items-center mb-2 relative w-full flex justify-center pt-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-600 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
+                                <button type="button" className="h-10 items-center mb-2 relative w-full flex justify-center pt-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
                                     Create attendance page
                                 </button>
                             </Link>
