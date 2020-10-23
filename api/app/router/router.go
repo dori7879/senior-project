@@ -16,7 +16,7 @@ func New(s *server.Server) *chi.Mux {
 	l := s.Logger()
 
 	r := chi.NewRouter()
-	r.Method("GET", "/", requestlog.NewHandler(s.HandleIndex, l))
+	// r.Method("GET", "/", requestlog.NewHandler(s.HandleIndex, l))
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Use(middleware.ContentTypeJson)
@@ -29,11 +29,11 @@ func New(s *server.Server) *chi.Mux {
 		r.Method("DELETE", "/homework/{id}", requestlog.NewHandler(s.HandleDeleteHomework, l))
 	})
 
-	FileServer(r)
-
 	// Routes for healthz
 	r.Get("/healthz/liveness", server.HandleLive)
 	r.Method("GET", "/healthz/readiness", requestlog.NewHandler(s.HandleReady, l))
+
+	FileServer(r)
 
 	return r
 }
