@@ -1,5 +1,6 @@
 import Footer from '../footer';
 import Header from '../header';
+import QuizForm from '../../quiz-form';
 import React from 'react';
 
 const QuizPage = () => {
@@ -27,18 +28,20 @@ const QuizPage = () => {
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
                             Open date and time*
                         </label>
-                        <input className="border border-purple-400 ml-1 block text-gray-700 w-1/4 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="open-date" name="trip-start"  type="date" value="2020-10-16" min="2020-10-16" max="2021-12-31" />
+                        <input className="border border-purple-400 ml-1 block text-gray-700 w-1/4 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="open-date" name="trip-start"  type="date"  min="2020-10-16" max="2021-12-31" />
                         <input className="border border-purple-400 block text-gray-700 w-1/6 rounded py-1 px-2 ml-3 leading-tight focus:outline-none focus:bg-white" id="open-time" name="trip-start" type="time" min="00:00" max="11:59" />
                     </div>
                     <div className="flex flex-row pb-3 items items-center">
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
                             Close date and time*
                         </label>
-                        <input className="border border-purple-400 block text-gray-700 w-1/4 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="close-date" name="trip-start"  type="date" value="2020-10-16" min="2020-10-16" max="2021-12-31" />
+                        <input className="border border-purple-400 block text-gray-700 w-1/4 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="close-date" name="trip-start"  type="date" min="2020-10-16" max="2021-12-31" />
                         <input className="border border-purple-400 block text-gray-700 w-1/6 rounded py-1 px-2 ml-3 leading-tight focus:outline-none focus:bg-white" id="close-time" name="trip-start" type="time" min="00:00" max="11:59" />
                     </div>
+                    <QuizForm />
+
                     <div className="flex justify-center">
-                        <input class="shadow bg-purple-700 hover:bg-purple-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit" value="Generate a link"/>
+                        <input className="shadow bg-purple-800 hover:bg-purple-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit" value="Generate a link"/>
                     </div>
                     <div className="flex flex-col items items-center justify-center mt-2">
                           <textarea rows="1" className="text-gray-700 border border-purple-400 w-1/2 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="description" type="text" />  

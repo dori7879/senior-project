@@ -44,7 +44,7 @@ const HomeworkPage = () => {
                         <input className="border border-purple-400 block text-gray-700 w-1/6 rounded py-1 px-2 ml-3 leading-tight focus:outline-none focus:bg-white" id="close-time" name="trip-start" type="time" min="00:00" max="11:59" />
                     </div>
                     <div className="flex justify-center">
-                        <input class="shadow bg-purple-700 hover:bg-purple-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit" value="Generate a link"/>
+                        <input className="shadow bg-purple-800 hover:bg-purple-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="submit" value="Generate a link"/>
                     </div>
                     <div className="flex flex-col items items-center justify-center mt-2">
                           <textarea rows="1" className="text-gray-700 border border-purple-400 w-1/2 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="description" type="text" />  

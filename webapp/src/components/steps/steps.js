@@ -13,7 +13,7 @@ const Steps = () =>{
                         <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
                             <div className="h-full w-1 bg-purple-200 pointer-events-none"></div>
                         </div>
-                        <div className="flex-shrink-0 w-6 h-6 rounded-full mt-8 sm:mt-0 inline-flex items-center justify-center bg-purple-600 text-purple-100 relative z-10 title-font font-medium text-sm">1</div>
+                        <div className="flex-shrink-0 w-6 h-6 rounded-full mt-8 sm:mt-0 inline-flex items-center justify-center bg-purple-800 text-purple-100 relative z-10 title-font font-medium text-sm">1</div>
                         <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
                             <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
                             <h2 className="font-medium title-font text-purple-700 mb-1 text-xl">Choose type of the assignment</h2>
@@ -25,7 +25,7 @@ const Steps = () =>{
                         <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
                             <div className="h-full w-1 bg-purple-200 pointer-events-none"></div>
                         </div>
-                        <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-purple-600 text-purple-100 relative z-10 title-font font-medium text-sm">2</div>
+                        <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-purple-800 text-purple-100 relative z-10 title-font font-medium text-sm">2</div>
                         <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
 
                             <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
@@ -38,7 +38,7 @@ const Steps = () =>{
                         <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
                             <div className="h-full w-1 bg-purple-200 pointer-events-none"></div>
                         </div>
-                        <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-purple-600 text-purple-100 relative z-10 title-font font-medium text-sm">3</div>
+                        <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-purple-800 text-purple-100 relative z-10 title-font font-medium text-sm">3</div>
                         <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
                             
                             <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
@@ -51,7 +51,7 @@ const Steps = () =>{
                         <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
                             <div className="h-full w-1 bg-purple-200 pointer-events-none"></div>
                         </div>
-                        <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-purple-600 text-purple-100 relative z-10 title-font font-medium text-sm">4</div>
+                        <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-purple-800 text-purple-100 relative z-10 title-font font-medium text-sm">4</div>
                         <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
                             
                             <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
