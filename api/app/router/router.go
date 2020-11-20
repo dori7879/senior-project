@@ -9,19 +9,32 @@ import (
 	"api/app/requestlog"
 	"api/app/router/middleware"
 	"api/app/server"
+	"api/config"
 )
 
 // New is a function to create the main router.
-func New(s *server.Server) *chi.Mux {
+func New(s *server.Server, conf *config.Conf) *chi.Mux {
 	l := s.Logger()
 
 	r := chi.NewRouter()
 	// r.Method("GET", "/", requestlog.NewHandler(s.HandleIndex, l))
 
 	r.Route("/api/v1", func(r chi.Router) {
-		r.Use(middleware.ContentTypeJson)
+		r.Use(middleware.ContentTypeJSON)
+		r.Use(middleware.TokenValidation(conf.AtJwtSecretKey))
+
+		r.Method("POST", "/signup", requestlog.NewHandler(s.HandleSignUp, l))
+		r.Method("POST", "/login", requestlog.NewHandler(s.HandleLogin, l))
+		r.Method("POST", "/refresh-token", requestlog.NewHandler(s.HandleTokenRefresh, l))
 
 		// Routes for homework pages
+		r.Method("GET", "/homework-page", requestlog.NewHandler(s.HandleListHomeworkPage, l))
+		r.Method("POST", "/homework-page", requestlog.NewHandler(s.HandleCreateHomeworkPage, l))
+		r.Method("GET", "/homework-page/{id}", requestlog.NewHandler(s.HandleReadHomeworkPage, l))
+		r.Method("PUT", "/homework-page/{id}", requestlog.NewHandler(s.HandleUpdateHomeworkPage, l))
+		r.Method("DELETE", "/homework-page/{id}", requestlog.NewHandler(s.HandleDeleteHomeworkPage, l))
+
+		// Routes for homeworks
 		r.Method("GET", "/homework", requestlog.NewHandler(s.HandleListHomework, l))
 		r.Method("POST", "/homework", requestlog.NewHandler(s.HandleCreateHomework, l))
 		r.Method("GET", "/homework/{id}", requestlog.NewHandler(s.HandleReadHomework, l))

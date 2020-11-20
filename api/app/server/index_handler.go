@@ -2,6 +2,7 @@ package server
 
 import "net/http"
 
+// HandleIndex is a test handler
 func (server *Server) HandleIndex(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Length", "12")
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")

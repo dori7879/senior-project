@@ -18,7 +18,7 @@ func TestContentTypeJson(t *testing.T) {
 	r, _ := http.NewRequest("GET", "/", nil)
 	rr := httptest.NewRecorder()
 
-	middleware.ContentTypeJson(http.HandlerFunc(sampleHandlerFunc())).ServeHTTP(rr, r)
+	middleware.ContentTypeJSON(http.HandlerFunc(sampleHandlerFunc())).ServeHTTP(rr, r)
 	response := rr.Result()
 
 	if respBody := rr.Body.String(); respBody != expRespBody {
