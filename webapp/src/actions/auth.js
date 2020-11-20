@@ -50,7 +50,7 @@ export const register = (email, password) => (dispatch) => {
       (data) => {
         dispatch({
           type: LOGIN_SUCCESS,
-          payload: { access_token },
+          // payload: { access_token },
         });
   
         return Promise.resolve();

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const register = ( firstName, lastName, email, password) => {
-  return axios.post("api/v1/signup", {
+  return axios.post("/api/v1/signup", {
     firstName,
     lastName,
     email,
@@ -11,7 +11,7 @@ const register = ( firstName, lastName, email, password) => {
 
 const login = (email, password) => {
   return axios
-    .post("api/v1/login", {
+    .post("/api/v1/login", {
       email,
       password,
     })

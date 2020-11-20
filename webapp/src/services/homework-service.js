@@ -2,7 +2,7 @@ import axios from "axios";
 
 const createHomework = ( courseTitle, title, description, files, openDate, closeDate) => {
     return axios
-      .post("api/v1/homework-page", {
+      .post("/api/v1/homework-page", {
         course_title: courseTitle, 
         title: title, 
         content: description, 
