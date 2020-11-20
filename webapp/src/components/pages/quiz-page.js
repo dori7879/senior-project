@@ -1,6 +1,6 @@
 import Footer from '../footer';
 import Header from '../header';
-import QuizForm from '../../quiz-form';
+import QuizForm from '../quiz-form';
 import React from 'react';
 
 const QuizPage = () => {
