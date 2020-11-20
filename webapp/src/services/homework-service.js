@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = "https://localhost:"+ process.env.PORT + "/api/v1/";
+const API_URL = "http://localhost:"+ process.env.PORT + "/api/v1/";
 
 
 const createHomework = ( courseTitle, title, description, files, openDate, closeDate) => {
