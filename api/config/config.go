@@ -9,9 +9,11 @@ import (
 
 // Conf is a the main config struct.
 type Conf struct {
-	Debug  bool `env:"DEBUG,required"`
-	Server serverConf
-	Db     dbConf
+	Debug          bool   `env:"DEBUG,required"`
+	AtJwtSecretKey []byte `env:"AtJwtSecretKey,required"`
+	RtJwtSecretKey []byte `env:"RtJwtSecretKey,required"`
+	Server         serverConf
+	Db             dbConf
 }
 
 type dbConf struct {

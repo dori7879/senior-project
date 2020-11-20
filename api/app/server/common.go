@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func handleHomeworkValidationError(w http.ResponseWriter, l *logger.Logger, err error) {
+func handleValidationError(w http.ResponseWriter, l *logger.Logger, err error) {
 	l.Warn().Err(err).Msg("")
 
 	resp := validator.ToErrResponse(err)
@@ -22,7 +22,7 @@ func handleHomeworkValidationError(w http.ResponseWriter, l *logger.Logger, err 
 	if err != nil {
 		l.Warn().Err(err).Msg("")
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, `{"error": "%v"}`, serverErrJsonCreationFailure)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrJSONCreationFailure)
 		return
 	}
 

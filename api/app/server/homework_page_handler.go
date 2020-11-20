@@ -15,11 +15,11 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// HandleListHomework is a handler that lists homework
-func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request) {
+// HandleListHomeworkPage is a handler that lists homework pages
+func (server *Server) HandleListHomeworkPage(w http.ResponseWriter, r *http.Request) {
 	var val interface{}
 	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val == nil {
-		server.logger.Warn().Err(errors.New("Guest tries to list homeworks")).Msg("")
+		server.logger.Warn().Err(errors.New("Guest tries to list homework pages")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
@@ -28,15 +28,15 @@ func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request)
 
 	claims := val.(jwt.MapClaims)
 
-	if claims["role"].(string) == "teacher" {
-		server.logger.Warn().Err(errors.New("Teacher tries to list homeworks")).Msg("")
+	if claims["role"].(string) == "student" {
+		server.logger.Warn().Err(errors.New("Student tries to list homework pages")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
 		return
 	}
 
-	homeworks, err := repository.ListHomeworksByOwnerEmail(server.db, claims["sub"].(string))
+	homeworkPages, err := repository.ListHomeworkPagesByOwner(server.db, claims["sub"].(string))
 	if err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -45,12 +45,12 @@ func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if homeworks == nil {
+	if homeworkPages == nil {
 		fmt.Fprintf(w, "[]")
 		return
 	}
 
-	dtos := homeworks.ToDto()
+	dtos := homeworkPages.ToDto()
 	if err := json.NewEncoder(w).Encode(dtos); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -60,12 +60,12 @@ func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-// HandleCreateHomework is a handler for creating a homework
-func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Request) {
+// HandleCreateHomeworkPage is a handler for creating a homework page
+func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Request) {
 	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
 		claims := val.(jwt.MapClaims)
-		if claims["role"].(string) == "teacher" {
-			server.logger.Warn().Err(errors.New("Registered teacher tries to create a homework")).Msg("")
+		if claims["role"].(string) == "student" {
+			server.logger.Warn().Err(errors.New("Registered student tries to create a homework page")).Msg("")
 
 			w.WriteHeader(http.StatusUnauthorized)
 			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
@@ -73,7 +73,7 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 		}
 	}
 
-	form := &model.HomeworkForm{}
+	form := &model.HomeworkPageForm{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -87,7 +87,7 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	homeworkModel, err := form.ToModel()
+	homeworkPageModel, err := form.ToModel()
 	if err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -96,7 +96,7 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	homework, err := repository.CreateHomework(server.db, homeworkModel)
+	homeworkPage, err := repository.CreateHomeworkPage(server.db, homeworkPageModel)
 	if err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -105,21 +105,23 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	server.logger.Info().Msgf("New homework  created: %d", homework.ID)
+	server.logger.Info().Msgf("New homework page created: %d", homeworkPage.ID)
 	w.WriteHeader(http.StatusCreated)
 }
 
-// HandleReadHomework is a handler for getting a single homework
-func (server *Server) HandleReadHomework(w http.ResponseWriter, r *http.Request) {
-	var val interface{}
-	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val == nil {
-		server.logger.Warn().Err(errors.New("Guest tries to read a homework")).Msg("")
+// HandleReadHomeworkPage is a handler for getting a single homework page
+func (server *Server) HandleReadHomeworkPage(w http.ResponseWriter, r *http.Request) {
+	var claims jwt.MapClaims
+	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
+		claims = val.(jwt.MapClaims)
+		if claims["role"].(string) == "student" {
+			server.logger.Warn().Err(errors.New("Student tries to read a homework pages")).Msg("")
 
-		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
-		return
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
+			return
+		}
 	}
-	claims := val.(jwt.MapClaims)
 
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
 	if err != nil || id == 0 {
@@ -129,12 +131,12 @@ func (server *Server) HandleReadHomework(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	var homework *model.Homework
+	var homeworkPage *model.HomeworkPage
 
-	if claims["role"].(string) == "teacher" {
-		homework, err = repository.ReadHomeworkByIDandTeacher(server.db, uint(id), claims["sub"].(string))
+	if claims != nil {
+		homeworkPage, err = repository.ReadHomeworkPageWithNoOwner(server.db, uint(id))
 	} else {
-		homework, err = repository.ReadHomeworkByIDandOwner(server.db, uint(id), claims["sub"].(string))
+		homeworkPage, err = repository.ReadHomeworkPageByOwner(server.db, uint(id), claims["sub"].(string))
 	}
 
 	if err != nil {
@@ -150,7 +152,7 @@ func (server *Server) HandleReadHomework(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	dto := homework.ToDto()
+	dto := homeworkPage.ToDto()
 	if err := json.NewEncoder(w).Encode(dto); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -160,17 +162,19 @@ func (server *Server) HandleReadHomework(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-// HandleUpdateHomework is a handler for updating a homework
-func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Request) {
-	var val interface{}
-	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val == nil {
-		server.logger.Warn().Err(errors.New("Guest tries to read a homework")).Msg("")
+// HandleUpdateHomeworkPage is a handler for updating a homework page
+func (server *Server) HandleUpdateHomeworkPage(w http.ResponseWriter, r *http.Request) {
+	var claims jwt.MapClaims
+	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
+		claims = val.(jwt.MapClaims)
+		if claims["role"].(string) == "student" {
+			server.logger.Warn().Err(errors.New("Student tries to read a homework pages")).Msg("")
 
-		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
-		return
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
+			return
+		}
 	}
-	claims := val.(jwt.MapClaims)
 
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
 	if err != nil || id == 0 {
@@ -180,7 +184,7 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	form := &model.HomeworkForm{}
+	form := &model.HomeworkPageForm{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -194,7 +198,7 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	homeworkModel, err := form.ToModel()
+	homeworkPageModel, err := form.ToModel()
 	if err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -203,12 +207,12 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	homeworkModel.ID = uint(id)
+	homeworkPageModel.ID = uint(id)
 
-	if claims["role"].(string) == "teacher" {
-		err = repository.UpdateHomeworkByTeacher(server.db, homeworkModel, claims["sub"].(string))
+	if claims != nil {
+		err = repository.UpdateHomeworkPageWithNoOwner(server.db, homeworkPageModel)
 	} else {
-		err = repository.UpdateHomeworkByOwner(server.db, homeworkModel, claims["sub"].(string))
+		err = repository.UpdateHomeworkPageByOwner(server.db, homeworkPageModel, claims["sub"].(string))
 	}
 
 	if err != nil {
@@ -228,11 +232,11 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusAccepted)
 }
 
-// HandleDeleteHomework is a handler for deleting a homework
-func (server *Server) HandleDeleteHomework(w http.ResponseWriter, r *http.Request) {
+// HandleDeleteHomeworkPage is a handler for deleting a homework page
+func (server *Server) HandleDeleteHomeworkPage(w http.ResponseWriter, r *http.Request) {
 	var val interface{}
 	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val == nil {
-		server.logger.Warn().Err(errors.New("Guest tries to delete a homework")).Msg("")
+		server.logger.Warn().Err(errors.New("Guest tries to delete homework pages")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
@@ -242,7 +246,7 @@ func (server *Server) HandleDeleteHomework(w http.ResponseWriter, r *http.Reques
 	claims := val.(jwt.MapClaims)
 
 	if claims["role"].(string) == "student" {
-		server.logger.Warn().Err(errors.New("Student tries to delete a homework")).Msg("")
+		server.logger.Warn().Err(errors.New("Student tries to delete homework pages")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
@@ -257,7 +261,7 @@ func (server *Server) HandleDeleteHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if err := repository.DeleteHomeworkByTeacher(server.db, uint(id), claims["sub"].(string)); err != nil {
+	if err := repository.DeleteHomeworkPageByOwner(server.db, uint(id), claims["sub"].(string)); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -265,6 +269,6 @@ func (server *Server) HandleDeleteHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	server.logger.Info().Msgf("Homework  deleted: %d", id)
+	server.logger.Info().Msgf("Homework page deleted: %d", id)
 	w.WriteHeader(http.StatusAccepted)
 }

@@ -8,6 +8,7 @@ import (
 	"api/app/router"
 	"api/app/server"
 	"api/config"
+	auth "api/util/auth"
 	lr "api/util/logger"
 	vr "api/util/validator"
 )
@@ -25,12 +26,15 @@ func main() {
 	if appConf.Debug {
 		db.LogMode(true)
 	}
+	defer db.Close()
 
 	validator := vr.New()
 
-	server := server.New(logger, db, validator)
+	jwtUtils := auth.New(appConf)
 
-	appRouter := router.New(server)
+	server := server.New(logger, db, validator, jwtUtils)
+
+	appRouter := router.New(server, appConf)
 
 	address := fmt.Sprintf(":%d", appConf.Server.Port)
 
@@ -47,8 +51,4 @@ func main() {
 	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		logger.Fatal().Err(err).Msg("Server startup failed")
 	}
-}
-
-func Greet(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World!")
 }

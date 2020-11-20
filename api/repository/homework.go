@@ -6,18 +6,47 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func ListHomeworks(db *gorm.DB) (model.Homeworks, error) {
+func ListHomeworksByOwnerEmail(db *gorm.DB, email string) (model.Homeworks, error) {
+	owner := &model.Student{}
+	if err := db.Where("email = ?", email).First(&owner).Error; err != nil {
+		return nil, err
+	}
+
 	homeworks := make([]*model.Homework, 0)
-	if err := db.Find(&homeworks).Error; err != nil {
+	if err := db.Where("student_id = ?", owner.ID).Find(&homeworks).Error; err != nil {
 		return nil, err
 	}
 
 	return homeworks, nil
 }
 
-func ReadHomework(db *gorm.DB, id uint) (*model.Homework, error) {
+func ReadHomeworkByIDandOwner(db *gorm.DB, id uint, email string) (*model.Homework, error) {
+	owner := &model.Student{}
+	if err := db.Where("email = ?", email).First(&owner).Error; err != nil {
+		return nil, err
+	}
+
 	homework := &model.Homework{}
-	if err := db.First(&homework, id).Error; err != nil {
+	if err := db.Where("student_id = ? AND id = ?", owner.ID, id).First(&homework).Error; err != nil {
+		return nil, err
+	}
+
+	return homework, nil
+}
+
+func ReadHomeworkByIDandTeacher(db *gorm.DB, id uint, email string) (*model.Homework, error) {
+	teacher := &model.Teacher{}
+	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
+		return nil, err
+	}
+
+	hwp := &model.HomeworkPage{}
+	if err := db.Where("teacher_id = ?", teacher.ID).First(&hwp).Error; err != nil {
+		return nil, err
+	}
+
+	homework := &model.Homework{}
+	if err := db.Where("id = ? AND homework_page_id = ?", id, hwp.ID).First(&homework).Error; err != nil {
 		return nil, err
 	}
 
@@ -27,6 +56,25 @@ func ReadHomework(db *gorm.DB, id uint) (*model.Homework, error) {
 func DeleteHomework(db *gorm.DB, id uint) error {
 	homework := &model.Homework{}
 	if err := db.Where("id = ?", id).Delete(&homework).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteHomeworkByTeacher(db *gorm.DB, id uint, email string) error {
+	teacher := &model.Teacher{}
+	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
+		return err
+	}
+
+	hwp := &model.HomeworkPage{}
+	if err := db.Where("teacher_id = ?", teacher.ID).First(&hwp).Error; err != nil {
+		return err
+	}
+
+	homework := &model.Homework{}
+	if err := db.Where("homework_page_id = ? AND id = ?", hwp.ID, id).Delete(&homework).Error; err != nil {
 		return err
 	}
 
@@ -43,6 +91,37 @@ func CreateHomework(db *gorm.DB, homework *model.Homework) (*model.Homework, err
 
 func UpdateHomework(db *gorm.DB, homework *model.Homework) error {
 	if err := db.First(&model.Homework{}, homework.ID).Update(homework).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UpdateHomeworkByOwner(db *gorm.DB, homework *model.Homework, email string) error {
+	owner := &model.Student{}
+	if err := db.Where("email = ?", email).First(&owner).Error; err != nil {
+		return err
+	}
+
+	if err := db.Where("student_id = ? AND id = ?", owner.ID, homework.ID).First(&model.Homework{}).Update(homework).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UpdateHomeworkByTeacher(db *gorm.DB, homework *model.Homework, email string) error {
+	teacher := &model.Teacher{}
+	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
+		return err
+	}
+
+	hwp := &model.HomeworkPage{}
+	if err := db.Where("teacher_id = ?", teacher.ID).First(&hwp).Error; err != nil {
+		return err
+	}
+
+	if err := db.Where("homework_page_id = ? AND id = ?", hwp.ID, homework.ID).First(&model.Homework{}).Update(homework).Error; err != nil {
 		return err
 	}
 

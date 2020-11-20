@@ -3,6 +3,7 @@ module api
 go 1.15
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
@@ -11,5 +12,6 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/pressly/goose v2.6.0+incompatible
 	github.com/rs/zerolog v1.20.0
+	golang.org/x/crypto v0.0.0-20201116153603-4be66e5b6582
 	gopkg.in/go-playground/validator.v9 v9.31.0
 )
