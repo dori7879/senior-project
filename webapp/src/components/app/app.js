@@ -1,7 +1,10 @@
-import  { HomePage, HomeworkPage, SignInPage, SignUpPage, AttendancePage, QuizPage } from '../pages';
+import  { AttendancePage, HomePage, HomeworkPage, QuizPage, SignInPage, SignUpPage } from '../pages';
 import {Route, Switch} from 'react-router-dom';
 
+import LinkPage from '../pages/link-page';
+import MyProfilePage from '../pages/profile-page';
 import React from 'react';
+import StudentHWPage from '../pages/student-hw-page';
 
 const App = () => {
     return(
@@ -14,6 +17,9 @@ const App = () => {
                     <Route path='/homework' exact component={HomeworkPage} />
                     <Route path='/attendance' exact component={AttendancePage} />
                     <Route path='/quiz' exact component={QuizPage} />
+                    <Route path='/profile' exact component={MyProfilePage} />
+                    <Route path='/link' exact component={LinkPage} />
+                    <Route path='/student-hw-page' exact component={StudentHWPage} />
                 </Switch>
             </main>
         </div>

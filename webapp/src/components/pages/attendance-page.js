@@ -21,14 +21,14 @@ const AttendancePage = () => {
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
                             Open date and time*
                         </label>
-                        <input className="block border border-purple-400 rounded text-gray-700 w-1/4 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="open-date" name="trip-start"  type="date" value="2020-10-16" min="2020-10-16" max="2021-12-31" />
+                        <input className="block border border-purple-400 rounded text-gray-700 w-1/4 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="open-date" name="trip-start"  type="date" min="2020-10-16" max="2021-12-31" />
                         <input className="block border border-purple-400 rounded text-gray-700 w-1/6 rounded py-1 px-2 ml-3 leading-tight focus:outline-none focus:bg-white" id="open-time" name="trip-start" type="time" min="00:00" max="11:59" />
                     </div>
                     <div className="flex flex-row pb-2 items items-center">
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
                             Close date and time*
                         </label>
-                        <input className="block border border-purple-400 rounded text-gray-700 w-1/4 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="close-date" name="trip-start"  type="date" value="2020-10-16" min="2020-10-16" max="2021-12-31" />
+                        <input className="block border border-purple-400 rounded text-gray-700 w-1/4 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="close-date" name="trip-start"  type="date"  min="2020-10-16" max="2021-12-31" />
                         <input className="block border border-purple-400 rounded text-gray-700 w-1/6 rounded py-1 px-2 ml-3 leading-tight focus:outline-none focus:bg-white" id="close-time" name="trip-start" type="time" min="00:00" max="11:59" />
                     </div>
                     <div className="flex flex-col pb-2 border border-purple-400 rounded mb-2 w-1/2">
@@ -38,18 +38,18 @@ const AttendancePage = () => {
                         <div>
                             <div className="flex flex-row pl-4">
                                 <input type="radio" id="choice1" name="attendance-type" value="Face-recognition"
-                                        checked />
-                                <label for="choice1" className="text-gray-700 rounded py-1 px-2 leading-tight">Face recognition</label>
+                                        />
+                                <label htmlFor="choice1" className="text-gray-700 rounded py-1 px-2 leading-tight">Face recognition</label>
                             </div>
                             <div className="flex flex-row pl-4">
                                 <input type="radio" id="choice2" name="attendance-type" value="Generated-ID"
                                         />
-                                <label for="choice2" className="text-gray-700 rounded py-1 px-2 leading-tight">Generated ID</label>
+                                <label htmlFor="choice2" className="text-gray-700 rounded py-1 px-2 leading-tight">Generated ID</label>
                             </div>
                             <div className="flex flex-row pl-4">
                                 <input type="radio" id="choice3" name="attendance-type" value="QR-code"
                                         />
-                                <label for="choice3" className="text-gray-700 rounded py-1 px-2 leading-tight">QR code</label>
+                                <label htmlFor="choice3" className="text-gray-700 rounded py-1 px-2 leading-tight">QR code</label>
                             </div>
                         </div>
                     </div>
