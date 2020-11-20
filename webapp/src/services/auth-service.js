@@ -1,10 +1,10 @@
 import axios from "axios";
 const API_URL = "http://localhost:"+ process.env.PORT + "/api/v1/";
 console.log(process.env.PORT)
-const register = (/*frstName, lastName, */ email, password) => {
+const register = ( firstName, lastName, email, password) => {
   return axios.post(API_URL + "signup", {
-    //firstName,
-    //lastName,
+    firstName,
+    lastName,
     email,
     password,
   });
@@ -17,9 +17,12 @@ const login = (email, password) => {
       password,
     })
     .then((response) => {
-      if (response.data.token) {
-        console.log(response)
-        localStorage.setItem("user", JSON.stringify(response.data));
+      console.log(response)
+      if (response) {
+        
+        localStorage.setItem("access_token", JSON.stringify(response.access_token));
+        localStorage.setItem("refresh_token", JSON.stringify(response.refresh_token));
+        localStorage.setItem("role", JSON.stringify(response.role));
       }
       return response.data;
     });
