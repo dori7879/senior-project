@@ -1,11 +1,9 @@
 import authHeader from "./auth-header";
 import axios from "axios";
 
-const API_URL = " http://localhost:"+ process.env.PORT +"/api/v1";
-
 
 const getAllUsers = () => {
-  return axios.get(API_URL + "users");
+  return axios.get("api/v1/users");
 };
 /*
 const getUserBoard = () => {
