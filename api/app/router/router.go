@@ -1,6 +1,9 @@
 package router
 
 import (
+	"net/http"
+	"os"
+
 	"github.com/go-chi/chi"
 
 	"api/app/requestlog"
@@ -8,11 +11,12 @@ import (
 	"api/app/server"
 )
 
+// New is a function to create the main router.
 func New(s *server.Server) *chi.Mux {
 	l := s.Logger()
 
 	r := chi.NewRouter()
-	r.Method("GET", "/", requestlog.NewHandler(s.HandleIndex, l))
+	// r.Method("GET", "/", requestlog.NewHandler(s.HandleIndex, l))
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Use(middleware.ContentTypeJson)
@@ -29,5 +33,21 @@ func New(s *server.Server) *chi.Mux {
 	r.Get("/healthz/liveness", server.HandleLive)
 	r.Method("GET", "/healthz/readiness", requestlog.NewHandler(s.HandleReady, l))
 
+	FileServer(r)
+
 	return r
+}
+
+// FileServer is serving static files.
+func FileServer(router *chi.Mux) {
+	root := "./web"
+	fs := http.FileServer(http.Dir(root))
+
+	router.Get("/*", func(w http.ResponseWriter, r *http.Request) {
+		if _, err := os.Stat(root + r.RequestURI); os.IsNotExist(err) {
+			http.StripPrefix(r.RequestURI, fs).ServeHTTP(w, r)
+		} else {
+			fs.ServeHTTP(w, r)
+		}
+	})
 }
