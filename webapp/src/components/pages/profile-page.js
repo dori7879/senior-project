@@ -5,9 +5,9 @@ import { Redirect } from 'react-router-dom';
 import { useSelector } from "react-redux";
 
 const MyProfilePage = () => {
-    const { user: currentUser } = useSelector((state) => state.auth);
+    const { access_token } = useSelector((state) => state.auth);
 
-    if (!currentUser) {
+    if (!access_token) {
       return <Redirect to="/signin"/>;
     }      
 
@@ -19,11 +19,10 @@ const MyProfilePage = () => {
                     <div className="text-purple-900 font-bold text-xl pt-4">My profile</div>
                     <div className="container">
                         <p>
-                            <strong>Token:</strong> {currentUser.token.substring(0, 20)} ...{" "}
-                            {currentUser.token.substr(currentUser.token.length - 20)}
+                            <strong>Token:</strong> {access_token}
                         </p>
                         <p>
-                            <strong>Email:</strong> {currentUser.email}
+                            <strong>Email:</strong> {access_token}
                         </p>
                     </div>
                 </div>

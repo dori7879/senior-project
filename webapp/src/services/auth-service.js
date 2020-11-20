@@ -30,7 +30,9 @@ const login = (email, password) => {
 
 
 const logout = () => {
-  localStorage.removeItem("user");
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("role");
 };
 
 export default {
