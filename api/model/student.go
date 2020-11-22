@@ -3,7 +3,7 @@ package model
 type Students []*Student
 
 type Student struct {
-	ID        uint
+	ID        uint `gorm:"column:student_id"`
 	Homeworks []Homework
 }
 
