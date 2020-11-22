@@ -2,8 +2,8 @@ import axios from "axios";
 
 const register = ( firstName, lastName, email, password) => {
   return axios.post("/api/v1/signup", {
-    firstName,
-    lastName,
+    "first_name": firstName,
+    "last_name": lastName,
     email,
     password,
   });

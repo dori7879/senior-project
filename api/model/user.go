@@ -5,14 +5,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Users []*User
 
 type User struct {
-	gorm.Model
+	ID           uint
 	FirstName    string
 	LastName     string
 	Email        string
