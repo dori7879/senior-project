@@ -1,3 +1,4 @@
+import CKEditor from 'ckeditor4-react';
 import DateTimePicker from 'react-datetime-picker';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
@@ -47,7 +48,7 @@ class HwForm extends React.Component {
     }    
     onChangeDescription(e) {
         this.setState({
-          description: e.target.value,
+        description: e.editor.getData()
         });
     }
     onChangeFiles(e) {
@@ -113,7 +114,10 @@ class HwForm extends React.Component {
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
                         Description
                     </label>
-                    <textarea onChange={this.onChangeDescription} rows="5" className="text-gray-700 border text-xs border-purple-400 w-1/2 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="description" type="text" placeholder="Enter the description" />
+                    <CKEditor
+                        data={this.state.description}
+                        onChange={this.onChangeDescription}
+                    />
                 </div>
                 <div className="flex flex-row pb-2 items items-center">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
