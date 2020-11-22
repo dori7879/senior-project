@@ -110,7 +110,7 @@ class RegistrationForm extends React.Component {
         if (this.checkBtn.context._errors.length === 0) {
             this.props
             .dispatch(
-                register(/*this.state.firstName, this.state.lastName,*/ this.state.email, this.state.password)
+                register(this.state.firstName, this.state.lastName, this.state.email, this.state.password)
             )
             .then(() => {
                 this.setState({
