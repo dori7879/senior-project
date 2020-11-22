@@ -1,10 +1,8 @@
 import axios from "axios";
-const API_URL = "http://localhost:"+ process.env.PORT + "/api/v1/";
-
 
 const createHomework = ( courseTitle, title, description, files, openDate, closeDate) => {
     return axios
-      .post(API_URL + "homework-page", {
+      .post("/api/v1/homework-page", {
         course_title: courseTitle, 
         title: title, 
         content: description, 
