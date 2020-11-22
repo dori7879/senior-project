@@ -16,12 +16,11 @@ const login = (email, password) => {
       password,
     })
     .then((response) => {
-      console.log(response)
-      if (response) {
+      if (response.data) {
         
-        localStorage.setItem("access_token", JSON.stringify(response.access_token));
-        localStorage.setItem("refresh_token", JSON.stringify(response.refresh_token));
-        localStorage.setItem("role", JSON.stringify(response.role));
+        localStorage.setItem("access_token", JSON.stringify(response.data.access_token));
+        localStorage.setItem("refresh_token", JSON.stringify(response.data.refresh_token));
+        localStorage.setItem("role", JSON.stringify(response.data.role));
       }
       return response.data;
     });
