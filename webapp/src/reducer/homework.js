@@ -1,6 +1,6 @@
 import { CREATE_HOMEWORK } from "../actions/types";
 
-const initialState = {};
+const initialState = {homework: null};
 
 export default function (state = initialState, action){
 

@@ -1,3 +1,3 @@
-import HwForm from './HwForm';
+import HwForm from './hw-form';
 
 export default HwForm;
