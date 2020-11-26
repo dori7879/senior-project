@@ -111,6 +111,9 @@ func (server *Server) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		"access_token":  aToken,
 		"refresh_token": rToken,
 		"role":          userRole,
+		"first_name":    user.FirstName,
+		"last_name":     user.LastName,
+		"email":         user.Email,
 	}
 
 	if err := json.NewEncoder(w).Encode(respBody); err != nil {
