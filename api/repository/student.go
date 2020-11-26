@@ -8,7 +8,7 @@ import (
 
 func GetStudent(db *gorm.DB, id uint) (*model.Student, error) {
 	student := &model.Student{}
-	if err := db.First(&student, id).Error; err != nil {
+	if err := db.Where("student_id = ?", id).First(&student).Error; err != nil {
 		return nil, err
 	}
 
