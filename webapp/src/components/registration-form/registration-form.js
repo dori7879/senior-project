@@ -64,6 +64,7 @@ class RegistrationForm extends React.Component {
         this.onChangeFirstName = this.onChangeFirstName.bind(this);
         this.onChangeLastName = this.onChangeLastName.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
+        this.onChangeRole = this.onChangeRole.bind(this);
     
     this.state = {
             firstName: "",
@@ -71,9 +72,16 @@ class RegistrationForm extends React.Component {
             email: "",
             password: "",
             successful: false,
+            role: ""
         };
     }
 
+
+    onChangeRole(e) {    
+        this.setState({
+            role: e.target.value
+        }); 
+    }
     onChangeFirstName(e) {
         this.setState({
             firstName: e.target.value,
@@ -143,6 +151,13 @@ class RegistrationForm extends React.Component {
                             <div >
                                 <label className="text-sm text-gray-500">Last Name</label>
                                 <Input aria-label="Last Name" value={this.state.lastName} onChange={this.onChangeLastName} validations={[required, vlastname]} name="lastname" type="lastname" required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-purple-200 placeholder-purple-400 text-gray-800 rounded focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"/>
+                            </div>
+                            <div className="mt-2 mb-1">
+                                <label className="text-sm text-gray-500 mr-3">Role</label>
+                                <select onChange={this.onChangeRole} className="text-xs bg-purple-100 border border-purple-300">
+                                    <option>instructor</option>
+                                    <option>student</option>
+                                </select>
                             </div>
                             <div>
                                 <label className="text-sm text-gray-500">Email address</label>

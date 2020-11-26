@@ -1,7 +1,6 @@
 import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
-import homework from '../../reducer/homework';
 
 class TeacherHwPage extends React.Component{
     
@@ -82,24 +81,19 @@ class TeacherHwPage extends React.Component{
                                                 </div>
                                             </div>
                                         }
-                                        
-                                        
                                     </div>
                                 </div>
-                                <div className="flex flex-col">
-                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                        Close date and time*
-                                    </label>
-                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                        Close date and time*
-                                    </label>
-                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                        Close date and time*
-                                    </label>
+                                <div className="flex flex-col ">
+                                    <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
+                                        <strong><span className="text-purple-800 font-bold">4</span> Homeworks Submitted</strong> </p>
+                                    <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
+                                        <strong></strong> </p>
+                                    <button type="submit" className="mb-2 ml-4 mt-2
+                                                relative flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
+                                        Close Homework
+                                    </button>
                                 </div>
                             </div>
-                            
-                            
                         </form>
                 </div>   
                 <Footer />
