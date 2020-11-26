@@ -5,6 +5,7 @@ import LinkPage from '../pages/link-page';
 import MyProfilePage from '../pages/profile-page';
 import React from 'react';
 import StudentHWPage from '../pages/student-hw-page';
+import TeacherHWPage from '../pages/teacher-hw-page';
 
 const App = () => {
     return(
@@ -20,6 +21,7 @@ const App = () => {
                     <Route path='/profile' exact component={MyProfilePage} />
                     <Route path='/link' exact component={LinkPage} />
                     <Route path='/student-hw-page' exact component={StudentHWPage} />
+                    <Route path='/teacher-hw-page' exact component={TeacherHWPage} />
                 </Switch>
             </main>
         </div>

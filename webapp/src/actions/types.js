@@ -9,3 +9,4 @@ export const CLEAR_MESSAGE = "CLEAR_MESSAGE";
 
 
 export const CREATE_HOMEWORK = "CREATE_HOMEWORK";
+export const FETCH_HOMEWORK = "FETCH_HOMEWORK";

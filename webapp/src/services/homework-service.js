@@ -13,8 +13,17 @@ const createHomework = ( courseTitle, title, description, files, openDate, close
         return response.data;
       })
   }
+const fetchHomework = ( id ) => {
+  return axios
+    .get(
+      "/api/v1/homework/"+id
+    )
+    .then((response) => {
+      return response.data;
+    })
+}
 
   
   export default {
-    createHomework
+    createHomework, fetchHomework
   };

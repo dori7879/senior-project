@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 const MyProfilePage = () => {
     
-    const { access_token, first_name, last_name, email } = useSelector((state) => state.auth);
+    const { access_token, first_name, last_name, email, role } = useSelector((state) => state.auth);
 
     if (!access_token) {
       return <Redirect to="/signin"/>;
@@ -21,13 +21,16 @@ const MyProfilePage = () => {
                 </div>        
                     <div className="w-2/4 border border-purple-300 rounded bg-purple-300 p-4">
                          <p className="text-purple-900">
-                            <strong>First Name: </strong> Dariya{first_name}
+                            <strong>First Name: </strong> {first_name}
                         </p>
                         <p className="text-purple-900">
-                            <strong>Last Name: </strong> Shakenova{last_name}
+                            <strong>Last Name: </strong> {last_name}
                         </p>
                         <p  className="text-purple-900">
-                            <strong>Email:</strong> shakenova@gmail.com{email}
+                            <strong>Email:</strong> {email}
+                        </p>
+                        <p  className="text-purple-900">
+                            <strong>Role:</strong> {role}
                         </p>
                         <p className="text-purple-900 mt-3">
                             <strong >Change Password </strong> 
