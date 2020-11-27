@@ -155,8 +155,8 @@ class RegistrationForm extends React.Component {
                             <div className="mt-2 mb-1">
                                 <label className="text-sm text-gray-500 mr-3">Role</label>
                                 <select onChange={this.onChangeRole} className="text-xs bg-purple-100 border border-purple-300">
-                                    <option>instructor</option>
-                                    <option>student</option>
+                                    <option value="teacher">Teacher</option>
+                                    <option value="student">Student</option>
                                 </select>
                             </div>
                             <div>

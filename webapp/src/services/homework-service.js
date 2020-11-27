@@ -1,13 +1,14 @@
 import axios from "axios";
 
-const createHomework = ( courseTitle, title, description, files, openDate, closeDate) => {
+const createHomework = ( courseTitle, title, description, files, openDate, closeDate, fullName) => {
     return axios
       .post("/api/v1/homework-page", {
         course_title: courseTitle, 
         title: title, 
         content: description, 
         opened_at: openDate, 
-        closed_At: closeDate
+        closed_At: closeDate,
+        teacher_fullname: fullName
       })
       .then((response) => {
         return response.data;

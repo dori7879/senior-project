@@ -1,6 +1,6 @@
 import { CREATE_HOMEWORK, FETCH_HOMEWORK } from "../actions/types";
 
-const initialState = {homework: null};
+const initialState = {homework:null};
 
 export default function (state = initialState, action){
 
