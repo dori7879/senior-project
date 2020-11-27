@@ -14,8 +14,8 @@ type Homework struct {
 	SubmittedAt     time.Time
 	UpdatedAt       time.Time
 	StudentFullName string
-	StudentID       uint
-	HomeworkPageID  uint
+	StudentID       *uint
+	HomeworkPageID  *uint
 }
 
 type HomeworkDtos []*HomeworkDto
@@ -52,8 +52,8 @@ func (hw Homework) ToDto() *HomeworkDto {
 		SubmittedAt:     hw.SubmittedAt.Format(time.RFC3339),
 		UpdatedAt:       hw.UpdatedAt.Format(time.RFC3339),
 		StudentFullName: hw.StudentFullName,
-		StudentID:       hw.StudentID,
-		HomeworkPageID:  hw.HomeworkPageID,
+		StudentID:       *hw.StudentID,
+		HomeworkPageID:  *hw.HomeworkPageID,
 	}
 }
 
@@ -83,6 +83,6 @@ func (f *HomeworkForm) ToModel() (*Homework, error) {
 		SubmittedAt:     submittedAt,
 		UpdatedAt:       updatedAt,
 		StudentFullName: f.StudentFullName,
-		HomeworkPageID:  f.HomeworkPageID,
+		HomeworkPageID:  &f.HomeworkPageID,
 	}, nil
 }

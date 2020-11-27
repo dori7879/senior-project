@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `homework_pages`
     `opened_at`         TIMESTAMP    NULL,
     `closed_at`         TIMESTAMP    NULL,
     `teacher_fullname`  VARCHAR(255) NULL,
-    `teacher_id`        INT UNSIGNED NULL,
+    `teacher_id`        INT UNSIGNED NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_hwp_teacher` FOREIGN KEY (`teacher_id`) REFERENCES `teachers`(`teacher_id`) ON DELETE CASCADE
 ) Engine=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

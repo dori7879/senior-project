@@ -65,8 +65,10 @@ func (server *Server) HandleListHomeworkPage(w http.ResponseWriter, r *http.Requ
 
 // HandleCreateHomeworkPage is a handler for creating a homework page
 func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Request) {
-	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
-		claims := val.(jwt.MapClaims)
+	var val interface{}
+	var claims jwt.MapClaims
+	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
+		claims = val.(jwt.MapClaims)
 		if claims["role"].(string) == "student" {
 			server.logger.Warn().Err(errors.New("Registered student tries to create a homework page")).Msg("")
 
@@ -106,6 +108,21 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 
 	homeworkPageModel.StudentLink = studentRandomString
 	homeworkPageModel.TeacherLink = teacherRandomString
+
+	if claims["role"].(string) == "teacher" {
+		user, err := repository.GetUserByEmail(server.db, claims["sub"].(string))
+		if err != nil {
+			server.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+			return
+		}
+
+		homeworkPageModel.TeacherID = &user.ID
+	} else {
+		homeworkPageModel.TeacherID = nil
+	}
 
 	homeworkPage, err := repository.CreateHomeworkPage(server.db, homeworkPageModel)
 	if err != nil {

@@ -18,7 +18,7 @@ type HomeworkPage struct {
 	OpenedAt        time.Time
 	ClosedAt        time.Time
 	TeacherFullname string
-	TeacherID       uint
+	TeacherID       *uint
 	Homeworks       []Homework
 }
 
@@ -61,7 +61,7 @@ func (hwp HomeworkPage) ToDto() *HomeworkPageDto {
 		OpenedAt:        hwp.OpenedAt.Format(time.RFC3339),
 		ClosedAt:        hwp.ClosedAt.Format(time.RFC3339),
 		TeacherFullname: hwp.TeacherFullname,
-		TeacherID:       hwp.TeacherID,
+		TeacherID:       *hwp.TeacherID,
 	}
 }
 

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `homeworks`
     `submitted_at`      TIMESTAMP    NOT NULL,
     `updated_at`        TIMESTAMP    NULL,
     `student_fullname`  VARCHAR(255) NULL,
-    `student_id`        INT UNSIGNED NULL,
+    `student_id`        INT UNSIGNED NULL DEFAULT NULL,
     `homework_page_id`  INT UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_hw_student` FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`) ON DELETE CASCADE,
