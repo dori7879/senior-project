@@ -4,11 +4,14 @@ import (
 	"api/app/router/middleware"
 	"api/model"
 	"api/repository"
+	"api/util/linkgeneration"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi"
@@ -97,6 +100,12 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 	}
 
 	// Add registered user if the request from one
+	rand.Seed(time.Now().UnixNano())
+	studentRandomString := linkgeneration.RandStringSeq(11)
+	teacherRandomString := linkgeneration.RandStringSeq(11)
+
+	homeworkPageModel.StudentLink = studentRandomString
+	homeworkPageModel.TeacherLink = teacherRandomString
 
 	homeworkPage, err := repository.CreateHomeworkPage(server.db, homeworkPageModel)
 	if err != nil {
