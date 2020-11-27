@@ -2,12 +2,12 @@ import axios from "axios";
 
 const createHomework = ( courseTitle, title, description, files, openDate, closeDate, fullName) => {
     return axios
-      .post("/api/v1/homework-page", {
+      .post("/api/v1/homework", {
         course_title: courseTitle, 
         title: title, 
         content: description, 
-        opened_at: openDate, 
-        closed_At: closeDate,
+        opened_at: openDate.toJSON(), 
+        closed_At: closeDate.toJSON(),
         teacher_fullname: fullName
       })
       .then((response) => {

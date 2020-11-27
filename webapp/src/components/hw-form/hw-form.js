@@ -73,7 +73,6 @@ class HwForm extends React.Component {
     handleSubmit(e){
         e.preventDefault();
         const { dispatch} = this.props;
-        console.log(this.state);
         dispatch(createHomework( this.state.courseTitle, this.state.title, this.state.description, this.state.files, this.state.openDate, this.state.closeDate, this.state.fullName))
             .then(() => {
                 this.setState({
