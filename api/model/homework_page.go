@@ -17,7 +17,7 @@ type HomeworkPage struct {
 	UpdatedAt       time.Time
 	OpenedAt        time.Time
 	ClosedAt        time.Time
-	TeacherFullName string
+	TeacherFullname string
 	TeacherID       uint
 	Homeworks       []Homework
 }
@@ -35,7 +35,7 @@ type HomeworkPageDto struct {
 	UpdatedAt       string `json:"updated_at"`
 	OpenedAt        string `json:"opened_at"`
 	ClosedAt        string `json:"closed_at"`
-	TeacherFullName string `json:"teacher_fullname"`
+	TeacherFullname string `json:"teacher_fullname"`
 	TeacherID       uint   `json:"teacher_id"`
 }
 
@@ -45,7 +45,7 @@ type HomeworkPageForm struct {
 	CourseTitle     string `json:"course_title" form:"required,max=255"`
 	OpenedAt        string `json:"opened_at" form:"required,date"`
 	ClosedAt        string `json:"closed_at" form:"required,date"`
-	TeacherFullName string `json:"teacher_fullname" form:"alpha_space,max=255"`
+	TeacherFullname string `json:"teacher_fullname" form:"alpha_space,max=255"`
 }
 
 func (hwp HomeworkPage) ToDto() *HomeworkPageDto {
@@ -60,7 +60,7 @@ func (hwp HomeworkPage) ToDto() *HomeworkPageDto {
 		UpdatedAt:       hwp.UpdatedAt.Format(time.RFC3339),
 		OpenedAt:        hwp.OpenedAt.Format(time.RFC3339),
 		ClosedAt:        hwp.ClosedAt.Format(time.RFC3339),
-		TeacherFullName: hwp.TeacherFullName,
+		TeacherFullname: hwp.TeacherFullname,
 		TeacherID:       hwp.TeacherID,
 	}
 }
@@ -90,6 +90,6 @@ func (f *HomeworkPageForm) ToModel() (*HomeworkPage, error) {
 		CourseTitle:     f.CourseTitle,
 		OpenedAt:        openedAt,
 		ClosedAt:        closedAt,
-		TeacherFullName: f.TeacherFullName,
+		TeacherFullname: f.TeacherFullname,
 	}, nil
 }
