@@ -46,6 +46,20 @@ func (server *Server) HandleSignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if form.Role == "teacher" {
+		_, err = repository.CreateTeacher(server.db, &model.Teacher{ID: user.ID})
+	} else if form.Role == "student" {
+		_, err = repository.CreateStudent(server.db, &model.Student{ID: user.ID})
+	}
+
+	if err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataCreationFailure)
+		return
+	}
+
 	server.logger.Info().Msgf("New user page created: %d", user.ID)
 	w.WriteHeader(http.StatusCreated)
 }
