@@ -1,4 +1,4 @@
-import { CREATE_HOMEWORK, FETCH_HOMEWORK } from "../actions/types";
+import { CREATE_HOMEWORK, FETCH_HOMEWORK, SUBMIT_HOMEWORK } from "../actions/types";
 
 const initialState = {homework:null};
 
@@ -14,6 +14,10 @@ export default function (state = initialState, action){
         };
       case FETCH_HOMEWORK:
         return {
+          ...state
+        }
+      case SUBMIT_HOMEWORK:
+        return{
           ...state
         }
       default:

@@ -1,11 +1,12 @@
 import axios from "axios";
 
-const register = ( firstName, lastName, email, password) => {
+const register = ( firstName, lastName, email, password, role) => {
   return axios.post("/api/v1/signup", {
     "first_name": firstName,
     "last_name": lastName,
     email,
     password,
+    role
   });
 };
 

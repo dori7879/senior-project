@@ -1,6 +1,7 @@
 import {
     CREATE_HOMEWORK,
-    FETCH_HOMEWORK
+    FETCH_HOMEWORK,
+    SUBMIT_HOMEWORK
 } from "./types";
 
 import HomeworkService from "../services/homework-service.js";
@@ -29,3 +30,15 @@ export const fetchHomework = (id) => (dispatch) => {
     }
   );
 } 
+
+export const submitHomework = (fullName, files, answer, submitDate) => (dispatch) => {
+  return HomeworkService.submitHomework(fullName, answer, submitDate)
+    .then(
+    (data) => {
+      dispatch({
+        type: SUBMIT_HOMEWORK
+      });
+      return Promise.resolve();
+    }
+    ) 
+}
