@@ -2,6 +2,7 @@ import CKEditor from 'ckeditor4-react';
 import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
+import { submitHomework } from "../../actions/homework";
 
 class StudentHwPage extends React.Component{
     
@@ -37,9 +38,8 @@ class StudentHwPage extends React.Component{
     }
     handleSubmit(e){
         e.preventDefault();
-        /*const { dispatch} = this.props;
-        console.log(this.state);
-        dispatch(createHomework( this.state.courseTitle, this.state.title, this.state.description, this.state.files, this.state.openDate, this.state.closeDate))
+        const { dispatch} = this.props;
+        dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.files, this.state.submitDate))
             .then(() => {
                 this.setState({
                 successful: true,
@@ -49,7 +49,7 @@ class StudentHwPage extends React.Component{
                 this.setState({
                 successful: false,
                 });
-            });*/
+            });
         console.log("clicked");
     }
 

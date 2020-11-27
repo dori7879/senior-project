@@ -24,7 +24,17 @@ const fetchHomework = ( id ) => {
     })
 }
 
+const submitHomework = (fullName, answer, files, submitDate) => {
+  return axios 
+    .get(
+      "/api/v1/homework-submission"
+    )
+    .then((response) => {
+      return response.data;
+    }) 
+}
+
   
   export default {
-    createHomework, fetchHomework
+    createHomework, fetchHomework, submitHomework
   };
