@@ -109,7 +109,7 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 	homeworkPageModel.StudentLink = studentRandomString
 	homeworkPageModel.TeacherLink = teacherRandomString
 
-	if claims["role"].(string) == "teacher" {
+	if claims != nil && claims["role"].(string) == "teacher" {
 		user, err := repository.GetUserByEmail(server.db, claims["sub"].(string))
 		if err != nil {
 			server.logger.Warn().Err(err).Msg("")
