@@ -92,7 +92,7 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		fmt.Fprintf(w, `{"error": "%v"}`, serverErrFormDecodingFailure)
+		fmt.Fprintf(w, `{"error": "%v", "form": "%+v"}`, serverErrFormDecodingFailure, form)
 		return
 	}
 
