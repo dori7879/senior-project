@@ -34,6 +34,8 @@ func New(s *server.Server, conf *config.Conf) *chi.Mux {
 		r.Method("PUT", "/homework-page/{id}", requestlog.NewHandler(s.HandleUpdateHomeworkPage, l))
 		r.Method("DELETE", "/homework-page/{id}", requestlog.NewHandler(s.HandleDeleteHomeworkPage, l))
 
+		r.Method("GET", "/homework-page/link/{str}", requestlog.NewHandler(s.HandleReadHomeworkPageByStringParam, l))
+
 		// Routes for homeworks
 		r.Method("GET", "/homework", requestlog.NewHandler(s.HandleListHomework, l))
 		r.Method("POST", "/homework", requestlog.NewHandler(s.HandleCreateHomework, l))

@@ -190,6 +190,59 @@ func (server *Server) HandleReadHomeworkPage(w http.ResponseWriter, r *http.Requ
 	}
 }
 
+// HandleReadHomeworkPageByStringParam is a handler for getting a single homework page
+func (server *Server) HandleReadHomeworkPageByStringParam(w http.ResponseWriter, r *http.Request) {
+	var claims jwt.MapClaims
+	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
+		claims = val.(jwt.MapClaims)
+		if claims["role"].(string) == "student" {
+			server.logger.Warn().Err(errors.New("Student tries to read a homework pages")).Msg("")
+
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
+			return
+		}
+	}
+
+	str := chi.URLParam(r, "str")
+	if str == "" {
+		server.logger.Info().Msgf("can not parse str: %v", str)
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+
+	var homeworkPage *model.HomeworkPage
+	var err error
+	if claims != nil {
+		homeworkPage, err = repository.ReadHomeworkPageWithNoOwnerByLink(server.db, str)
+	} else {
+		homeworkPage, err = repository.ReadHomeworkPageByOwnerByLink(server.db, str, claims["sub"].(string))
+	}
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+		return
+	}
+
+	dto := homeworkPage.ToDto()
+	if err := json.NewEncoder(w).Encode(dto); err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrJSONCreationFailure)
+		return
+	}
+}
+
 // HandleUpdateHomeworkPage is a handler for updating a homework page
 func (server *Server) HandleUpdateHomeworkPage(w http.ResponseWriter, r *http.Request) {
 	var claims jwt.MapClaims

@@ -29,6 +29,15 @@ func ReadHomeworkPageWithNoOwner(db *gorm.DB, id uint) (*model.HomeworkPage, err
 	return homeworkPage, nil
 }
 
+func ReadHomeworkPageWithNoOwnerByLink(db *gorm.DB, link string) (*model.HomeworkPage, error) {
+	homeworkPage := &model.HomeworkPage{}
+	if err := db.Where("teacher_id is NULL AND teacher_link = ?", link).First(&homeworkPage).Error; err != nil {
+		return nil, err
+	}
+
+	return homeworkPage, nil
+}
+
 func ReadHomeworkPageByOwner(db *gorm.DB, id uint, email string) (*model.HomeworkPage, error) {
 	teacher := &model.Teacher{}
 	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
@@ -37,6 +46,20 @@ func ReadHomeworkPageByOwner(db *gorm.DB, id uint, email string) (*model.Homewor
 
 	homeworkPage := &model.HomeworkPage{}
 	if err := db.Where("teacher_id = ? AND id = ?", teacher.ID, id).First(&homeworkPage).Error; err != nil {
+		return nil, err
+	}
+
+	return homeworkPage, nil
+}
+
+func ReadHomeworkPageByOwnerByLink(db *gorm.DB, link, email string) (*model.HomeworkPage, error) {
+	teacher := &model.Teacher{}
+	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
+		return nil, err
+	}
+
+	homeworkPage := &model.HomeworkPage{}
+	if err := db.Where("teacher_id = ? AND teacher_link = ?", teacher.ID, link).First(&homeworkPage).Error; err != nil {
 		return nil, err
 	}
 
