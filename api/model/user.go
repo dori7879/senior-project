@@ -47,8 +47,8 @@ func (hw User) ToDto() *UserDto {
 		FirstName:  hw.FirstName,
 		LastName:   hw.LastName,
 		Email:      hw.Email,
-		DateJoined: hw.DateJoined.Format("2006-01-02"),
-		LastLogin:  hw.LastLogin.Format("2006-01-02"),
+		DateJoined: hw.DateJoined.Format(time.RFC3339),
+		LastLogin:  hw.LastLogin.Format(time.RFC3339),
 		IsActive:   strconv.FormatBool(hw.IsActive),
 	}
 }

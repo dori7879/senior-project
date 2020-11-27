@@ -49,8 +49,8 @@ func (hw Homework) ToDto() *HomeworkDto {
 		Content:         hw.Content,
 		Grade:           hw.Grade,
 		Comments:        hw.Comments,
-		SubmittedAt:     hw.SubmittedAt.Format("2006-01-02"),
-		UpdatedAt:       hw.UpdatedAt.Format("2006-01-02"),
+		SubmittedAt:     hw.SubmittedAt.Format(time.RFC3339),
+		UpdatedAt:       hw.UpdatedAt.Format(time.RFC3339),
 		StudentFullName: hw.StudentFullName,
 		StudentID:       hw.StudentID,
 		HomeworkPageID:  hw.HomeworkPageID,
@@ -66,12 +66,12 @@ func (hws Homeworks) ToDto() HomeworkDtos {
 }
 
 func (f *HomeworkForm) ToModel() (*Homework, error) {
-	submittedAt, err := time.Parse("2008-01-23", f.SubmittedAt)
+	submittedAt, err := time.Parse(time.RFC3339, f.SubmittedAt)
 	if err != nil {
 		return nil, err
 	}
 
-	updatedAt, err := time.Parse("2008-01-23", f.UpdatedAt)
+	updatedAt, err := time.Parse(time.RFC3339, f.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}

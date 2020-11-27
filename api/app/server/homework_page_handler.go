@@ -4,11 +4,14 @@ import (
 	"api/app/router/middleware"
 	"api/model"
 	"api/repository"
+	"api/util/linkgeneration"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi"
@@ -78,7 +81,7 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		fmt.Fprintf(w, `{"error": "%v"}`, serverErrFormDecodingFailure)
+		fmt.Fprintf(w, `{"error": "%v", "form": "%+v"}`, serverErrFormDecodingFailure, form)
 		return
 	}
 
@@ -92,9 +95,17 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		fmt.Fprintf(w, `{"error": "%v"}`, serverErrFormDecodingFailure)
+		fmt.Fprintf(w, `{"error": "%v", "form": "%+v"}`, serverErrFormDecodingFailure, form)
 		return
 	}
+
+	// Add registered user if the request from one
+	rand.Seed(time.Now().UnixNano())
+	studentRandomString := linkgeneration.RandStringSeq(11)
+	teacherRandomString := linkgeneration.RandStringSeq(11)
+
+	homeworkPageModel.StudentLink = studentRandomString
+	homeworkPageModel.TeacherLink = teacherRandomString
 
 	homeworkPage, err := repository.CreateHomeworkPage(server.db, homeworkPageModel)
 	if err != nil {

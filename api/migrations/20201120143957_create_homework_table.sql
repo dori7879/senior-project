@@ -1,6 +1,6 @@
 -- +goose U
 -- SQL in this section is executed when the migration is applied.
-CREATE TABLE IF NOT EXISTS `homework`
+CREATE TABLE IF NOT EXISTS `homeworks`
 (
 
     `id`                INT UNSIGNED NOT NULL AUTO_INCREMENT,

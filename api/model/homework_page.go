@@ -17,7 +17,7 @@ type HomeworkPage struct {
 	UpdatedAt       time.Time
 	OpenedAt        time.Time
 	ClosedAt        time.Time
-	TeacherFullName string
+	TeacherFullname string
 	TeacherID       uint
 	Homeworks       []Homework
 }
@@ -35,7 +35,7 @@ type HomeworkPageDto struct {
 	UpdatedAt       string `json:"updated_at"`
 	OpenedAt        string `json:"opened_at"`
 	ClosedAt        string `json:"closed_at"`
-	TeacherFullName string `json:"teacher_fullname"`
+	TeacherFullname string `json:"teacher_fullname"`
 	TeacherID       uint   `json:"teacher_id"`
 }
 
@@ -45,7 +45,7 @@ type HomeworkPageForm struct {
 	CourseTitle     string `json:"course_title" form:"required,max=255"`
 	OpenedAt        string `json:"opened_at" form:"required,date"`
 	ClosedAt        string `json:"closed_at" form:"required,date"`
-	TeacherFullName string `json:"teacher_fullname" form:"required,alpha_space,max=255"`
+	TeacherFullname string `json:"teacher_fullname" form:"alpha_space,max=255"`
 }
 
 func (hwp HomeworkPage) ToDto() *HomeworkPageDto {
@@ -56,11 +56,11 @@ func (hwp HomeworkPage) ToDto() *HomeworkPageDto {
 		StudentLink:     hwp.StudentLink,
 		TeacherLink:     hwp.TeacherLink,
 		CourseTitle:     hwp.CourseTitle,
-		CreatedAt:       hwp.CreatedAt.Format("2006-01-02"),
-		UpdatedAt:       hwp.UpdatedAt.Format("2006-01-02"),
-		OpenedAt:        hwp.OpenedAt.Format("2006-01-02"),
-		ClosedAt:        hwp.ClosedAt.Format("2006-01-02"),
-		TeacherFullName: hwp.TeacherFullName,
+		CreatedAt:       hwp.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:       hwp.UpdatedAt.Format(time.RFC3339),
+		OpenedAt:        hwp.OpenedAt.Format(time.RFC3339),
+		ClosedAt:        hwp.ClosedAt.Format(time.RFC3339),
+		TeacherFullname: hwp.TeacherFullname,
 		TeacherID:       hwp.TeacherID,
 	}
 }
@@ -74,12 +74,12 @@ func (hwps HomeworkPages) ToDto() HomeworkPageDtos {
 }
 
 func (f *HomeworkPageForm) ToModel() (*HomeworkPage, error) {
-	openedAt, err := time.Parse("2008-01-23", f.OpenedAt)
+	openedAt, err := time.Parse(time.RFC3339, f.OpenedAt)
 	if err != nil {
 		return nil, err
 	}
 
-	closedAt, err := time.Parse("2008-01-23", f.ClosedAt)
+	closedAt, err := time.Parse(time.RFC3339, f.ClosedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -90,6 +90,6 @@ func (f *HomeworkPageForm) ToModel() (*HomeworkPage, error) {
 		CourseTitle:     f.CourseTitle,
 		OpenedAt:        openedAt,
 		ClosedAt:        closedAt,
-		TeacherFullName: f.TeacherFullName,
+		TeacherFullname: f.TeacherFullname,
 	}, nil
 }
