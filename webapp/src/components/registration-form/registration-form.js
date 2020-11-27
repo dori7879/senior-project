@@ -72,7 +72,7 @@ class RegistrationForm extends React.Component {
             email: "",
             password: "",
             successful: false,
-            role: ""
+            role: "teacher"
         };
     }
 
@@ -118,7 +118,7 @@ class RegistrationForm extends React.Component {
         if (this.checkBtn.context._errors.length === 0) {
             this.props
             .dispatch(
-                register(this.state.firstName, this.state.lastName, this.state.email,this.state.role, this.state.password)
+                register(this.state.firstName, this.state.lastName, this.state.email, this.state.password, this.state.role)
             )
             .then(() => {
                 this.setState({
@@ -154,7 +154,7 @@ class RegistrationForm extends React.Component {
                             </div>
                             <div className="mt-2 mb-1">
                                 <label className="text-sm text-gray-500 mr-3">Role</label>
-                                <select onChange={this.onChangeRole} className="text-xs bg-purple-100 border border-purple-300">
+                                <select value={this.state.role} onChange={this.onChangeRole} className="text-xs bg-purple-100 border border-purple-300">
                                     <option value="teacher">Teacher</option>
                                     <option value="student">Student</option>
                                 </select>
