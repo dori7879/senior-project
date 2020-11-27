@@ -45,7 +45,7 @@ type HomeworkPageForm struct {
 	CourseTitle     string `json:"course_title" form:"required,max=255"`
 	OpenedAt        string `json:"opened_at" form:"required,date"`
 	ClosedAt        string `json:"closed_at" form:"required,date"`
-	TeacherFullName string `json:"teacher_fullname" form:"required,alpha_space,max=255"`
+	TeacherFullName string `json:"teacher_fullname" form:"alpha_space,max=255"`
 }
 
 func (hwp HomeworkPage) ToDto() *HomeworkPageDto {
