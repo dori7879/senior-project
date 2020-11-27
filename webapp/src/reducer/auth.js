@@ -10,9 +10,10 @@ const access_token = JSON.parse(localStorage.getItem("access_token"));
 const role = JSON.parse(localStorage.getItem("role"));
 const first_name = JSON.parse(localStorage.getItem("first_name"));
 const last_name = JSON.parse(localStorage.getItem("last_name"));
+const email = JSON.parse(localStorage.getItem("email"));
   
   const initialState = access_token
-    ? { isLoggedIn: true, access_token, role, first_name, last_name }
+    ? { isLoggedIn: true, access_token, role, first_name, last_name, email }
     : { isLoggedIn: false, access_token: null };
   
   export default function (state = initialState, action) {
