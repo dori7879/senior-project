@@ -56,10 +56,10 @@ func (hwp HomeworkPage) ToDto() *HomeworkPageDto {
 		StudentLink:     hwp.StudentLink,
 		TeacherLink:     hwp.TeacherLink,
 		CourseTitle:     hwp.CourseTitle,
-		CreatedAt:       hwp.CreatedAt.Format("2006-01-02"),
-		UpdatedAt:       hwp.UpdatedAt.Format("2006-01-02"),
-		OpenedAt:        hwp.OpenedAt.Format("2006-01-02"),
-		ClosedAt:        hwp.ClosedAt.Format("2006-01-02"),
+		CreatedAt:       hwp.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:       hwp.UpdatedAt.Format(time.RFC3339),
+		OpenedAt:        hwp.OpenedAt.Format(time.RFC3339),
+		ClosedAt:        hwp.ClosedAt.Format(time.RFC3339),
 		TeacherFullName: hwp.TeacherFullName,
 		TeacherID:       hwp.TeacherID,
 	}
@@ -74,12 +74,12 @@ func (hwps HomeworkPages) ToDto() HomeworkPageDtos {
 }
 
 func (f *HomeworkPageForm) ToModel() (*HomeworkPage, error) {
-	openedAt, err := time.Parse("2008-01-23", f.OpenedAt)
+	openedAt, err := time.Parse(time.RFC3339, f.OpenedAt)
 	if err != nil {
 		return nil, err
 	}
 
-	closedAt, err := time.Parse("2008-01-23", f.ClosedAt)
+	closedAt, err := time.Parse(time.RFC3339, f.ClosedAt)
 	if err != nil {
 		return nil, err
 	}

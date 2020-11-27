@@ -96,6 +96,8 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	// Add registered user if the request from one
+
 	homeworkPage, err := repository.CreateHomeworkPage(server.db, homeworkPageModel)
 	if err != nil {
 		server.logger.Warn().Err(err).Msg("")
