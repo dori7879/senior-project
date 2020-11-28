@@ -11,10 +11,10 @@ import (
 type Users []*User
 
 type User struct {
-	ID           uint
+	ID           uint `gorm:"primaryKey"`
 	FirstName    string
 	LastName     string
-	Email        string
+	Email        string `gorm:"unique"`
 	PasswordHash []byte
 	DateJoined   time.Time
 	LastLogin    time.Time

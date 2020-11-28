@@ -7,13 +7,13 @@ import (
 )
 
 func ListHomeworkPagesByOwner(db *gorm.DB, email string) (model.HomeworkPages, error) {
-	teacher := &model.Teacher{}
-	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
+	user := &model.User{}
+	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, err
 	}
 
 	homeworkPages := make([]*model.HomeworkPage, 0)
-	if err := db.Where("teacher_id = ?", teacher.ID).Find(&homeworkPages).Error; err != nil {
+	if err := db.Where("teacher_id = ?", user.ID).Find(&homeworkPages).Error; err != nil {
 		return nil, err
 	}
 
@@ -29,7 +29,16 @@ func ReadHomeworkPageWithNoOwner(db *gorm.DB, id uint) (*model.HomeworkPage, err
 	return homeworkPage, nil
 }
 
-func ReadHomeworkPageWithNoOwnerByLink(db *gorm.DB, link string) (*model.HomeworkPage, error) {
+func ReadHomeworkPageWithNoOwnerByStudentLink(db *gorm.DB, link string) (*model.HomeworkPage, error) {
+	homeworkPage := &model.HomeworkPage{}
+	if err := db.Where("teacher_id is NULL AND student_link = ?", link).First(&homeworkPage).Error; err != nil {
+		return nil, err
+	}
+
+	return homeworkPage, nil
+}
+
+func ReadHomeworkPageWithNoOwnerByTeacherLink(db *gorm.DB, link string) (*model.HomeworkPage, error) {
 	homeworkPage := &model.HomeworkPage{}
 	if err := db.Where("teacher_id is NULL AND teacher_link = ?", link).First(&homeworkPage).Error; err != nil {
 		return nil, err
@@ -39,27 +48,36 @@ func ReadHomeworkPageWithNoOwnerByLink(db *gorm.DB, link string) (*model.Homewor
 }
 
 func ReadHomeworkPageByOwner(db *gorm.DB, id uint, email string) (*model.HomeworkPage, error) {
-	teacher := &model.Teacher{}
-	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
+	user := &model.User{}
+	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, err
 	}
 
 	homeworkPage := &model.HomeworkPage{}
-	if err := db.Where("teacher_id = ? AND id = ?", teacher.ID, id).First(&homeworkPage).Error; err != nil {
+	if err := db.Where("teacher_id = ? AND id = ?", user.ID, id).First(&homeworkPage).Error; err != nil {
 		return nil, err
 	}
 
 	return homeworkPage, nil
 }
 
-func ReadHomeworkPageByOwnerByLink(db *gorm.DB, link, email string) (*model.HomeworkPage, error) {
-	teacher := &model.Teacher{}
-	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
+func ReadHomeworkPageWithOwnerByTeacherLink(db *gorm.DB, link, email string) (*model.HomeworkPage, error) {
+	user := &model.User{}
+	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, err
 	}
 
 	homeworkPage := &model.HomeworkPage{}
-	if err := db.Where("teacher_id = ? AND teacher_link = ?", teacher.ID, link).First(&homeworkPage).Error; err != nil {
+	if err := db.Where("teacher_id = ? AND teacher_link = ?", user.ID, link).First(&homeworkPage).Error; err != nil {
+		return nil, err
+	}
+
+	return homeworkPage, nil
+}
+
+func ReadHomeworkPageByOwnerByStudentLink(db *gorm.DB, link string) (*model.HomeworkPage, error) {
+	homeworkPage := &model.HomeworkPage{}
+	if err := db.Where("teacher_id IS NOT NULL AND student_link = ?", link).First(&homeworkPage).Error; err != nil {
 		return nil, err
 	}
 
@@ -67,13 +85,13 @@ func ReadHomeworkPageByOwnerByLink(db *gorm.DB, link, email string) (*model.Home
 }
 
 func DeleteHomeworkPageByOwner(db *gorm.DB, id uint, email string) error {
-	teacher := &model.Teacher{}
-	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
+	user := &model.User{}
+	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
 		return err
 	}
 
 	homeworkPage := &model.HomeworkPage{}
-	if err := db.Where("id = ? AND teacher_id = ?", id, teacher.ID).Delete(&homeworkPage).Error; err != nil {
+	if err := db.Where("id = ? AND teacher_id = ?", id, user.ID).Delete(&homeworkPage).Error; err != nil {
 		return err
 	}
 
@@ -97,12 +115,12 @@ func UpdateHomeworkPage(db *gorm.DB, homeworkPage *model.HomeworkPage) error {
 }
 
 func UpdateHomeworkPageByOwner(db *gorm.DB, homeworkPage *model.HomeworkPage, email string) error {
-	teacher := &model.Teacher{}
-	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
+	user := &model.User{}
+	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
 		return err
 	}
 
-	if err := db.Where("teacher_id = ? AND id = ?", teacher.ID, homeworkPage.ID).First(&model.HomeworkPage{}).Update(homeworkPage).Error; err != nil {
+	if err := db.Where("teacher_id = ? AND id = ?", user.ID, homeworkPage.ID).First(&model.HomeworkPage{}).Update(homeworkPage).Error; err != nil {
 		return err
 	}
 
