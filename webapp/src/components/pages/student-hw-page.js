@@ -2,8 +2,7 @@ import CKEditor from 'ckeditor4-react';
 import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
-import { Redirect } from 'react-router-dom';
-import axios from 'axios';
+import { fetchHomework } from "../../actions/homework";
 import { submitHomework } from "../../actions/homework";
 
 class StudentHwPage extends React.Component{
@@ -65,18 +64,19 @@ class StudentHwPage extends React.Component{
     componentDidMount () {
         const { randomStr } = this.props.match.params;
         console.log(randomStr);
-        axios.get(`/api/v1/homework-page/link/${randomStr}`)
-          .then((response) => {
-            this.setState(() => ({ 
-                course_title: response.course_title,
-                title: response.title,
-                description: response.content,
-                closeDate: response.closed_at
-             }))
-          })
+        const { dispatch} = this.props;
+        dispatch(fetchHomework(randomStr))
+            .then((response) => {
+                console.log(response);
+                this.setState({
+                    course_title: response.course_title,
+                    title: response.title,
+                    description: response.content,
+                    closeDate: response.closed_at
+            });
+        })
       }
     render(){
-        
         const isEmptyDesc = this.state.description.trim() === "";
         const isEmptyFile = this.state.files.length === 0; 
         return(
