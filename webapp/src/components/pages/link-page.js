@@ -86,7 +86,8 @@ class LinkPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { teacher_link, student_link } = state.homework;
+    const { teacher_link} = state.teacher_link;
+    const { student_link} = state.student_link;
     return {
       teacher_link, student_link
     };
