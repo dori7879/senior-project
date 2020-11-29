@@ -2,9 +2,9 @@ import CKEditor from 'ckeditor4-react';
 import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
+import axios from 'axios';
 import { fetchHomework } from "../../actions/homework";
 import { submitHomework } from "../../actions/homework";
-import axios from 'axios';
 
 class StudentHwPage extends React.Component{
     
@@ -84,7 +84,7 @@ class StudentHwPage extends React.Component{
                     closeDate: response.closed_at
             });
         })
-    }}
+    }
     render(){
         const isEmptyDesc = this.state.description.trim() === "";
         const isEmptyFile = this.state.files.length === 0; 
