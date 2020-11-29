@@ -65,15 +65,15 @@ class StudentHwPage extends React.Component{
     componentDidMount () {
         const { randomStr } = this.props.match.params;
         console.log(randomStr);
-       /* axios.get(`/api/v1/homework-page/link/${randomStr}`)
+        axios.get(`/api/v1/homework-page/link/${randomStr}`)
             .then((response) => {
                 this.setState({
                     course_title: response.course_title,
                     title: response.title,
                     description: response.content,
                     closeDate: response.closed_at
-            })*/
-        const { dispatch} = this.props;
+            })
+        /*const { dispatch} = this.props;
         dispatch(fetchHomework(randomStr))
             .then((response) => {
                 console.log(response);
@@ -82,7 +82,7 @@ class StudentHwPage extends React.Component{
                     title: response.title,
                     description: response.content,
                     closeDate: response.closed_at
-            });
+            });*/
         })
     }
     render(){
