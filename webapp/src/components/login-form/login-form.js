@@ -58,7 +58,6 @@ class LoginForm extends React.Component {
 
     render(){
         const { isLoggedIn, message } = this.props;
-
         if (isLoggedIn) {
           return <Redirect to="/profile"/>;
         }
