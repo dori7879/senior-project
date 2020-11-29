@@ -19,8 +19,8 @@ export const createHomework = (courseTitle, title, description, files, openDate,
     );
   };
 
-export const fetchHomework = (id) => (dispatch) => {
-  return HomeworkService.fetchHomework(id).then(
+export const fetchHomework = (randomStr) => (dispatch) => {
+  return HomeworkService.fetchHomework(randomStr).then(
     (data) => {
       dispatch({
         type: FETCH_HOMEWORK
