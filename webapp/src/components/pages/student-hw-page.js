@@ -67,12 +67,15 @@ class StudentHwPage extends React.Component{
         console.log(randomStr);
         axios.get(`/api/v1/homework-page/student/${randomStr}`)
             .then((response) => {
-                console.log(response);
-                this.setState({
-                    course_title: response.course_title,
-                    title: response.title,
-                    description: response.content,
-                    closeDate: response.closed_at
+                if (response.data) {
+                    console.log(response.data);
+                    this.setState({
+                        course_title: response.data.course_title,
+                        title: response.data.title,
+                        description: response.data.content,
+                        closeDate: response.data.closed_at
+                    })
+                }
             })
         /*const { dispatch} = this.props;
         dispatch(fetchHomework(randomStr))
@@ -83,8 +86,8 @@ class StudentHwPage extends React.Component{
                     title: response.title,
                     description: response.content,
                     closeDate: response.closed_at
-            });*/
-        })
+            });
+        })*/
     }
     render(){
         const isEmptyDesc = this.state.description.trim() === "";
