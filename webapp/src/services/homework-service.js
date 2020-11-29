@@ -57,6 +57,6 @@ const gradeHomework = ( grade, comments) => {
 }
 
 
-  export default {
-    createHomework, fetchHomework, submitHomework, gradeHomework
-  };
+export default {
+  createHomework, fetchHomework, submitHomework, gradeHomework
+};

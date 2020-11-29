@@ -14,7 +14,9 @@ export default function (state = initialState, action){
     switch (type) {
       case CREATE_HOMEWORK:
         return {
-          ...state
+          ...state,
+          payload
+
         };
       case FETCH_HOMEWORK:
         return {
