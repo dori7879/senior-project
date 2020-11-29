@@ -130,8 +130,20 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	server.logger.Info().Msgf("New homework page created: %d", homeworkPage.ID)
+	respBody := map[string]string{
+		"teacher_link": homeworkPageModel.TeacherLink,
+		"student_link": homeworkPageModel.StudentLink,
+	}
+
+	if err := json.NewEncoder(w).Encode(respBody); err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrJSONCreationFailure)
+		return
+	}
 	w.WriteHeader(http.StatusCreated)
+	server.logger.Info().Msgf("New homework page created: %d", homeworkPage.ID)
 }
 
 // HandleReadHomeworkPage is a handler for getting a single homework page
