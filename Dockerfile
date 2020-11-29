@@ -5,7 +5,7 @@ WORKDIR /app/api
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-w" -a -o ./bin/app ./cmd/app \
     && go build -ldflags '-w' -a -o ./bin/migrate ./cmd/migrate
-RUN chmod +x ./docker/app/bin/migrate-heroku.sh
+RUN chmod +x ./migrate-heroku.sh
 RUN ls -lh
 
 # Build the React application
@@ -21,7 +21,7 @@ FROM alpine:latest
 RUN apk update && apk --no-cache add ca-certificates bash
 COPY --from=builder /app/api/bin ./
 COPY --from=builder /app/api/migrations /migrations
-COPY --from=builder /app/api/docker/app/.env /.env
+COPY --from=builder /app/api/.env /.env
 
 COPY --from=node_builder /build ./web
 RUN chmod +x ./app ./migrate

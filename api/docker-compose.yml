@@ -1,18 +1,6 @@
 version: '3'
 services:
 
-  app:
-    build:
-      context: .
-      dockerfile: ./docker/app/Dockerfile
-    env_file:
-      - ./docker/app/.env
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-    command: ["/usr/local/bin/myapi/wait-for-db.sh", "db", "/usr/local/bin/myapi/init.sh"]
-
   db:
     build: ./docker/mariadb/
     environment:

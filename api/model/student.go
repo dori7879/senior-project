@@ -3,8 +3,9 @@ package model
 type Students []*Student
 
 type Student struct {
-	ID        uint `gorm:"column:student_id"`
-	Homeworks []Homework
+	ID        uint       `gorm:"primaryKey;column:student_id"`
+	User      User       `gorm:"foreignKey:ID;references:ID"`
+	Homeworks []Homework `gorm:"foreignKey:StudentID;references:ID"`
 }
 
 type StudentDtos []*StudentDto

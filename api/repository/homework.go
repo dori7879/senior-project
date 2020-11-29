@@ -20,6 +20,15 @@ func ListHomeworksByOwnerEmail(db *gorm.DB, email string) (model.Homeworks, erro
 	return homeworks, nil
 }
 
+func ListRelatedHomeworks(db *gorm.DB, hwpID uint) (model.Homeworks, error) {
+	homeworks := make([]*model.Homework, 0)
+	if err := db.Where("homework_page_id = ?", hwpID).Find(&homeworks).Error; err != nil {
+		return nil, err
+	}
+
+	return homeworks, nil
+}
+
 func ReadHomeworkByIDandOwner(db *gorm.DB, id uint, email string) (*model.Homework, error) {
 	owner := &model.Student{}
 	if err := db.Where("email = ?", email).First(&owner).Error; err != nil {

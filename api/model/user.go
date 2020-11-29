@@ -11,10 +11,10 @@ import (
 type Users []*User
 
 type User struct {
-	ID           uint
+	ID           uint `gorm:"primaryKey"`
 	FirstName    string
 	LastName     string
-	Email        string
+	Email        string `gorm:"unique"`
 	PasswordHash []byte
 	DateJoined   time.Time
 	LastLogin    time.Time
@@ -38,7 +38,7 @@ type UserForm struct {
 	LastName  string `json:"last_name" form:"alpha_space,max=255"`
 	Email     string `json:"email" form:"required,email,max=255"`
 	Password  string `json:"password" form:"required,max=255"`
-	Role      string `json:"role" form:"required,alpha_space,max=16"`
+	Role      string `json:"role" form:"alpha_space,max=16"`
 }
 
 func (hw User) ToDto() *UserDto {

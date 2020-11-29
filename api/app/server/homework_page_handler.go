@@ -65,9 +65,8 @@ func (server *Server) HandleListHomeworkPage(w http.ResponseWriter, r *http.Requ
 
 // HandleCreateHomeworkPage is a handler for creating a homework page
 func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Request) {
-	var val interface{}
 	var claims jwt.MapClaims
-	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
+	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
 		claims = val.(jwt.MapClaims)
 		if claims["role"].(string) == "student" {
 			server.logger.Warn().Err(errors.New("Registered student tries to create a homework page")).Msg("")
@@ -109,7 +108,7 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 	homeworkPageModel.StudentLink = studentRandomString
 	homeworkPageModel.TeacherLink = teacherRandomString
 
-	if claims["role"].(string) == "teacher" {
+	if claims != nil && claims["role"].(string) == "teacher" {
 		user, err := repository.GetUserByEmail(server.db, claims["sub"].(string))
 		if err != nil {
 			server.logger.Warn().Err(err).Msg("")
@@ -118,10 +117,8 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
 			return
 		}
-
-		homeworkPageModel.TeacherID = &user.ID
-	} else {
-		homeworkPageModel.TeacherID = nil
+		server.logger.Warn().Err(err).Msgf("TeacherID: %v", &user.ID)
+		homeworkPageModel.TeacherID = user.ID
 	}
 
 	homeworkPage, err := repository.CreateHomeworkPage(server.db, homeworkPageModel)
@@ -133,8 +130,20 @@ func (server *Server) HandleCreateHomeworkPage(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	server.logger.Info().Msgf("New homework page created: %d", homeworkPage.ID)
+	respBody := map[string]string{
+		"teacher_link": homeworkPageModel.TeacherLink,
+		"student_link": homeworkPageModel.StudentLink,
+	}
+
+	if err := json.NewEncoder(w).Encode(respBody); err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrJSONCreationFailure)
+		return
+	}
 	w.WriteHeader(http.StatusCreated)
+	server.logger.Info().Msgf("New homework page created: %d", homeworkPage.ID)
 }
 
 // HandleReadHomeworkPage is a handler for getting a single homework page
@@ -162,9 +171,128 @@ func (server *Server) HandleReadHomeworkPage(w http.ResponseWriter, r *http.Requ
 	var homeworkPage *model.HomeworkPage
 
 	if claims != nil {
-		homeworkPage, err = repository.ReadHomeworkPageWithNoOwner(server.db, uint(id))
-	} else {
 		homeworkPage, err = repository.ReadHomeworkPageByOwner(server.db, uint(id), claims["sub"].(string))
+	} else {
+		homeworkPage, err = repository.ReadHomeworkPageWithNoOwner(server.db, uint(id))
+	}
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+		return
+	}
+
+	dto := homeworkPage.ToDto()
+	if err := json.NewEncoder(w).Encode(dto); err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrJSONCreationFailure)
+		return
+	}
+}
+
+// HandleReadHomeworkPageByTeacherLink is a handler for getting a single homework page
+func (server *Server) HandleReadHomeworkPageByTeacherLink(w http.ResponseWriter, r *http.Request) {
+	var claims jwt.MapClaims
+	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
+		claims = val.(jwt.MapClaims)
+		if claims["role"].(string) == "student" {
+			server.logger.Warn().Err(errors.New("Student tries to read a homework pages")).Msg("")
+
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
+			return
+		}
+	}
+
+	str := chi.URLParam(r, "str")
+	if str == "" {
+		server.logger.Info().Msgf("can not parse str: %v", str)
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+
+	var homeworkPage *model.HomeworkPage
+	var err error
+	if claims != nil {
+		homeworkPage, err = repository.ReadHomeworkPageWithOwnerByTeacherLink(server.db, str, claims["sub"].(string))
+	} else {
+		homeworkPage, err = repository.ReadHomeworkPageWithNoOwnerByTeacherLink(server.db, str)
+	}
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+		return
+	}
+
+	hws, err := repository.ListRelatedHomeworks(server.db, homeworkPage.ID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+		return
+	}
+
+	dto := homeworkPage.ToNestedDto(hws)
+	if err := json.NewEncoder(w).Encode(dto); err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrJSONCreationFailure)
+		return
+	}
+}
+
+// HandleReadHomeworkPageByStudentLink is a handler for getting a single homework page
+func (server *Server) HandleReadHomeworkPageByStudentLink(w http.ResponseWriter, r *http.Request) {
+	var claims jwt.MapClaims
+	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
+		claims = val.(jwt.MapClaims)
+		if claims["role"].(string) == "teacher" {
+			server.logger.Warn().Err(errors.New("Teacher tries to read a homework page for a student link")).Msg("")
+
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
+			return
+		}
+	}
+
+	str := chi.URLParam(r, "str")
+	if str == "" {
+		server.logger.Info().Msgf("can not parse str: %v", str)
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+
+	var homeworkPage *model.HomeworkPage
+	var err error
+	if claims != nil {
+		homeworkPage, err = repository.ReadHomeworkPageByOwnerByStudentLink(server.db, str)
+	} else {
+		homeworkPage, err = repository.ReadHomeworkPageWithNoOwnerByStudentLink(server.db, str)
 	}
 
 	if err != nil {
@@ -238,9 +366,9 @@ func (server *Server) HandleUpdateHomeworkPage(w http.ResponseWriter, r *http.Re
 	homeworkPageModel.ID = uint(id)
 
 	if claims != nil {
-		err = repository.UpdateHomeworkPageWithNoOwner(server.db, homeworkPageModel)
-	} else {
 		err = repository.UpdateHomeworkPageByOwner(server.db, homeworkPageModel, claims["sub"].(string))
+	} else {
+		err = repository.UpdateHomeworkPageWithNoOwner(server.db, homeworkPageModel)
 	}
 
 	if err != nil {

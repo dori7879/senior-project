@@ -7,19 +7,19 @@ import (
 type HomeworkPages []*HomeworkPage
 
 type HomeworkPage struct {
-	ID              uint
+	ID              uint `gorm:"primaryKey"`
 	Title           string
 	Content         string
-	StudentLink     string
-	TeacherLink     string
+	StudentLink     string `gorm:"unique"`
+	TeacherLink     string `gorm:"unique"`
 	CourseTitle     string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	OpenedAt        time.Time
 	ClosedAt        time.Time
 	TeacherFullname string
-	TeacherID       *uint
-	Homeworks       []Homework
+	TeacherID       uint       `gorm:"default:null"`
+	Homeworks       []Homework `gorm:"foreignKey:HomeworkPageID;references:ID"`
 }
 
 type HomeworkPageDtos []*HomeworkPageDto
@@ -37,6 +37,22 @@ type HomeworkPageDto struct {
 	ClosedAt        string `json:"closed_at"`
 	TeacherFullname string `json:"teacher_fullname"`
 	TeacherID       uint   `json:"teacher_id"`
+}
+
+type HomeworkPageNestedDto struct {
+	ID              uint   `json:"id"`
+	Title           string `json:"title"`
+	Content         string `json:"content"`
+	StudentLink     string `json:"student_link"`
+	TeacherLink     string `json:"teacher_link"`
+	CourseTitle     string `json:"course_title"`
+	CreatedAt       string `json:"created_at"`
+	UpdatedAt       string `json:"updated_at"`
+	OpenedAt        string `json:"opened_at"`
+	ClosedAt        string `json:"closed_at"`
+	TeacherFullname string `json:"teacher_fullname"`
+	TeacherID       uint   `json:"teacher_id"`
+	Homeworks       HomeworkDtos
 }
 
 type HomeworkPageForm struct {
@@ -61,7 +77,25 @@ func (hwp HomeworkPage) ToDto() *HomeworkPageDto {
 		OpenedAt:        hwp.OpenedAt.Format(time.RFC3339),
 		ClosedAt:        hwp.ClosedAt.Format(time.RFC3339),
 		TeacherFullname: hwp.TeacherFullname,
-		TeacherID:       *hwp.TeacherID,
+		TeacherID:       hwp.TeacherID,
+	}
+}
+
+func (hwp HomeworkPage) ToNestedDto(hws Homeworks) *HomeworkPageNestedDto {
+	return &HomeworkPageNestedDto{
+		ID:              hwp.ID,
+		Title:           hwp.Title,
+		Content:         hwp.Content,
+		StudentLink:     hwp.StudentLink,
+		TeacherLink:     hwp.TeacherLink,
+		CourseTitle:     hwp.CourseTitle,
+		CreatedAt:       hwp.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:       hwp.UpdatedAt.Format(time.RFC3339),
+		OpenedAt:        hwp.OpenedAt.Format(time.RFC3339),
+		ClosedAt:        hwp.ClosedAt.Format(time.RFC3339),
+		TeacherFullname: hwp.TeacherFullname,
+		TeacherID:       hwp.TeacherID,
+		Homeworks:       hws.ToDto(),
 	}
 }
 

@@ -62,8 +62,10 @@ func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request)
 
 // HandleCreateHomework is a handler for creating a homework
 func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Request) {
+	var claims jwt.MapClaims
 	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
-		claims := val.(jwt.MapClaims)
+		server.logger.Warn().Msgf("val: %v", val)
+		claims = val.(jwt.MapClaims)
 		if claims["role"].(string) == "teacher" {
 			server.logger.Warn().Err(errors.New("Registered teacher tries to create a homework")).Msg("")
 
@@ -94,6 +96,19 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrFormDecodingFailure)
 		return
+	}
+	server.logger.Warn().Msgf("claims: %v", claims)
+	if claims != nil && claims["role"].(string) == "student" {
+		user, err := repository.GetUserByEmail(server.db, claims["sub"].(string))
+		if err != nil {
+			server.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+			return
+		}
+		server.logger.Warn().Err(err).Msgf("StudentID: %v", user.ID)
+		homeworkModel.StudentID = user.ID
 	}
 
 	homework, err := repository.CreateHomework(server.db, homeworkModel)

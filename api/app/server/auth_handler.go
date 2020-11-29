@@ -85,7 +85,7 @@ func (server *Server) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+		fmt.Fprintf(w, `{"error": "Incorrect password or email"}`)
 		return
 	}
 
@@ -94,7 +94,7 @@ func (server *Server) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprintf(w, `{"error": "%v"}`, serverErrInvalidCredentials)
+		fmt.Fprintf(w, `{"error": "Incorrect password or email"}`)
 		return
 	} else if err != nil {
 		server.logger.Warn().Err(err).Msg("")
