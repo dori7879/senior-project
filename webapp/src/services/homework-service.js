@@ -28,11 +28,13 @@ const fetchHomework = (randomStr ) => {
     })
 }
 
-const submitHomework = (fullName, answer, files, submitDate) => {
+const submitHomework = (fullName, answer, submitDate, randomStr) => {
   return axios 
-    .get(
-      "/api/v1/homework-submission"
-    )
+    .post(`/api/v1/homework-page/student/${randomStr}`,{
+      student_fullname: fullName,
+      content: answer,
+      submitted_at: submitDate
+    })
     .then((response) => {
       return response.data;
     }) 

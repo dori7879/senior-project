@@ -3,7 +3,6 @@ import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
 import axios from 'axios';
-import { fetchHomework } from "../../actions/homework";
 import { submitHomework } from "../../actions/homework";
 
 class StudentHwPage extends React.Component{
@@ -45,11 +44,13 @@ class StudentHwPage extends React.Component{
     }
     handleSubmit(e){
         e.preventDefault();
+        const { randomStr } = this.props.match.params;
         this.setState({
-            isClicked: true
+            isClicked: true,
+            submitDate:new Date()
         });
         const { dispatch} = this.props;
-        dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.files, this.state.submitDate))
+        dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.submitDate, randomStr))
             .then(() => {
                 this.setState({
                     isClicked: true,
@@ -64,8 +65,7 @@ class StudentHwPage extends React.Component{
     }
     componentDidMount () {
         const { randomStr } = this.props.match.params;
-        console.log(randomStr);
-       /* axios.get(`/api/v1/homework-page/student/${randomStr}`)
+        axios.get(`/api/v1/homework-page/student/${randomStr}`)
             .then((response) => {
                 if (response.data) {
                     this.setState({
@@ -75,8 +75,8 @@ class StudentHwPage extends React.Component{
                         closeDate: response.data.closed_at
                     })
                 }
-            })*/
-        const { dispatch} = this.props;
+            })
+        /*const { dispatch} = this.props;
         dispatch(fetchHomework(randomStr))
             .then((response) => {
                 if (response.data) {
@@ -88,7 +88,7 @@ class StudentHwPage extends React.Component{
                     })
                 }
             
-        })
+        })*/
     }
     render(){
         const isEmptyDesc = this.state.description.trim() === "";
