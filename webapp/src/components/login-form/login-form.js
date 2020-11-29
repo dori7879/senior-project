@@ -60,7 +60,7 @@ class LoginForm extends React.Component {
         const { isLoggedIn, message } = this.props;
 
         if (isLoggedIn) {
-        return <Redirect to="/profile"/>;
+          return <Redirect to="/profile"/>;
         }
         return (
             <Form className="mt-8" onSubmit={this.handleLogin}
@@ -106,7 +106,6 @@ class LoginForm extends React.Component {
                         this.checkBtn = c;
                     }}
                 />
-                
             </Form>
         )
     }

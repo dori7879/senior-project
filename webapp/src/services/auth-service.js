@@ -34,6 +34,10 @@ const logout = () => {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
   localStorage.removeItem("role");
+  localStorage.removeItem("first_name");
+  localStorage.removeItem("email");
+  localStorage.removeItem("last_name");
+
 };
 
 export default {
