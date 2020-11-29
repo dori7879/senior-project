@@ -63,7 +63,8 @@ class StudentHwPage extends React.Component{
             });
     }
     componentDidMount () {
-        const { randomStr } = this.props.match.params
+        const { randomStr } = this.props.match.params;
+        console.log(randomStr);
         axios.get(`/api/v1/homework-page/link/${randomStr}`)
           .then((response) => {
             this.setState(() => ({ 
