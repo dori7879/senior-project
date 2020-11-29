@@ -11,6 +11,10 @@ const createHomework = ( courseTitle, title, description, files, openDate, close
         teacher_fullname: fullName
       })
       .then((response) => {
+        if (response.data) {
+          localStorage.setItem("teacher_link", JSON.stringify(response.data.teacher_link));
+          localStorage.setItem("student_link", JSON.stringify(response.data.student_link));
+        }
         return response.data;
       })
   }
@@ -20,6 +24,7 @@ const fetchHomework = ( id ) => {
       "/api/v1/homework/"+id
     )
     .then((response) => {
+      
       return response.data;
     })
 }

@@ -20,8 +20,9 @@ const App = () => {
                     <Route path='/quiz' exact component={QuizPage} />
                     <Route path='/profile' exact component={MyProfilePage} />
                     <Route path='/link' exact component={LinkPage} />
-                    <Route path='/student-hw-page' exact component={StudentHWPage} />
+                    <Route path='/student-hw-page/:randomStr' exact component={StudentHWPage} />
                     <Route path='/teacher-hw-page' exact component={TeacherHWPage} />
+                    <Route path='/teacher-hw-page/:randomStr' component={TeacherHWPage} />
                 </Switch>
             </main>
         </div>

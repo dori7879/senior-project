@@ -1,6 +1,13 @@
 import { CREATE_HOMEWORK, FETCH_HOMEWORK, SUBMIT_HOMEWORK } from "../actions/types";
 
-const initialState = {homework:null};
+const teacher_link = JSON.parse(localStorage.getItem("teacher_link"));
+const student_link = JSON.parse(localStorage.getItem("student_link"));
+
+const initialState = {
+  homework:null,
+  teacher_link, 
+  student_link
+};
 
 export default function (state = initialState, action){
 

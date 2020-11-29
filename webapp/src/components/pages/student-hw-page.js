@@ -2,6 +2,8 @@ import CKEditor from 'ckeditor4-react';
 import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
+import { Redirect } from 'react-router-dom';
+import axios from 'axios';
 import { submitHomework } from "../../actions/homework";
 
 class StudentHwPage extends React.Component{
@@ -14,11 +16,16 @@ class StudentHwPage extends React.Component{
         this.onChangeFiles = this.onChangeFiles.bind(this);
 
         this.state = {
-          fullName: "",
-          answer: "",
-          files: [],
-          submitDate: new Date(),
-          successful: false
+            fullName: "",
+            answer: "",
+            attachments: [],
+            submitDate: new Date(),
+            successful: false,
+            course_title: "",
+            title: "",
+            description: "",
+            files: [],
+            closeDate: new Date()
         };          
     }
     onChangeFullName(e) {
@@ -31,17 +38,21 @@ class StudentHwPage extends React.Component{
         answer: e.editor.getData()
         });
     }
-    onChangeFiles(e) {
+    onChangeAttachments(e) {
         this.setState({
           files: e.target.value[0],
          });
     }
     handleSubmit(e){
         e.preventDefault();
+        this.setState({
+            isClicked: true
+        });
         const { dispatch} = this.props;
         dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.files, this.state.submitDate))
             .then(() => {
                 this.setState({
+                isClicked: true,
                 successful: true,
                 });
             })
@@ -50,19 +61,23 @@ class StudentHwPage extends React.Component{
                 successful: false,
                 });
             });
-        console.log("clicked");
     }
-
+    componentDidMount () {
+        const { randomStr } = this.props.match.params
+        axios.get(`/api/v1/homework-page/link/${randomStr}`)
+          .then((response) => {
+            this.setState(() => ({ 
+                course_title: response.course_title,
+                title: response.title,
+                description: response.content,
+                closeDate: response.closed_at
+             }))
+          })
+      }
     render(){
-        const hw = {
-            course_title: "Math",
-            title: "Trigonometry",
-            description: "gdhjksd n this step, you will create an empty object called timeLeft , use an if statement to check if there is time remaining, and calculate the total ",
-            files: [],
-            closeDate: Date()
-        }
-        const isEmptyDesc = hw.description.trim() === "";
-        const isEmptyFile = hw.files.length === 0;
+        
+        const isEmptyDesc = this.state.description.trim() === "";
+        const isEmptyFile = this.state.files.length === 0; 
         return(
             <div>
                 <Header />
@@ -72,9 +87,9 @@ class StudentHwPage extends React.Component{
                             <div className="w-3/4  flex flex-row items items-center border border-purple-300 rounded-t ">
                                 <div className="w-3/4 border border-purple-300 bg-purple-300 rounded-tl p-4">
                                     <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-3 px-4 pt-1">
-                                        <strong>Course Title:</strong> <span className="text-purple-900">{hw.course_title}</span></h2>  
+                                        <strong>Course Title:</strong> <span className="text-purple-900">{this.state.course_title}</span></h2>  
                                     <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                        <strong>Homework Title:</strong> <span className="text-purple-900">{hw.title}</span></h2>   
+                                        <strong>Homework Title:</strong> <span className="text-purple-900">{this.state.title}</span></h2>   
                                 </div>
                                 <div>
                                 <div className="flex flex-row items">
@@ -94,7 +109,7 @@ class StudentHwPage extends React.Component{
                             {
                                 isEmptyDesc ? null :
                                 <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                    <strong>Description:</strong><br></br> <span className="text-purple-900">{hw.description}</span></h2>
+                                    <strong>Description:</strong><br></br> <span className="text-purple-900">{this.state.description}</span></h2>
                             }
                             {
                                 isEmptyFile ? null :
@@ -114,7 +129,7 @@ class StudentHwPage extends React.Component{
                                    <label className="block uppercase tracking-wide  text-gray-700 text-xs font-bold mb-2 px-2 pt-1" >
                                         Attach files
                                     </label>
-                                    <input onChange={this.onChangeFiles} className="border border-purple-400 text-xs text-gray-700 w-1/2 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="files" type="file" multiple />
+                                    <input onChange={this.onChangeAttachments} className="border border-purple-400 text-xs text-gray-700 w-1/2 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="files" type="file" multiple />
                                 </div>
                                 <div className="flex justify-center">
                                     <button type="submit" className="mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">

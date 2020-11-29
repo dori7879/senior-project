@@ -1,7 +1,6 @@
 import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 
 class LinkPage extends React.Component {
@@ -10,7 +9,10 @@ class LinkPage extends React.Component {
     constructor(props) {
         super(props);
     
-        this.state = { copySuccess_1: '', copySuccess: '' }
+        this.state = {
+             copySuccess_1: '', 
+             copySuccess: ''
+        }
       }
     
       copyToClipboardStudent = (e) => {
@@ -25,11 +27,13 @@ class LinkPage extends React.Component {
         e.target.focus();
         this.setState({ copySuccess: 'Copied!' });
       };
+
     render(){
-        const {homework} = this.props;
-        if (!homework) {
-            return <Redirect to="/homework"/>;
-        }
+        const {teacher_link, student_link} = this.props;
+
+        const url_teacher = `https://radiant-inlet-12251.herokuapp.com/teacher-hw-page/${teacher_link}`;
+        const url_student = `https://radiant-inlet-12251.herokuapp.com/student-hw-page/${student_link}`;
+        
         return(
             <div>
                 <Header />
@@ -50,7 +54,7 @@ class LinkPage extends React.Component {
                                 <form>
                                     <textarea
                                         ref={(textarea1) => this.textArea1 = textarea1}
-                                        defaultValue={homework.student_link}
+                                        defaultValue={url_student}
                                     />
                                 </form>
                             </div>
@@ -66,7 +70,7 @@ class LinkPage extends React.Component {
                                 <form>
                                     <textarea
                                         ref={(textarea) => this.textArea = textarea}
-                                        defaultValue={homework.teacher_link}
+                                        defaultValue={url_teacher}
                                     />
                                 </form>
                             </div>
@@ -81,9 +85,9 @@ class LinkPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { homework } = state.homework;
+    const { teacher_link, student_link } = state.homework;
     return {
-      homework
+      teacher_link, student_link
     };
   }
 

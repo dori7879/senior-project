@@ -27,7 +27,8 @@ class HwForm extends React.Component {
           files: [],
           openDate: new Date(),
           closeDate: new Date(),
-          successful: false
+          successful: false,
+          isClicked: false
         };          
     }
 
@@ -72,6 +73,9 @@ class HwForm extends React.Component {
 
     handleSubmit(e){
         e.preventDefault();
+        this.setState({
+            isClicked:true
+        })
         const { dispatch} = this.props;
         dispatch(createHomework( this.state.courseTitle, this.state.title, this.state.description, this.state.files, this.state.openDate, this.state.closeDate, this.state.fullName))
             .then(() => {
@@ -86,7 +90,7 @@ class HwForm extends React.Component {
             });
     }
     render(){
-        if (this.state.successful) {
+        if (this.state.isClicked) {
             return <Redirect to="/link"/>;
         }
         return(
