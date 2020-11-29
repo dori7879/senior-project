@@ -5,12 +5,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import { createHomework } from "../../actions/homework";
 
-CKEditor.editorConfig = function( config )
-{
-config.enterMode = CKEditor.ENTER_BR;
-config.shiftEnterMode = CKEditor.ENTER_BR;
-};
-
+CKEDITOR.config.autoParagraph = false;
 
 class HwForm extends React.Component {
     
