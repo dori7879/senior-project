@@ -3,10 +3,9 @@ import { CREATE_HOMEWORK, FETCH_HOMEWORK, SUBMIT_HOMEWORK } from "../actions/typ
 const teacher_link = JSON.parse(localStorage.getItem("teacher_link"));
 const student_link = JSON.parse(localStorage.getItem("student_link"));
 
-const initialState = {
-  teacher_link, 
-  student_link
-};
+const initialState = teacher_link && student_link
+  ? { teacher_link, student_link }
+  : { teacher_link: null, student_link: null };
 
 export default function (state = initialState, action){
 
