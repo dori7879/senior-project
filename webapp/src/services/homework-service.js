@@ -45,7 +45,18 @@ const submitHomework = (fullName, answer, submitDate, grade, comments) => {
     }) 
 }
 
-  
+const gradeHomework = ( grade, comments) => {
+  return axios 
+    .post('/api/v1/homework/',{
+      grade: grade,
+      comments: comments
+    })
+    .then((response) => {
+      return response.data;
+    }) 
+}
+
+
   export default {
-    createHomework, fetchHomework, submitHomework
+    createHomework, fetchHomework, submitHomework, gradeHomework
   };

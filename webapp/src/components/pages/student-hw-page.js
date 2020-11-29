@@ -1,9 +1,10 @@
+import { clearHomework, submitHomework } from "../../actions/homework";
+
 import CKEditor from 'ckeditor4-react';
 import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
 import axios from 'axios';
-import { submitHomework } from "../../actions/homework";
 
 class StudentHwPage extends React.Component{
     
@@ -52,6 +53,17 @@ class StudentHwPage extends React.Component{
         });
         const { dispatch} = this.props;
         dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments))
+            .then(() => {
+                this.setState({
+                    successful: true,
+                });
+            })
+            .catch(() => {
+                this.setState({
+                    successful: false,
+                });
+            });
+        dispatch(clearHomework())
             .then(() => {
                 this.setState({
                     successful: true,

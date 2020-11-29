@@ -1,4 +1,4 @@
-import { CREATE_HOMEWORK, FETCH_HOMEWORK, SUBMIT_HOMEWORK } from "../actions/types";
+import { CLEAR_HOMEWORK, CREATE_HOMEWORK, FETCH_HOMEWORK, GRADE_HOMEWORK, SUBMIT_HOMEWORK } from "../actions/types";
 
 const teacher_link = JSON.parse(localStorage.getItem("teacher_link"));
 const student_link = JSON.parse(localStorage.getItem("student_link"));
@@ -14,8 +14,7 @@ export default function (state = initialState, action){
     switch (type) {
       case CREATE_HOMEWORK:
         return {
-          ...state,
-          payload
+          ...state
         };
       case FETCH_HOMEWORK:
         return {
@@ -24,6 +23,16 @@ export default function (state = initialState, action){
       case SUBMIT_HOMEWORK:
         return{
           ...state
+        }
+      case GRADE_HOMEWORK:
+        return{
+          ...state
+        }
+      case CLEAR_HOMEWORK:
+        return{
+          ...state, 
+          student_link: null,
+          teacher_link: null
         }
       default:
         return state;

@@ -1,6 +1,8 @@
 import {
+    CLEAR_HOMEWORK,
     CREATE_HOMEWORK,
     FETCH_HOMEWORK,
+    GRADE_HOMEWORK,
     SUBMIT_HOMEWORK
 } from "./types";
 
@@ -40,3 +42,18 @@ export const submitHomework = (fullName, grade, comments, answer, submitDate) =>
     }
     ) 
 }
+export const gradeHomework = ( grade, comments) => (dispatch) => {
+  return HomeworkService.gradeHomework( grade, comments)
+    .then(
+    (data) => {
+      dispatch({
+        type: GRADE_HOMEWORK
+      });
+      return Promise.resolve();
+    }
+    ) 
+}
+
+export const clearHomework= () => ({
+  type: CLEAR_HOMEWORK,
+});

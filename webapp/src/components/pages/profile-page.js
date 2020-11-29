@@ -19,7 +19,7 @@ const MyProfilePage = () => {
                 <div className="flex justify-center flex-col items-center pb-4">
                     <div className="text-purple-900 font-bold text-xl pt-4">My profile</div>
                 </div>        
-                    <div className="w-2/4 border border-purple-300 rounded bg-purple-300 p-4">
+                    <div className="w-1-2 border border-purple-300 rounded bg-purple-300 p-4">
                          <p className="text-purple-900">
                             <strong>First Name: </strong> {first_name}
                         </p>
@@ -39,13 +39,13 @@ const MyProfilePage = () => {
                         <form className=""> 
                             <div className="flex flex-row items items-center pb-2">
                                 <div className="flex flex-col">
-                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold ml-5 mb-2 px-4 pt-1" >
+                                    <label className="w-full block uppercase tracking-wide text-gray-700 text-xs font-bold ml-5 mb-2 px-4 pt-1" >
                                         New Password
                                     </label>
-                                    <input className="text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 mr-6 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
+                                    <input className=" text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 mr-6 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
                                 </div>
                                 <div className="flex flex-col">
-                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold ml-3 mb-2 px-4 pt-1" >
+                                    <label className="w-full block uppercase tracking-wide text-gray-700 text-xs font-bold ml-3 mb-2 px-4 pt-1" >
                                         Confirm Password
                                     </label>
                                     <input className="text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 mx-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
