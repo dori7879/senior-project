@@ -8,6 +8,8 @@ class TeacherHwPage extends React.Component{
     constructor(props) {
         super(props);
         this.onChangeGrade = this.onChangeGrade.bind(this);
+        this.onChangeComments = this.onChangeComments.bind(this);
+        this.handleGrade = this.handleGrade.bind(this);
 
         this.state = {
             grade: "",
@@ -20,7 +22,10 @@ class TeacherHwPage extends React.Component{
     }
     onChangeGrade(e){
         this.setState({
-            grade: e.target.value
+            grade: e.target.value,
+            comments: "",
+            isGraded: false,
+
         });
     }
 
@@ -28,6 +33,25 @@ class TeacherHwPage extends React.Component{
         this.setState({
             comments: e.target.value
         }); 
+    }
+
+    handleGrade(e){
+        e.preventDefault();
+        this.setState({
+            isGraded: true
+        });
+        const { dispatch} = this.props;
+       /* dispatch(gradeHomework( this.state.grade, this.state.comments))
+            .then(() => {
+                this.setState({
+                    successful: true
+                });
+            })
+            .catch(() => {
+                this.setState({
+                    successful: false
+                });
+            });*/
     }
 
     componentDidMount () {

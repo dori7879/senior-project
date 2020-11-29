@@ -54,7 +54,6 @@ class StudentHwPage extends React.Component{
         dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments))
             .then(() => {
                 this.setState({
-                    isClicked: true,
                     successful: true,
                 });
             })
@@ -97,7 +96,7 @@ class StudentHwPage extends React.Component{
                                 <div>
                                 <div className="flex flex-row items">
                                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-4 px-4 pt-1" >
-                                        Name:
+                                        Full Name*:
                                     </label>
                                     <input onChange={this.onChangeFullName} className="mr-4 mb-3 text-gray-700 border border-purple-400  rounded  text-xs px-1 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Enter your full name" />
                                 </div>
@@ -143,6 +142,7 @@ class StudentHwPage extends React.Component{
                         </div>
                          
                     </div>
+                    <small className="mt-4">* - Required field </small>  
                 </div>   
                 <Footer />
             </div>
