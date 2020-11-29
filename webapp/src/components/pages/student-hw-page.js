@@ -4,6 +4,7 @@ import Header from '../header';
 import React from 'react';
 import { fetchHomework } from "../../actions/homework";
 import { submitHomework } from "../../actions/homework";
+import axios from 'axios';
 
 class StudentHwPage extends React.Component{
     
@@ -51,19 +52,27 @@ class StudentHwPage extends React.Component{
         dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.files, this.state.submitDate))
             .then(() => {
                 this.setState({
-                isClicked: true,
-                successful: true,
+                    isClicked: true,
+                    successful: true,
                 });
             })
             .catch(() => {
                 this.setState({
-                successful: false,
+                    successful: false,
                 });
             });
     }
     componentDidMount () {
         const { randomStr } = this.props.match.params;
         console.log(randomStr);
+       /* axios.get(`/api/v1/homework-page/link/${randomStr}`)
+            .then((response) => {
+                this.setState({
+                    course_title: response.course_title,
+                    title: response.title,
+                    description: response.content,
+                    closeDate: response.closed_at
+            })*/
         const { dispatch} = this.props;
         dispatch(fetchHomework(randomStr))
             .then((response) => {
@@ -75,7 +84,7 @@ class StudentHwPage extends React.Component{
                     closeDate: response.closed_at
             });
         })
-      }
+    }}
     render(){
         const isEmptyDesc = this.state.description.trim() === "";
         const isEmptyFile = this.state.files.length === 0; 
@@ -147,5 +156,7 @@ class StudentHwPage extends React.Component{
         )
     }
     }
+
+
 
 export default StudentHwPage;

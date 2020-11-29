@@ -21,7 +21,7 @@ const createHomework = ( courseTitle, title, description, files, openDate, close
 const fetchHomework = (randomStr ) => {
   return axios
     .get(
-      `/api/v1/homework-page/link/${randomStr}`
+      `/api/v1/homework-page/student/${randomStr}`
     )
     .then((response) => {
       return response.data;

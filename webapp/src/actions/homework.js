@@ -13,7 +13,6 @@ export const createHomework = (courseTitle, title, description, files, openDate,
           type: CREATE_HOMEWORK,
           payload: { homework: data },
         });
-  
         return Promise.resolve();
       }
     );
@@ -25,7 +24,6 @@ export const fetchHomework = (randomStr) => (dispatch) => {
       dispatch({
         type: FETCH_HOMEWORK
       });
-
       return Promise.resolve();
     }
   );

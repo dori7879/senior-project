@@ -32,7 +32,7 @@ class TeacherHwPage extends React.Component{
 
     componentDidMount () {
         const { randomStr } = this.props.match.params
-        axios.get(`/api/v1/homework-page/${randomStr}`)
+        axios.get(`/api/v1/homework-page/teacher/${randomStr}`)
           .then((response) => {
             this.setState(() => ({ 
                 title: response.title,
