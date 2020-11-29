@@ -30,8 +30,6 @@ class LinkPage extends React.Component {
 
     render(){
         const {teacher_link, student_link} = this.props;
-        console.log(student_link);
-        console.log(teacher_link);
         const url_teacher = `https://radiant-inlet-12251.herokuapp.com/teacher-hw-page/${teacher_link}`;
         const url_student = `https://radiant-inlet-12251.herokuapp.com/student-hw-page/${student_link}`;
         

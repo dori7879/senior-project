@@ -27,7 +27,7 @@ class TeacherHwPage extends React.Component{
     onChangeComment(e){
         this.setState({
             comment: e.target.value
-        });
+        }); 
     }
 
     componentDidMount () {

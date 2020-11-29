@@ -13,7 +13,7 @@ class StudentHwPage extends React.Component{
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onChangeFullName = this.onChangeFullName.bind(this);
         this.onChangeAnswer = this.onChangeAnswer.bind(this);
-        this.onChangeFiles = this.onChangeFiles.bind(this);
+        this.onChangeAttachments = this.onChangeAttachments.bind(this);
 
         this.state = {
             fullName: "",
