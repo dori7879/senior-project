@@ -11,7 +11,7 @@ class TeacherHwPage extends React.Component{
 
         this.state = {
             grade: "",
-            comment: "",
+            comments: "",
             title: "",
             description: "",
             files: [],
@@ -24,15 +24,15 @@ class TeacherHwPage extends React.Component{
         });
     }
 
-    onChangeComment(e){
+    onChangeComments(e){
         this.setState({
-            comment: e.target.value
+            comments: e.target.value
         }); 
     }
 
     componentDidMount () {
         const { randomStr } = this.props.match.params;
-        axios.get(`/api/v1/homework-page/student/${randomStr}`)
+        axios.get(`/api/v1/homework-page/teacher/${randomStr}`)
             .then((response) => {
                 if (response.data) {
                     this.setState({
@@ -49,7 +49,7 @@ class TeacherHwPage extends React.Component{
             submission_time: Date(),
             content: "dhjfs,",
             attachments: [],
-            comment:"ddcxv vkdcv ckvmv",
+            comments:"ddcxv vkdcv ckvmv",
             grade: "A"
         }
         const isEmptyContent = submission.content.trim() === "";
@@ -98,7 +98,7 @@ class TeacherHwPage extends React.Component{
                                             {
                                                 isGraded ?  <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                 <strong>Grade:</strong><span className="text-purple-900">{submission.grade}</span>
-                                                <strong>Comment:</strong><span className="text-purple-900">{submission.comment}</span>
+                                                <strong>Comments:</strong><span className="text-purple-900">{submission.comments}</span>
                                                 </p> :
                                                 <div className="flex flex-col">
                                                     <div className="flex flex-row mb-2">
@@ -108,8 +108,8 @@ class TeacherHwPage extends React.Component{
                                                     </div>
                                                     <div className="flex flex-row">
                                                         <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
-                                                            <strong>Comment: </strong></p>
-                                                        <textarea  onChange={this.onChangeComment} className=" text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
+                                                            <strong>Comments: </strong></p>
+                                                        <textarea  onChange={this.onChangeComments} className=" text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
                                                     </div>
                                                     <div>
                                                         <button type="submit" className="mb-2 ml-4 mt-2

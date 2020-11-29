@@ -46,7 +46,6 @@ class StudentHwPage extends React.Component{
     }
     handleSubmit(e){
         e.preventDefault();
-        const { randomStr } = this.props.match.params;
         this.setState({
             isClicked: true,
             submitDate:new Date()
@@ -78,19 +77,6 @@ class StudentHwPage extends React.Component{
                     })
                 }
             })
-        /*const { dispatch} = this.props;
-        dispatch(fetchHomework(randomStr))
-            .then((response) => {
-                if (response.data) {
-                    this.setState({
-                        course_title: response.data.course_title,
-                        title: response.data.title,
-                        description: response.data.content,
-                        closeDate: response.data.closed_at
-                    })
-                }
-            
-        })*/
     }
     render(){
         const isEmptyDesc = this.state.description.trim() === "";

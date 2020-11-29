@@ -36,8 +36,12 @@ const HomePage = () => {
                 <div className="flex justify-center flex-col items-center border-t-2 border-purple-200 pb-8">
                     <div className="text-purple-900 font-bold text-xl pt-4 pb-2">Introducing EasySubmit</div>
                     <div className="border-2 border-purple-400 rounded-lg w-2/3 bg-purple-200">
-                        <p className="flex text-gray-700 justify-center  mx-4  my-2">A progressive web application (PWA) that allows teachers/instructors to post homework (quiz or attendance) simply by opening the website and generating a link for the new homework page. This link could then be shared with students to submit their solutions.
-                        A progressive web application (PWA) that allows teachers/instructors to post homework (quiz or attendance) simply by opening the website and generating a link for the new homework page. This link could then be shared with students to submit their solutions.</p>
+                        <p className="flex text-gray-700 justify-center  mx-4  my-2">A progressive web application (PWA) that allows teachers/instructors to post homework (quiz or attendance) 
+                        simply by opening the website and generating a link for the new homework page. This link could then be shared with students to submit their solutions.
+                        Furthermore, the proposed tool allows creating different types of quizzes with an auto grading system. Submitted homeworks and quizzes by the registered 
+                        users will pass face recognition to avoid submitting an assignment for another person. Another functionality of the system  is  in-class attendance
+                        checking mechanism using  QR codes or a generated link ID. In the second case, the teacher/instructor can tick one or more required functionalities 
+                        and this check will be added into the link. </p>
                     </div>
                 </div>
                 <Steps />

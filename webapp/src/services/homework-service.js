@@ -12,6 +12,8 @@ const createHomework = ( courseTitle, title, description, files, openDate, close
       })
       .then((response) => {
         if (response.data) {
+          localStorage.removeItem("teacher_link");
+          localStorage.removeItem("student_link");
           localStorage.setItem("teacher_link", JSON.stringify(response.data.teacher_link));
           localStorage.setItem("student_link", JSON.stringify(response.data.student_link));
         }
