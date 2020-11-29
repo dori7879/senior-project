@@ -24,7 +24,9 @@ class StudentHwPage extends React.Component{
             title: "",
             description: "",
             files: [],
-            closeDate: new Date()
+            closeDate: new Date(),
+            grade: "",
+            comments: ""
         };          
     }
     onChangeFullName(e) {
@@ -50,7 +52,7 @@ class StudentHwPage extends React.Component{
             submitDate:new Date()
         });
         const { dispatch} = this.props;
-        dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.submitDate, randomStr))
+        dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments))
             .then(() => {
                 this.setState({
                     isClicked: true,
@@ -97,10 +99,10 @@ class StudentHwPage extends React.Component{
             <div>
                 <Header />
                 <div className="min-h-screen flex items-center flex-col justify-top bg-purple-100 py-2 px-4 sm:px-6 lg:px-8 ">              
-                    <div className="flex justify-center flex-col items-center pb-4">
+                    <div className="w-3/4 flex justify-center flex-col items-center pb-4">
                         <div className="text-purple-900 font-bold text-xl pt-2">Homework</div>
-                            <div className="w-3/4  flex flex-row items items-center border border-purple-300 rounded-t ">
-                                <div className="w-3/4 border border-purple-300 bg-purple-300 rounded-tl p-4">
+                            <div className="w-full  flex flex-row items items-center border border-purple-300 rounded-t ">
+                                <div className="w-full border border-purple-300 bg-purple-300 rounded-tl p-4">
                                     <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-3 px-4 pt-1">
                                         <strong>Course Title:</strong> <span className="text-purple-900">{this.state.course_title}</span></h2>  
                                     <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
@@ -120,7 +122,7 @@ class StudentHwPage extends React.Component{
                                 
                             </div>     
                         </div>
-                        <div  className="w-3/4 border border-purple-300 rounded-b bg-purple-300 p-4">
+                        <div  className="w-full border border-purple-300 rounded-b bg-purple-300 p-4">
                             {
                                 isEmptyDesc ? null :
                                 <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">

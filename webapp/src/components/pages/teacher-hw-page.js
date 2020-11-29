@@ -31,15 +31,17 @@ class TeacherHwPage extends React.Component{
     }
 
     componentDidMount () {
-        const { randomStr } = this.props.match.params
-        axios.get(`/api/v1/homework-page/teacher/${randomStr}`)
-          .then((response) => {
-            this.setState(() => ({ 
-                title: response.title,
-                description: response.content,
-                closeDate: response.closed_at
-            }))
-          })
+        const { randomStr } = this.props.match.params;
+        axios.get(`/api/v1/homework-page/student/${randomStr}`)
+            .then((response) => {
+                if (response.data) {
+                    this.setState({
+                        title: response.data.title,
+                        description: response.data.content,
+                        closeDate: response.data.closed_at
+                    })
+                }
+            })
       }
     render(){
         const submission = {
@@ -74,7 +76,8 @@ class TeacherHwPage extends React.Component{
                                     }
                                     {
                                         isEmptyFile ? null :
-                                        <h1> Attachments</h1> 
+                                        <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
+                                            <strong>Attachments:</strong><br></br> <span className="text-purple-900">{this.state.files}</span></h2>
                                     } 
                                     <div className="border border-purple-700 rounded flex flex-col">
                                         <div className="flex flex-col items  pb-2">
