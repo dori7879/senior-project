@@ -17,7 +17,6 @@ export default function (state = initialState, action){
           ...state,
           student_link: payload.student_link,
           teacher_link: payload.teacher_link
-
         };
       case FETCH_HOMEWORK:
         return {
