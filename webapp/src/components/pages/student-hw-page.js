@@ -58,7 +58,8 @@ class StudentHwPage extends React.Component{
             isSubmitted: true,
             submitDate:new Date()
         });
-        const { dispatch} = this.props;
+        console.log(props);
+        const { dispatch } = this.props;
         dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments))
             .then(() => {
                 this.setState({
