@@ -76,19 +76,19 @@ class HwForm extends React.Component {
 
     handleSubmit(e){
         e.preventDefault();
-        this.setState({
-            isClicked:true
-        })
+        
         const { dispatch} = this.props;
         dispatch(createHomework( this.state.courseTitle, this.state.title, this.state.description, this.state.files, this.state.openDate, this.state.closeDate, this.state.fullName))
             .then(() => {
                 this.setState({
-                successful: true,
+                    isClicked: true,
+                    successful: true
                 });
             })
             .catch(() => {
                 this.setState({
                 successful: false,
+                isClicked: false
                 });
             });
     }
