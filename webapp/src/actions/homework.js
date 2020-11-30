@@ -13,7 +13,7 @@ export const createHomework = (courseTitle, title, description, files, openDate,
       (data) => {
         dispatch({
           type: CREATE_HOMEWORK,
-          payload: { data },
+          payload: data,
         });
         return Promise.resolve();
       }
