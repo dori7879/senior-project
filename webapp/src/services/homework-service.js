@@ -39,7 +39,7 @@ const submitHomework = (fullName, answer, submitDate, grade, comments, hwPageID)
       submitted_at: submitDate,
       grade: grade,
       comments: comments,
-      homework_page_id: parseInt(hwPageID)
+      homework_page_id: hwPageID
     })
     .then((response) => {
       return response.data;
