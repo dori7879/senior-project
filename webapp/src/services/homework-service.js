@@ -33,7 +33,7 @@ const fetchHomework = (randomStr ) => {
 
 const submitHomework = (fullName, answer, submitDate, grade, comments) => {
   return axios 
-    .post('/api/v1/homework/',{
+    .post('/api/v1/homework', {
       student_fullname: fullName,
       content: answer,
       submitted_at: submitDate,
