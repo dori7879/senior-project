@@ -29,8 +29,7 @@ class StudentHwPage extends React.Component{
             closeDate: new Date(),
             grade: "",
             comments: "",
-            isSubmitted: false,
-            data: ""
+            isSubmitted: false
         };          
     }
     onChangeFullName(e) {
@@ -70,17 +69,6 @@ class StudentHwPage extends React.Component{
                     successful: false,
                 });
             });
-        dispatch(clearHomework())
-            .then(() => {
-                this.setState({
-                    successful: true,
-                });
-            })
-            .catch(() => {
-                this.setState({
-                    successful: false,
-                });
-            });
     }
     componentDidMount () {
         const { randomStr } = this.props.match.params;
@@ -90,23 +78,15 @@ class StudentHwPage extends React.Component{
                     this.setState({
                         course_title: response.data.course_title,
                         title: response.data.title,
-                        data: response.data.content,
+                        description: response.data.content,
                         closeDate: response.data.closed_at
                     })
                 }
-                const description = this.ckEditorRemoveTags(this.state.data);
-                this.setState({
-                    description: description
-                })
-                
             })
-            
     }
     render(){
-        if (this.state.isClicked) {
-            return <Redirect to="/link"/>;
-        }
         const isEmptyDesc = this.state.description.trim() === "";
+        const data = this.ckEditorRemoveTags(this.state.description);
         const isEmptyFile = this.state.files.length === 0; 
         return(
             <div>
@@ -139,7 +119,7 @@ class StudentHwPage extends React.Component{
                             {
                                 isEmptyDesc ? null :
                                 <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                    <strong>Description:</strong><br></br> <span className="text-purple-900">{this.state.description}</span></h2>
+                                    <strong>Description:</strong><br></br> <span className="text-purple-900">{data}</span></h2>
                             }
                             {
                                 isEmptyFile ? null :
