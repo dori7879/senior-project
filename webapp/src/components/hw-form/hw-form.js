@@ -5,8 +5,6 @@ import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import { createHomework } from "../../actions/homework";
 
-export function ckEditorRemoveTags (data) { return data.replace('<p>', '').replace('</p>', '') }
-
 class HwForm extends React.Component {
     
     constructor(props) {
@@ -19,6 +17,7 @@ class HwForm extends React.Component {
         this.onChangeFiles = this.onChangeFiles.bind(this);
         this.onChangeOpenDate = this.onChangeOpenDate.bind(this);
         this.onChangeCloseDate = this.onChangeCloseDate.bind(this);
+        this.ckEditorRemoveTags = this.ckEditorRemoveTags.bind(this);
 
     
         this.state = {
@@ -32,6 +31,11 @@ class HwForm extends React.Component {
           successful: false,
           isClicked: false
         };          
+    }
+
+    ckEditorRemoveTags (data) {     
+        const editedData = data.replace('<p>', '').replace('</p>', '') 
+        return editedData;
     }
 
     onChangeFullName(e) {
@@ -50,10 +54,9 @@ class HwForm extends React.Component {
         });
     }    
     onChangeDescription(e) {
-        const data = e.editor.getData();
-        const editedData = ckEditorRemoveTags(data);
+        const data = this.ckEditorRemoveTags(e.editor.getData());
         this.setState({
-         description: editedData
+         description: data
         });
     }
     onChangeFiles(e) {
