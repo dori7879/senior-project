@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import { createHomework } from "../../actions/homework";
 
-CKEDITOR.config.autoParagraph = false;
+export function ckEditorRemoveTags (data) { return data.replace('<p>', '').replace('</p>', '') }
 
 class HwForm extends React.Component {
     
@@ -50,8 +50,9 @@ class HwForm extends React.Component {
         });
     }    
     onChangeDescription(e) {
+        const data = ckEditorRemoveTags(e.editor.getData());
         this.setState({
-        description: e.editor.getData()
+         description: data
         });
     }
     onChangeFiles(e) {

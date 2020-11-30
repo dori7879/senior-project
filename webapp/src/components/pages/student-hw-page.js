@@ -63,17 +63,6 @@ class StudentHwPage extends React.Component{
                     successful: false,
                 });
             });
-        dispatch(clearHomework())
-            .then(() => {
-                this.setState({
-                    successful: true,
-                });
-            })
-            .catch(() => {
-                this.setState({
-                    successful: false,
-                });
-            });
     }
     componentDidMount () {
         const { randomStr } = this.props.match.params;
@@ -123,8 +112,8 @@ class StudentHwPage extends React.Component{
                             {
                                 isEmptyDesc ? null :
                                 <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                    <strong>Description:</strong><br></br> </h2>
-                            }       <span className="text-purple-900">{this.state.description}</span>
+                                    <strong>Description:</strong><br></br> <span className="text-purple-900">{this.state.description}</span></h2>
+                            }
                             {
                                 isEmptyFile ? null :
                                 <h1> Attachments</h1> 

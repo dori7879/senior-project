@@ -31,7 +31,7 @@ export const fetchHomework = (randomStr) => (dispatch) => {
   );
 } 
 
-export const submitHomework = (fullName, grade, comments, answer, submitDate) => (dispatch) => {
+export const submitHomework = (fullName, answer, submitDate, grade, comments) => (dispatch) => {
   return HomeworkService.submitHomework(fullName, answer, submitDate, grade, comments)
     .then(
     (data) => {
