@@ -70,6 +70,17 @@ class StudentHwPage extends React.Component{
                     successful: false,
                 });
             });
+        dispatch(clearHomework())
+            .then(() => {
+                this.setState({
+                    successful: true,
+                });
+            })
+            .catch(() => {
+                this.setState({
+                    successful: false,
+                });
+            });
     }
     componentDidMount () {
         const { randomStr } = this.props.match.params;
@@ -91,6 +102,9 @@ class StudentHwPage extends React.Component{
             })
     }
     render(){
+        if (this.state.isClicked) {
+            return <Redirect to="/link"/>;
+        }
         const isEmptyDesc = this.state.description.trim() === "";
         const isEmptyFile = this.state.files.length === 0; 
         return(
