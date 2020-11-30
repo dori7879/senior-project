@@ -94,12 +94,13 @@ class StudentHwPage extends React.Component{
                         closeDate: response.data.closed_at
                     })
                 }
+                const description = this.ckEditorRemoveTags(this.state.data);
+                this.setState({
+                    description: description
+                })
                 
             })
-            const description = this.ckEditorRemoveTags(this.state.data);
-            this.setState({
-                description: description
-            })
+            
     }
     render(){
         if (this.state.isClicked) {
