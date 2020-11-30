@@ -30,65 +30,53 @@ class StudentHwPage extends React.Component{
             closeDate: new Date(),
             grade: "",
             comments: "",
-            isSubmitted: false,
-            hwPageID: -1
+            isSubmitted: false
         };          
     }
-
     onChangeFullName(e) {
         this.setState({
           fullName: e.target.value,
         });
-    }
-
+    }   
     onChangeAnswer(e) {
         this.setState({
         answer: e.editor.getData()
         });
     }
-
     onChangeAttachments(e) {
         this.setState({
           files: e.target.value[0],
          });
     }
-
     ckEditorRemoveTags (data) {     
         const editedData = data.replace('<p>', '').replace('</p>', '') 
         return editedData;
     }
-
     handleSubmit(e){
         e.preventDefault();
-
-        this.setState({
-            isSubmitted: true,
-            submitDate:new Date()
-        });
-
+        console.log(this.props);
         const { dispatch } = this.props;
-
-        dispatch(submitHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageID))
+        dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments))
             .then(() => {
                 this.setState({
                     successful: true,
+                    isSubmitted: true,
+                    submitDate:new Date()
                 });
             })
             .catch(() => {
                 this.setState({
                     successful: false,
+                    isSubmitted: false
                 });
             });
     }
-
     componentDidMount () {
         const { randomStr } = this.props.match.params;
-
         axios.get(`/api/v1/homework-page/student/${randomStr}`)
             .then((response) => {
                 if (response.data) {
                     this.setState({
-                        hwPageID: response.data.id,
                         course_title: response.data.course_title,
                         title: response.data.title,
                         description: response.data.content,
@@ -97,7 +85,6 @@ class StudentHwPage extends React.Component{
                 }
             })
     }
-
     render(){
         const isEmptyDesc = this.state.description.trim() === "";
         const data = this.ckEditorRemoveTags(this.state.description);
@@ -135,7 +122,7 @@ class StudentHwPage extends React.Component{
                                 <div>
                                     <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
                                     <strong>Description:</strong><br></br> </h2>
-                                    <p><span className="text-purple-900 pr-2">{data}</span></p>
+                                    <p className="text-purple-900 mr-4">{data}</p>
                                 </div>
                                 
                             }
@@ -143,38 +130,53 @@ class StudentHwPage extends React.Component{
                                 isEmptyFile ? null :
                                 <h1> Attachments</h1> 
                             }
-                            <form  onSubmit={this.handleSubmit}>
-                                <div className="flex flex-col pb-2 mx-4">
-                                    <h1 className="block uppercase tracking-wide text-purple-900 text-xs font-bold mb-2 mt-4 px-4 pt-1 text-center" >
-                                        Answer
-                                    </h1>
-                                    <CKEditor
-                                        data={this.state.answer}
-                                        onChange={this.onChangeAnswer}
-                                    />
+                            {
+                                isSubmitted ? 
+                                <div className="form-group">
+                                    <div className={ this.state.successful ? "alert alert-success" : "alert alert-danger" } role="alert">
+                                        Submitted
+                                    </div>
                                 </div>
-                                <div className="flex flex-row ml-2 pb-2 items items-center">
-                                   <label className="block uppercase tracking-wide  text-gray-700 text-xs font-bold mb-2 px-2 pt-1" >
-                                        Attach files
-                                    </label>
-                                    <input onChange={this.onChangeAttachments} className="border border-purple-400 text-xs text-gray-700 w-1/2 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="files" type="file" multiple />
-                                </div>
-                                <div className="flex justify-center">
-                                    <button type="submit" className="mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
-                                         Submit
-                                    </button>
-                                </div>
-                            </form>
+                                :
+                                <form  onSubmit={this.handleSubmit}>
+                                    <div className="flex flex-col pb-2 mx-4">
+                                        <h1 className="block uppercase tracking-wide text-purple-900 text-xs font-bold mb-2 mt-4 px-4 pt-1 text-center" >
+                                            Answer
+                                        </h1>
+                                        <CKEditor
+                                            data={this.state.answer}
+                                            onChange={this.onChangeAnswer}
+                                        />
+                                    </div>
+                                    <div className="flex flex-row ml-2 pb-2 items items-center">
+                                    <label className="block uppercase tracking-wide  text-gray-700 text-xs font-bold mb-2 px-2 pt-1" >
+                                            Attach files
+                                        </label>
+                                        <input onChange={this.onChangeAttachments} className="border border-purple-400 text-xs text-gray-700 w-1/2 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="files" type="file" multiple />
+                                    </div>
+                                    <div className="flex justify-center">
+                                        <button type="submit" className="mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
+                                            Submit
+                                        </button>
+                                    </div>
+                                </form>
+                            }
                         </div>
                          
                     </div>
-                    <small className="mt-4">* - Required field </small>  
+                    <small className="mt-2">* - Required field </small>  
                 </div>   
                 <Footer />
             </div>
         )
     }
-}
+    }
 
+    function mapStateToProps(state) {
+        const { isLoggedIn } = state.auth;
+        return {
+          isLoggedIn
+        };
+      }
 
-export default connect()(StudentHwPage);
+export default connect(mapStateToProps)(StudentHwPage);
