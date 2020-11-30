@@ -129,7 +129,7 @@ class StudentHwPage extends React.Component{
                                 isEmptyFile ? null :
                                 <h1> Attachments</h1> 
                             }
-                            <form className=" onSubmit={this.handleSubmit}">
+                            <form  onSubmit={this.handleSubmit}>
                                 <div className="flex flex-col pb-2 mx-4">
                                     <h1 className="block uppercase tracking-wide text-purple-900 text-xs font-bold mb-2 mt-4 px-4 pt-1 text-center" >
                                         Answer
