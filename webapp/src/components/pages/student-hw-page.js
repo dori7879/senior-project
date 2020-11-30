@@ -30,37 +30,45 @@ class StudentHwPage extends React.Component{
             closeDate: new Date(),
             grade: "",
             comments: "",
-            isSubmitted: false
+            isSubmitted: false,
+            hwPageID: -1
         };          
     }
+
     onChangeFullName(e) {
         this.setState({
           fullName: e.target.value,
         });
-    }   
+    }
+
     onChangeAnswer(e) {
         this.setState({
         answer: e.editor.getData()
         });
     }
+
     onChangeAttachments(e) {
         this.setState({
           files: e.target.value[0],
          });
     }
+
     ckEditorRemoveTags (data) {     
         const editedData = data.replace('<p>', '').replace('</p>', '') 
         return editedData;
     }
+
     handleSubmit(e){
         e.preventDefault();
+
         this.setState({
             isSubmitted: true,
             submitDate:new Date()
         });
-        console.log(this.props);
+
         const { dispatch } = this.props;
-        dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments))
+
+        dispatch(submitHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageID))
             .then(() => {
                 this.setState({
                     successful: true,
@@ -72,12 +80,15 @@ class StudentHwPage extends React.Component{
                 });
             });
     }
+
     componentDidMount () {
         const { randomStr } = this.props.match.params;
+
         axios.get(`/api/v1/homework-page/student/${randomStr}`)
             .then((response) => {
                 if (response.data) {
                     this.setState({
+                        hwPageID: response.data.id,
                         course_title: response.data.course_title,
                         title: response.data.title,
                         description: response.data.content,
@@ -86,6 +97,7 @@ class StudentHwPage extends React.Component{
                 }
             })
     }
+
     render(){
         const isEmptyDesc = this.state.description.trim() === "";
         const data = this.ckEditorRemoveTags(this.state.description);
@@ -162,13 +174,7 @@ class StudentHwPage extends React.Component{
             </div>
         )
     }
-    }
+}
 
-    function mapStateToProps(state) {
-        const { isLoggedIn } = state.auth;
-        return {
-          isLoggedIn
-        };
-      }
 
-export default connect(mapStateToProps)(StudentHwPage);
+export default connect()(StudentHwPage);
