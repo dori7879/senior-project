@@ -33,7 +33,6 @@ type HomeworkDto struct {
 }
 
 type HomeworkForm struct {
-	Title           string `json:"title" form:"required,alpha_space,max=255"`
 	Content         string `json:"content" form:"required,max=255"`
 	Grade           string `json:"grade" form:"max=255"`
 	Comments        string `json:"comments" form:"max=255"`

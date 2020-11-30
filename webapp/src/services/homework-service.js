@@ -31,14 +31,15 @@ const fetchHomework = (randomStr ) => {
     })
 }
 
-const submitHomework = (fullName, answer, submitDate, grade, comments) => {
+const submitHomework = (fullName, answer, submitDate, grade, comments, hwPageID) => {
   return axios 
     .post('/api/v1/homework', {
       student_fullname: fullName,
       content: answer,
       submitted_at: submitDate,
       grade: grade,
-      comments: comments
+      comments: comments,
+      homework_page_id: parseInt(hwPageID.trim())
     })
     .then((response) => {
       return response.data;
