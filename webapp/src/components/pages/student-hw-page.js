@@ -5,6 +5,7 @@ import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
 import axios from 'axios';
+import { connect } from "react-redux";
 
 class StudentHwPage extends React.Component{
     
@@ -162,6 +163,11 @@ class StudentHwPage extends React.Component{
     }
     }
 
+    function mapStateToProps(state) {
+        const { isLoggedIn } = state.auth;
+        return {
+          isLoggedIn
+        };
+      }
 
-
-export default StudentHwPage;
+export default connect(mapStateToProps)(StudentHwPage);
