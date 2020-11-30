@@ -51,9 +51,9 @@ class HwForm extends React.Component {
     }    
     onChangeDescription(e) {
         const data = e.editor.getData();
-        const editedData = ckEditorRemoveTags(data)
+        const editedData = ckEditorRemoveTags(data);
         this.setState({
-         description: editeddata
+         description: editedData
         });
     }
     onChangeFiles(e) {
