@@ -14,6 +14,7 @@ class StudentHwPage extends React.Component{
         this.onChangeFullName = this.onChangeFullName.bind(this);
         this.onChangeAnswer = this.onChangeAnswer.bind(this);
         this.onChangeAttachments = this.onChangeAttachments.bind(this);
+        this.ckEditorRemoveTags = this.ckEditorRemoveTags.bind(this);
 
         this.state = {
             fullName: "",
@@ -27,7 +28,9 @@ class StudentHwPage extends React.Component{
             files: [],
             closeDate: new Date(),
             grade: "",
-            comments: ""
+            comments: "",
+            isSubmitted: false,
+            data: ""
         };          
     }
     onChangeFullName(e) {
@@ -45,10 +48,14 @@ class StudentHwPage extends React.Component{
           files: e.target.value[0],
          });
     }
+    ckEditorRemoveTags (data) {     
+        const editedData = data.replace('<p>', '').replace('</p>', '') 
+        return editedData;
+    }
     handleSubmit(e){
         e.preventDefault();
         this.setState({
-            isClicked: true,
+            isSubmitted: true,
             submitDate:new Date()
         });
         const { dispatch} = this.props;
@@ -72,10 +79,15 @@ class StudentHwPage extends React.Component{
                     this.setState({
                         course_title: response.data.course_title,
                         title: response.data.title,
-                        description: response.data.content,
+                        data: response.data.content,
                         closeDate: response.data.closed_at
                     })
                 }
+                
+            })
+            const description = this.ckEditorRemoveTags(this.state.data);
+            this.setState({
+                description: description
             })
     }
     render(){

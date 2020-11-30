@@ -17,7 +17,7 @@ class HwForm extends React.Component {
         this.onChangeFiles = this.onChangeFiles.bind(this);
         this.onChangeOpenDate = this.onChangeOpenDate.bind(this);
         this.onChangeCloseDate = this.onChangeCloseDate.bind(this);
-        this.ckEditorRemoveTags = this.ckEditorRemoveTags.bind(this);
+        
 
     
         this.state = {
@@ -33,10 +33,7 @@ class HwForm extends React.Component {
         };          
     }
 
-    ckEditorRemoveTags (data) {     
-        const editedData = data.replace('<p>', '').replace('</p>', '') 
-        return editedData;
-    }
+    
 
     onChangeFullName(e) {
         this.setState({
@@ -54,9 +51,8 @@ class HwForm extends React.Component {
         });
     }    
     onChangeDescription(e) {
-        const data = this.ckEditorRemoveTags(e.editor.getData());
         this.setState({
-         description: data
+         description: e.editor.getData()
         });
     }
     onChangeFiles(e) {
