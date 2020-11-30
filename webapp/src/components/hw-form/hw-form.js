@@ -50,9 +50,10 @@ class HwForm extends React.Component {
         });
     }    
     onChangeDescription(e) {
-        const data = ckEditorRemoveTags(e.editor.getData());
+        const data = e.editor.getData();
+        const editedData = ckEditorRemoveTags(data)
         this.setState({
-         description: data
+         description: editeddata
         });
     }
     onChangeFiles(e) {
