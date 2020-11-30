@@ -31,7 +31,7 @@ class StudentHwPage extends React.Component{
             grade: "",
             comments: "",
             isSubmitted: false,
-            hwPageID: null
+            hwPageID: -1
         };          
     }
 
