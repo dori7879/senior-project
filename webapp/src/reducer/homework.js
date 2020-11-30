@@ -3,7 +3,9 @@ import { CLEAR_HOMEWORK, CREATE_HOMEWORK, FETCH_HOMEWORK, GRADE_HOMEWORK, SUBMIT
 const teacher_link = JSON.parse(localStorage.getItem("teacher_link"));
 const student_link = JSON.parse(localStorage.getItem("student_link"));
 
-const initialState = { teacher_link: null, student_link: null };
+const initialState = teacher_link && student_link
+  ? { teacher_link, student_link }
+  : { teacher_link: null, student_link: null };
 
 export default function (state = initialState, action){
 
@@ -12,9 +14,7 @@ export default function (state = initialState, action){
     switch (type) {
       case CREATE_HOMEWORK:
         return {
-          ...state,
-          student_link: payload.student_link,
-          teacher_link: payload.teacher_link
+          ...state
         };
       case FETCH_HOMEWORK:
         return {
