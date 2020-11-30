@@ -118,8 +118,12 @@ class StudentHwPage extends React.Component{
                         <div  className="w-full border border-purple-300 rounded-b bg-purple-300 p-4">
                             {
                                 isEmptyDesc ? null :
-                                <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                    <strong>Description:</strong><br></br> <span className="text-purple-900">{data}</span></h2>
+                                <div>
+                                    <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
+                                    <strong>Description:</strong><br></br> </h2>
+                                    <p><span className="text-purple-900">{data}</span></p>
+                                </div>
+                                
                             }
                             {
                                 isEmptyFile ? null :
