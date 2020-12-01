@@ -2,6 +2,7 @@ import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
 import axios from 'axios';
+import homework from '../../reducer/homework';
 
 class TeacherHwPage extends React.Component{
     
@@ -26,7 +27,7 @@ class TeacherHwPage extends React.Component{
             grade: e.target.value,
             comments: "",
             isGraded: false,
-
+            homeworks: []
         });
     }
 
@@ -66,25 +67,10 @@ class TeacherHwPage extends React.Component{
                     this.setState({
                         title: response.data.title,
                         description: response.data.content,
-                        closeDate: response.data.closed_at
+                        closeDate: response.data.closed_at,
+                        homeworks: response.data.homeworks
                     })
                 }
-            })
-        axios.get('/api/v1/homework')
-            .then(results => {
-                return results.data;
-                console.log(results.data)
-            })
-            .then(res => {
-                let arr = res.items;
-                console.log(res.items);
-                /*let test = [];
-                arr.map(function(item) {
-                    test.push(item);
-                })
-                this.setState({
-                    name: test
-                });*/
             })
       }
     render(){
@@ -96,6 +82,7 @@ class TeacherHwPage extends React.Component{
             comments:"ddcxv vkdcv ckvmv",
             grade: "A"
         }
+        console.log(this.state.homeworks);
         const data = this.ckEditorRemoveTags(this.state.description);
         const isEmptyContent = submission.content.trim() === "";
         const isEmptyAttachment = submission.attachments.length === 0;

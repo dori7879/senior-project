@@ -14,7 +14,7 @@ class StudentHwPage extends React.Component{
         this.onChangeFullName = this.onChangeFullName.bind(this);
         this.onChangeAnswer = this.onChangeAnswer.bind(this);
         this.onChangeAttachments = this.onChangeAttachments.bind(this);
-        this.ckEditorRemoveTags = this.ckEditorRemoveTags.bind(this);
+        this.ckEditorRemoveTags = this.ckEditorRemoveTags.bind(this); 
 
         this.state = {
             fullName: "",
