@@ -19,15 +19,15 @@ class TeacherHwPage extends React.Component{
             title: "",
             description: "",
             files: [],
-            closeDate: new Date()
+            closeDate: new Date(),
+            homeworks: []
         };          
     }
     onChangeGrade(e){
         this.setState({
             grade: e.target.value,
             comments: "",
-            isGraded: false,
-            homeworks: []
+            isGraded: false
         });
     }
 
@@ -74,14 +74,14 @@ class TeacherHwPage extends React.Component{
             })
       }
     render(){
-        const submission = {
+      /*  const submission = {
             student_fullName: "Dariya Shakenova",
             submission_time: Date(),
             content: "dhjfs,",
             attachments: [],
             comments:"ddcxv vkdcv ckvmv",
             grade: "A"
-        }
+        }*/
         console.log(this.state.homeworks);
         const data = this.ckEditorRemoveTags(this.state.description);
         const isEmptyContent = submission.content.trim() === "";

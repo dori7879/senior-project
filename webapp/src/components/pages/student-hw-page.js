@@ -122,7 +122,7 @@ class StudentHwPage extends React.Component{
                                 <div>
                                     <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
                                     <strong>Description:</strong><br></br> </h2>
-                                    <p className="text-purple-900 m-4">{data}</p>
+                                    <p className="text-purple-900 ml-4">{data}</p>
                                 </div>
                                 
                             }
