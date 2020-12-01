@@ -133,7 +133,7 @@ class StudentHwPage extends React.Component{
                             {
                                 isSubmitted ? 
                                 <div className="form-group">
-                                    <div className="text-purple-900 font-bold text-xl pt-2">
+                                    <div className="w-full border border-purple-300 rounded text-center text-purple-900 font-bold text-xl pt-2">
                                         Submitted
                                     </div>
                                 </div>

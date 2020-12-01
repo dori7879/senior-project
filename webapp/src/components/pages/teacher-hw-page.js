@@ -111,48 +111,52 @@ class TeacherHwPage extends React.Component{
                                         <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
                                             <strong>Attachments:</strong><br></br> <span className="text-purple-900">{this.state.files}</span></h2>
                                     } 
-                                    <div className="border border-purple-700 rounded flex flex-col">
-                                        <div className="flex flex-col items  pb-2">
-                                            <p className="block tracking-wide text-gray-700 text-xs  px-4 pt-1">
-                                                <strong>Student's Name:</strong> <span className="text-purple-900">{submission.student_fullName}</span></p>
-                                            <p className="block tracking-wide text-gray-700 text-xs mb-2 px-4 pt-1">
-                                                <strong>Submitted at:</strong> <span className="text-purple-900">{submission.submission_time}</span></p>  
-                                            {
-                                                isEmptyContent ? null :
-                                                <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
-                                                    <strong>Content:</strong><br /> <span className="text-purple-900">{submission.content}</span></p>
-                                            }
-                                            {
-                                                isEmptyAttachment ? null :
-                                                <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
-                                                    <strong>Attachments:</strong><span className="text-purple-900">{submission.attachments}</span></p>
-                                            }       
-                                            {
-                                                isGraded ?  <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
-                                                <strong>Grade:</strong><span className="text-purple-900">{submission.grade}</span>
-                                                <strong>Comments:</strong><span className="text-purple-900">{submission.comments}</span>
-                                                </p> :
-                                                <div className="flex flex-col">
-                                                    <div className="flex flex-row mb-2">
+                                    {
+                                        this.state.homeworks.map((homework, index) => (
+                                            <div key={index} className="border border-purple-700 rounded flex flex-col">
+                                                <div className="flex flex-col items  pb-2">
+                                                    <p className="block tracking-wide text-gray-700 text-xs  px-4 pt-1">
+                                                        <strong>Student's Name:</strong> <span className="text-purple-900">{homework.student_fullName}</span></p>
+                                                    <p className="block tracking-wide text-gray-700 text-xs mb-2 px-4 pt-1">
+                                                        <strong>Submitted at:</strong> <span className="text-purple-900">{homework.submitted_at}</span></p>  
+                                                    {
+                                                        isEmptyContent ? null :
                                                         <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
-                                                            <strong>Grade: </strong></p>
-                                                        <input  onChange={this.onChangeGrade} className=" w-10 text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
-                                                    </div>
-                                                    <div className="flex flex-row">
+                                                            <strong>Content:</strong><br /> <span className="text-purple-900">{homework.content}</span></p>
+                                                    }
+                                                    {
+                                                        isEmptyAttachment ? null :
                                                         <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
-                                                            <strong>Comments: </strong></p>
-                                                        <textarea  onChange={this.onChangeComments} className=" text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
-                                                    </div>
-                                                    <div>
-                                                        <button type="submit" className="mb-2 ml-4 mt-2
-                                                        relative flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
-                                                            Grade Homework
-                                                        </button>
-                                                    </div>
+                                                            <strong>Attachments:</strong><span className="text-purple-900">{homework.attachments}</span></p>
+                                                    }       
+                                                    {
+                                                        isGraded ?  <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
+                                                        <strong>Grade:</strong><span className="text-purple-900">{homework.grade}</span>
+                                                        <strong>Comments:</strong><span className="text-purple-900">{homework.comments}</span>
+                                                        </p> :
+                                                        <div className="flex flex-col">
+                                                            <div className="flex flex-row mb-2">
+                                                                <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
+                                                                    <strong>Grade: </strong></p>
+                                                                <input  onChange={this.onChangeGrade} className=" w-10 text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
+                                                            </div>
+                                                            <div className="flex flex-row">
+                                                                <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
+                                                                    <strong>Comments: </strong></p>
+                                                                <textarea  onChange={this.onChangeComments} className=" text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
+                                                            </div>
+                                                            <div>
+                                                                <button type="submit" className="mb-2 ml-4 mt-2
+                                                                relative flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
+                                                                    Grade Homework
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    }
                                                 </div>
-                                            }
-                                        </div>
-                                    </div>
+                                            </div>
+                                        ))
+                                    }
                                 </div>
                                 <div className="flex flex-col ">
                                     <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
