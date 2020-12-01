@@ -84,9 +84,6 @@ class TeacherHwPage extends React.Component{
         }*/
         console.log(this.state.homeworks);
         const data = this.ckEditorRemoveTags(this.state.description);
-        const isEmptyContent = submission.content.trim() === "";
-        const isEmptyAttachment = submission.attachments.length === 0;
-        const isGraded = !submission.grade.trim() === "";
         const isEmptyDesc = this.state.description.trim() === "";
         const isEmptyFile = this.state.files.length === 0; 
         return(
@@ -120,17 +117,17 @@ class TeacherHwPage extends React.Component{
                                                     <p className="block tracking-wide text-gray-700 text-xs mb-2 px-4 pt-1">
                                                         <strong>Submitted at:</strong> <span className="text-purple-900">{homework.submitted_at}</span></p>  
                                                     {
-                                                        isEmptyContent ? null :
+                                                        homework.content.trim() === "" ? null :
                                                         <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                             <strong>Content:</strong><br /> <span className="text-purple-900">{homework.content}</span></p>
                                                     }
                                                     {
-                                                        isEmptyAttachment ? null :
+                                                        homework.attachments.length === 0 ? null :
                                                         <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                             <strong>Attachments:</strong><span className="text-purple-900">{homework.attachments}</span></p>
                                                     }       
                                                     {
-                                                        isGraded ?  <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
+                                                        homework.grade.trim()=== "" ?  <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                         <strong>Grade:</strong><span className="text-purple-900">{homework.grade}</span>
                                                         <strong>Comments:</strong><span className="text-purple-900">{homework.comments}</span>
                                                         </p> :
