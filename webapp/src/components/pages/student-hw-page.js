@@ -29,7 +29,8 @@ class StudentHwPage extends React.Component{
             closeDate: new Date(),
             grade: "",
             comments: "",
-            isSubmitted: false
+            isSubmitted: false,
+            hwPageID: -1
         };          
     }
     onChangeFullName(e) {
@@ -53,9 +54,8 @@ class StudentHwPage extends React.Component{
     }
     handleSubmit(e){
         e.preventDefault();
-        console.log(this.props);
         const { dispatch } = this.props;
-        dispatch(submitHomework( this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments))
+        dispatch(submitHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageI))            
             .then(() => {
                 this.setState({
                     successful: true,
@@ -172,11 +172,4 @@ class StudentHwPage extends React.Component{
     }
     }
 
-    function mapStateToProps(state) {
-        const { isLoggedIn } = state.auth;
-        return {
-          isLoggedIn
-        };
-      }
-
-export default connect(mapStateToProps)(StudentHwPage);
+export default connect()(StudentHwPage); 
