@@ -40,19 +40,19 @@ type HomeworkPageDto struct {
 }
 
 type HomeworkPageNestedDto struct {
-	ID              uint   `json:"id"`
-	Title           string `json:"title"`
-	Content         string `json:"content"`
-	StudentLink     string `json:"student_link"`
-	TeacherLink     string `json:"teacher_link"`
-	CourseTitle     string `json:"course_title"`
-	CreatedAt       string `json:"created_at"`
-	UpdatedAt       string `json:"updated_at"`
-	OpenedAt        string `json:"opened_at"`
-	ClosedAt        string `json:"closed_at"`
-	TeacherFullname string `json:"teacher_fullname"`
-	TeacherID       uint   `json:"teacher_id"`
-	Homeworks       HomeworkDtos
+	ID              uint         `json:"id"`
+	Title           string       `json:"title"`
+	Content         string       `json:"content"`
+	StudentLink     string       `json:"student_link"`
+	TeacherLink     string       `json:"teacher_link"`
+	CourseTitle     string       `json:"course_title"`
+	CreatedAt       string       `json:"created_at"`
+	UpdatedAt       string       `json:"updated_at"`
+	OpenedAt        string       `json:"opened_at"`
+	ClosedAt        string       `json:"closed_at"`
+	TeacherFullname string       `json:"teacher_fullname"`
+	TeacherID       uint         `json:"teacher_id"`
+	Homeworks       HomeworkDtos `json:"homeworks"`
 }
 
 type HomeworkPageForm struct {
