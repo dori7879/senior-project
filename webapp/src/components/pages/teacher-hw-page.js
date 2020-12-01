@@ -119,7 +119,7 @@ class TeacherHwPage extends React.Component{
                                                     {
                                                         homework.content.trim() === "" ? null :
                                                         <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
-                                                            <strong>Content:</strong><br /> <span className="text-purple-900">{homework.content}</span></p>
+                                                            <strong>Content:</strong><br /> <span className="text-purple-900">{this.ckEditorRemoveTags(homework.content)}</span></p>
                                                     }
                                                     {
                                                        /* homework.attachments.length === 0 ? null :
