@@ -10,6 +10,7 @@ class TeacherHwPage extends React.Component{
         this.onChangeGrade = this.onChangeGrade.bind(this);
         this.onChangeComments = this.onChangeComments.bind(this);
         this.handleGrade = this.handleGrade.bind(this);
+        this.ckEditorRemoveTags = this.ckEditorRemoveTags.bind(this);
 
         this.state = {
             grade: "",
@@ -34,7 +35,10 @@ class TeacherHwPage extends React.Component{
             comments: e.target.value
         }); 
     }
-
+    ckEditorRemoveTags (data) {     
+        const editedData = data.replace('<p>', '').replace('</p>', '') 
+        return editedData;
+    }
     handleGrade(e){
         e.preventDefault();
         this.setState({
@@ -66,6 +70,22 @@ class TeacherHwPage extends React.Component{
                     })
                 }
             })
+        axios.get('/api/v1/homework')
+            .then(results => {
+                return results.data;
+                console.log(results.data)
+            })
+            .then(res => {
+                let arr = res.items;
+                console.log(res.items);
+                /*let test = [];
+                arr.map(function(item) {
+                    test.push(item);
+                })
+                this.setState({
+                    name: test
+                });*/
+            })
       }
     render(){
         const submission = {
@@ -76,6 +96,7 @@ class TeacherHwPage extends React.Component{
             comments:"ddcxv vkdcv ckvmv",
             grade: "A"
         }
+        const data = this.ckEditorRemoveTags(this.state.description);
         const isEmptyContent = submission.content.trim() === "";
         const isEmptyAttachment = submission.attachments.length === 0;
         const isGraded = !submission.grade.trim() === "";
@@ -96,7 +117,7 @@ class TeacherHwPage extends React.Component{
                                     {
                                         isEmptyDesc ? null :
                                         <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                            <strong>Description:</strong><br></br> <span className="text-purple-900">{this.state.description}</span></h2>
+                                            <strong>Description:</strong><br></br> <span className="text-purple-900">{data}</span></h2>
                                     }
                                     {
                                         isEmptyFile ? null :
