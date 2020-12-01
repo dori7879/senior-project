@@ -1,11 +1,10 @@
-import { clearHomework, submitHomework } from "../../actions/homework";
-
 import CKEditor from 'ckeditor4-react';
 import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
 import axios from 'axios';
 import { connect } from "react-redux";
+import { submitHomework } from "../../actions/homework";
 
 class StudentHwPage extends React.Component{
     
@@ -86,6 +85,7 @@ class StudentHwPage extends React.Component{
             })
     }
     render(){
+        const isSubmitted = this.state.isSubmitted;
         const isEmptyDesc = this.state.description.trim() === "";
         const data = this.ckEditorRemoveTags(this.state.description);
         const isEmptyFile = this.state.files.length === 0; 
@@ -122,7 +122,7 @@ class StudentHwPage extends React.Component{
                                 <div>
                                     <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
                                     <strong>Description:</strong><br></br> </h2>
-                                    <p className="text-purple-900 mr-4">{data}</p>
+                                    <p className="text-purple-900 m-4">{data}</p>
                                 </div>
                                 
                             }
@@ -164,7 +164,7 @@ class StudentHwPage extends React.Component{
                         </div>
                          
                     </div>
-                    <small className="mt-2">* - Required field </small>  
+                    <small className="">* - Required field </small>  
                 </div>   
                 <Footer />
             </div>
