@@ -55,18 +55,15 @@ class StudentHwPage extends React.Component{
     handleSubmit(e){
         e.preventDefault();
         const { dispatch } = this.props;
-        dispatch(submitHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageI))            
+        dispatch(submitHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageID))            
             .then(() => {
                 this.setState({
                     successful: true,
-                    isSubmitted: true,
-                    submitDate:new Date()
                 });
             })
             .catch(() => {
                 this.setState({
                     successful: false,
-                    isSubmitted: false
                 });
             });
     }
@@ -76,6 +73,7 @@ class StudentHwPage extends React.Component{
             .then((response) => {
                 if (response.data) {
                     this.setState({
+                        hwPageID: response.data.id,
                         course_title: response.data.course_title,
                         title: response.data.title,
                         description: response.data.content,
