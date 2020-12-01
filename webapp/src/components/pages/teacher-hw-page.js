@@ -122,9 +122,9 @@ class TeacherHwPage extends React.Component{
                                                             <strong>Content:</strong><br /> <span className="text-purple-900">{homework.content}</span></p>
                                                     }
                                                     {
-                                                        homework.attachments.length === 0 ? null :
+                                                       /* homework.attachments.length === 0 ? null :
                                                         <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
-                                                            <strong>Attachments:</strong><span className="text-purple-900">{homework.attachments}</span></p>
+                                                            <strong>Attachments:</strong><span className="text-purple-900">{homework.attachments}</span></p>*/
                                                     }       
                                                     {
                                                         homework.grade.trim()=== "" ?  <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
