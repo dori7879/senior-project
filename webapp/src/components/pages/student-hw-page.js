@@ -59,6 +59,8 @@ class StudentHwPage extends React.Component{
             .then(() => {
                 this.setState({
                     successful: true,
+                    isSubmitted: true,
+                    submitDate: new Date()
                 });
             })
             .catch(() => {
@@ -131,7 +133,7 @@ class StudentHwPage extends React.Component{
                             {
                                 isSubmitted ? 
                                 <div className="form-group">
-                                    <div className={ this.state.successful ? "alert alert-success" : "alert alert-danger" } role="alert">
+                                    <div className="text-purple-900 font-bold text-xl pt-2">
                                         Submitted
                                     </div>
                                 </div>
