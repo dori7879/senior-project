@@ -110,7 +110,7 @@ class TeacherHwPage extends React.Component{
                                     } 
                                     {
                                         this.state.homeworks.map((homework, index) => (
-                                            <div key={index} className="border border-purple-700 rounded flex flex-col">
+                                            <div key={index} className="border border-purple-700 rounded flex flex-col mb-2">
                                                 <div className="flex flex-col items  pb-2">
                                                     <p className="block tracking-wide text-gray-700 text-xs  px-4 pt-1">
                                                         <strong>Student's Name:</strong> <span className="text-purple-900">{homework.student_fullName}</span></p>
