@@ -86,16 +86,17 @@ class TeacherHwPage extends React.Component{
         const data = this.ckEditorRemoveTags(this.state.description);
         const isEmptyDesc = this.state.description.trim() === "";
         const isEmptyFile = this.state.files.length === 0; 
+        const submitted_hw = this.state.homeworks.length;
         return(
             <div>
                 <Header />
                 <div className="min-h-screen flex items-center flex-col justify-top bg-purple-100 py-2 px-4 sm:px-6 lg:px-8 ">              
-                    <div className="flex justify-center flex-col items-center pb-4">
+                    <div className="flex justify-center flex-col items-center pb-4"></div>
                         <div className="text-purple-900 font-bold text-xl pt-4">Homework Submissions</div>
-                    </div>
-                        <form className="w-3/4 border border-purple-300 rounded bg-purple-300 p-4">
-                            <div className=" flex flex-row"> 
-                                <div className="flex flex-col">
+                    
+                        <div className="w-3/4 border border-purple-300 rounded bg-purple-300 p-4">
+                            <div className="flex flex-row"> 
+                                <div className="w-3/4 flex flex-col">
                                     <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
                                         <strong>Homework Title:</strong> <span className="text-purple-900">{this.state.title}</span></h2> 
                                     {
@@ -108,6 +109,7 @@ class TeacherHwPage extends React.Component{
                                         <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
                                             <strong>Attachments:</strong><br></br> <span className="text-purple-900">{this.state.files}</span></h2>
                                     } 
+                                    <div className="flex flex-col items ml-2 ">
                                     {
                                         this.state.homeworks.map((homework, index) => (
                                             <div key={index} className="border border-purple-700 rounded flex flex-col mb-2">
@@ -154,19 +156,21 @@ class TeacherHwPage extends React.Component{
                                             </div>
                                         ))
                                     }
+                                    </div>
+                                   
                                 </div>
                                 <div className="flex flex-col ">
                                     <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
-                                        <strong><span className="text-purple-800 font-bold">4</span> Homeworks Submitted</strong> </p>
+                                       <strong><span className="text-purple-800 font-bold">{submitted_hw}</span> Homeworks Submitted</strong> </p>
                                     <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                         <strong></strong> </p>
-                                    <button type="submit" className="mb-2 ml-4 mt-2
+                                    {/*<button type="submit" className="mb-2 ml-4 mt-2
                                                 relative flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
                                         Close Homework
-                                    </button>
+                                    </button>*/}
                                 </div>
                             </div>
-                        </form>
+                        </div>
                 </div>   
                 <Footer />
             </div>
