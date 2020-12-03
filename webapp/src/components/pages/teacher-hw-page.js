@@ -14,6 +14,7 @@ class TeacherHwPage extends React.Component{
         this.ckEditorRemoveTags = this.ckEditorRemoveTags.bind(this);
 
         this.state = {
+            id: null,
             grade: "",
             comments: "",
             title: "",
@@ -46,7 +47,7 @@ class TeacherHwPage extends React.Component{
             isGraded: true
         });
         const { dispatch} = this.props;
-        dispatch(gradeHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageID))
+        dispatch(gradeHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageID, this.state.id))
             .then(() => {
                 this.setState({
                     successful: true
@@ -65,6 +66,7 @@ class TeacherHwPage extends React.Component{
             .then((response) => {
                 if (response.data) {
                     this.setState({
+                        id: response.data.id,
                         title: response.data.title,
                         description: response.data.content,
                         closeDate: response.data.closed_at,
