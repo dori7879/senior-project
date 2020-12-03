@@ -12,7 +12,6 @@ class TeacherHwPage extends React.Component{
         this.onChangeComments = this.onChangeComments.bind(this);
         this.handleGrade = this.handleGrade.bind(this);
         this.ckEditorRemoveTags = this.ckEditorRemoveTags.bind(this);
-
         this.state = {
             id: null,
             grade: "",
@@ -43,18 +42,17 @@ class TeacherHwPage extends React.Component{
     }
     handleGrade(e){
         e.preventDefault();
-        this.setState({
-            isGraded: true
-        });
         const { dispatch} = this.props;
         dispatch(gradeHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageID, this.state.id))
             .then(() => {
                 this.setState({
+                    isGraded: true,
                     successful: true
                 });
             })
             .catch(() => {
                 this.setState({
+                    isGraded: false,
                     successful: false
                 });
             });
@@ -76,7 +74,6 @@ class TeacherHwPage extends React.Component{
             })
       }
     render(){
-        console.log(this.state.homeworks);
         const data = this.ckEditorRemoveTags(this.state.description);
         const isEmptyDesc = this.state.description.trim() === "";
         const isEmptyFile = this.state.files.length === 0; 
@@ -124,7 +121,7 @@ class TeacherHwPage extends React.Component{
                                                     }       
                                                     {
                                                         homework.grade.trim() === "" ?
-                                                        <div className="flex flex-col">
+                                                        <form onSubmit={this.handleGrade} className="flex flex-col">
                                                             <div className="flex flex-row mb-2">
                                                                 <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                                     <strong>Grade: </strong></p>
@@ -142,7 +139,7 @@ class TeacherHwPage extends React.Component{
                                                                     Grade Homework
                                                                 </button>
                                                             </div>
-                                                        </div> :
+                                                        </form> :
                                                         <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                             <strong>Grade:</strong><span className="text-purple-900">{homework.grade}</span>
                                                             <strong>Comments:</strong><span className="text-purple-900">{homework.comments}</span>
