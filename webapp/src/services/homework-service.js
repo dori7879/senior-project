@@ -49,7 +49,6 @@ const submitHomework = (fullName, answer, submitDate, grade, comments, hwPageID)
 const gradeHomework = ( fullName, answer, submitDate, grade, comments, hwPageID, id) => {
   return axios 
     .put('/api/v1/homework/'+ id,{
-      id: id,
       student_fullname: fullName,
       content: answer,
       submitted_at: submitDate,

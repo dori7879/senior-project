@@ -44,7 +44,7 @@ class TeacherHwPage extends React.Component{
     handleGrade(e, id){
         e.preventDefault();
         const { dispatch} = this.props;
-        dispatch(gradeHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageID , id))
+        dispatch(gradeHomework(this.state.homework[id].fullName, this.state.homework[id].answer, this.state.homework[id].submitDate, this.state.homework[id].grade, this.state.homework[id].comments, this.state.homework[id].hwPageID , id))
             .then(() => {
                 this.setState({
                     isGraded: true,
@@ -107,7 +107,7 @@ class TeacherHwPage extends React.Component{
                                             <div key={index} className="border border-purple-700 rounded flex flex-col mb-2">
                                                 <div className="flex flex-col items  pb-2">
                                                     <p className="block tracking-wide text-gray-700 text-xs  px-4 pt-1">
-                                                        <strong>Student's Name:</strong> <span className="text-purple-900">{homework.student_fullName}</span></p>
+                                                        <strong>Student's Name:</strong> <span className="text-purple-900">{homework.student_fullname}</span></p>
                                                     <p className="block tracking-wide text-gray-700 text-xs mb-2 px-4 pt-1">
                                                         <strong>Submitted at:</strong> <span className="text-purple-900">{homework.submitted_at}</span></p>  
                                                     {
