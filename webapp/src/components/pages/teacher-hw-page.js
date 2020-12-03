@@ -20,7 +20,8 @@ class TeacherHwPage extends React.Component{
             description: "",
             files: [],
             closeDate: new Date(),
-            homeworks: []
+            homeworks: [],
+            hwPageID: null
         };          
     }
     onChangeGrade(e){
@@ -40,10 +41,10 @@ class TeacherHwPage extends React.Component{
         const editedData = data.replace('<p>', '').replace('</p>', '') 
         return editedData;
     }
-    handleGrade(e){
+    handleGrade(e, id){
         e.preventDefault();
         const { dispatch} = this.props;
-        dispatch(gradeHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageID, this.state.id))
+        dispatch(gradeHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageID , id))
             .then(() => {
                 this.setState({
                     isGraded: true,
@@ -64,7 +65,7 @@ class TeacherHwPage extends React.Component{
             .then((response) => {
                 if (response.data) {
                     this.setState({
-                        id: response.data.id,
+                        hwPageID: response.data.id,
                         title: response.data.title,
                         description: response.data.content,
                         closeDate: response.data.closed_at,
@@ -121,7 +122,7 @@ class TeacherHwPage extends React.Component{
                                                     }       
                                                     {
                                                         homework.grade.trim() === "" ?
-                                                        <form onSubmit={this.handleGrade} className="flex flex-col">
+                                                        <form onSubmit={this.handleGrade(homework.id)} className="flex flex-col">
                                                             <div className="flex flex-row mb-2">
                                                                 <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                                     <strong>Grade: </strong></p>
