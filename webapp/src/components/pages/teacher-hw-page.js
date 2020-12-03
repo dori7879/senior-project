@@ -121,10 +121,7 @@ class TeacherHwPage extends React.Component{
                                                             <strong>Attachments:</strong><span className="text-purple-900">{homework.attachments}</span></p>*/
                                                     }       
                                                     {
-                                                        homework.grade.trim()=== "" ?  <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
-                                                        <strong>Grade:</strong><span className="text-purple-900">{homework.grade}</span>
-                                                        <strong>Comments:</strong><span className="text-purple-900">{homework.comments}</span>
-                                                        </p> :
+                                                        homework.grade.trim() === "" ?
                                                         <div className="flex flex-col">
                                                             <div className="flex flex-row mb-2">
                                                                 <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
@@ -135,6 +132,7 @@ class TeacherHwPage extends React.Component{
                                                                 <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                                     <strong>Comments: </strong></p>
                                                                 <textarea  onChange={this.onChangeComments} className=" text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
+                                                                <br />
                                                             </div>
                                                             <div>
                                                                 <button type="submit" className="mb-2 ml-4 mt-2
@@ -142,7 +140,11 @@ class TeacherHwPage extends React.Component{
                                                                     Grade Homework
                                                                 </button>
                                                             </div>
-                                                        </div>
+                                                        </div> :
+                                                        <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
+                                                            <strong>Grade:</strong><span className="text-purple-900">{homework.grade}</span>
+                                                            <strong>Comments:</strong><span className="text-purple-900">{homework.comments}</span>
+                                                        </p> 
                                                     }
                                                 </div>
                                             </div>
