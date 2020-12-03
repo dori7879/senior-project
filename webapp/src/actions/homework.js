@@ -42,8 +42,8 @@ export const submitHomework = (fullName, answer, submitDate, grade, comments, hw
     }
     ) 
 }
-export const gradeHomework = ( grade, comments) => (dispatch) => {
-  return HomeworkService.gradeHomework( grade, comments)
+export const gradeHomework = ( fullName, answer, submitDate, grade, comments, hwPageID) => (dispatch) => {
+  return HomeworkService.gradeHomework( fullName, answer, submitDate, grade, comments, hwPageID)
     .then(
     (data) => {
       dispatch({

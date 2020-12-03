@@ -2,7 +2,7 @@ import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
 import axios from 'axios';
-import homework from '../../reducer/homework';
+import { gradeHomework } from "../../actions/homework";
 
 class TeacherHwPage extends React.Component{
     
@@ -46,7 +46,7 @@ class TeacherHwPage extends React.Component{
             isGraded: true
         });
         const { dispatch} = this.props;
-       /* dispatch(gradeHomework( this.state.grade, this.state.comments))
+        dispatch(gradeHomework(this.state.fullName, this.state.answer, this.state.submitDate, this.state.grade, this.state.comments, this.state.hwPageID))
             .then(() => {
                 this.setState({
                     successful: true
@@ -56,7 +56,7 @@ class TeacherHwPage extends React.Component{
                 this.setState({
                     successful: false
                 });
-            });*/
+            });
     }
 
     componentDidMount () {
@@ -74,14 +74,6 @@ class TeacherHwPage extends React.Component{
             })
       }
     render(){
-      /*  const submission = {
-            student_fullName: "Dariya Shakenova",
-            submission_time: Date(),
-            content: "dhjfs,",
-            attachments: [],
-            comments:"ddcxv vkdcv ckvmv",
-            grade: "A"
-        }*/
         console.log(this.state.homeworks);
         const data = this.ckEditorRemoveTags(this.state.description);
         const isEmptyDesc = this.state.description.trim() === "";
