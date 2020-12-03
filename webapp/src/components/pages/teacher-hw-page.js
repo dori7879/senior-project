@@ -44,7 +44,7 @@ class TeacherHwPage extends React.Component{
     handleGrade(e, id){
         e.preventDefault();
         const { dispatch} = this.props;
-        dispatch(gradeHomework(this.state.homework[id].fullName, this.state.homework[id].answer, this.state.homework[id].submitDate, this.state.homework[id].grade, this.state.homework[id].comments, this.state.homework[id].hwPageID , id))
+        dispatch(gradeHomework(this.state.homeworks[id].student_fullname, this.state.homeworks[id].content, this.state.homeworks[id].submitted_at, this.state.homeworks[id].grade, this.state.homeworks[id].comments, this.state.homeworks[id].homework_page_id , id))
             .then(() => {
                 this.setState({
                     isGraded: true,
