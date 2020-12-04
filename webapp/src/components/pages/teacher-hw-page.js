@@ -10,7 +10,7 @@ class TeacherHwPage extends React.Component{
         super(props);
         this.onChangeGrade = this.onChangeGrade.bind(this);
         this.onChangeComments = this.onChangeComments.bind(this);
-        //this.handleGrade = this.handleGrade.bind(this);
+        this.handleGrade = this.handleGrade.bind(this);
         this.ckEditorRemoveTags = this.ckEditorRemoveTags.bind(this);
         this.state = {
             id: null,
