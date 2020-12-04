@@ -122,7 +122,7 @@ class TeacherHwPage extends React.Component{
                                                     }       
                                                     {
                                                         homework.grade.trim() === "" ?
-                                                        <form onSubmit={(e) => this.handleGrade(homework.id)} className="flex flex-col">
+                                                        <form onSubmit={(e) => this.handleGrade(homework.id, e)} className="flex flex-col">
                                                             <div className="flex flex-row mb-2">
                                                                 <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                                     <strong>Grade: </strong></p>
