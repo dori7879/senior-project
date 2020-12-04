@@ -55,16 +55,19 @@ const MyProfilePage = () => {
                                 Save
                             </button>
                         </form>                         
-                        
-                        <p  className="text-gray-700 mt-3">
+                        {
+                            /*
+                             <p  className="text-gray-700 mt-3">
                             <strong className="text-purple-900"> My Classes </strong> 
-                        </p>
-                        <button type="submit" className="mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
-                                10A
-                        </button>
-                        <button type="submit" className="mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
-                                11B
-                        </button>
+                            </p>
+                            <button type="submit" className="mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
+                                    10A
+                            </button>
+                            <button type="submit" className="mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
+                                    11B
+                            </button>*/
+                        }
+                       
                     </div>
                    
             </div>   

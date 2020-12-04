@@ -101,13 +101,14 @@ class HwForm extends React.Component {
             <form onSubmit={this.handleSubmit} className="w-3/4 border border-purple-300 rounded bg-purple-300 p-4">
                {
                    isLoggedIn ? 
+                   null :
                    <div className="flex flex-row items items-center pb-2">
                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
                        Full name*
                    </label>
                    <input  onChange={this.onChangeFullName} className="text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Enter your full name" />
-                   </div> :
-                   null
+                   </div>
+                   
                }
                 <div className="flex flex-row items items-center pb-2">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
