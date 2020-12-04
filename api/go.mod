@@ -13,5 +13,6 @@ require (
 	github.com/pressly/goose v2.6.0+incompatible
 	github.com/rs/zerolog v1.20.0
 	golang.org/x/crypto v0.0.0-20201116153603-4be66e5b6582
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 )
