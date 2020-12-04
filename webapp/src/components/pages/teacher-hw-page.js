@@ -66,8 +66,9 @@ class TeacherHwPage extends React.Component{
         axios.get(`/api/v1/homework-page/teacher/${randomStr}`)
             .then((response) => {
                 if (response.data) {
+                    console.log(response.data.id)
                     this.setState({
-                        hwPageID: response.data.id,
+                        //hwPageID: response.data.id,
                         title: response.data.title,
                         description: response.data.content,
                         closeDate: response.data.closed_at,
