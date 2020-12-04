@@ -10,7 +10,7 @@ class TeacherHwPage extends React.Component{
         super(props);
         this.onChangeGrade = this.onChangeGrade.bind(this);
         this.onChangeComments = this.onChangeComments.bind(this);
-        this.handleGrade = this.handleGrade.bind(this);
+        //this.handleGrade = this.handleGrade.bind(this);
         this.ckEditorRemoveTags = this.ckEditorRemoveTags.bind(this);
         this.state = {
             id: null,
@@ -41,10 +41,10 @@ class TeacherHwPage extends React.Component{
         const editedData = data.replace('<p>', '').replace('</p>', '') 
         return editedData;
     }
-    handleGrade( e){
+    handleGrade(id, e){
         e.preventDefault();
         const { dispatch} = this.props;
-        /*dispatch(gradeHomework(this.state.homeworks[id].student_fullname, this.state.homeworks[id].content, this.state.homeworks[id].submitted_at, this.state.homeworks[id].grade, this.state.homeworks[id].comments, this.state.homeworks[id].homework_page_id , id))
+        dispatch(gradeHomework(this.state.homeworks[id].student_fullname, this.state.homeworks[id].content, this.state.homeworks[id].submitted_at, this.state.homeworks[id].grade, this.state.homeworks[id].comments, this.state.homeworks[id].homework_page_id , id))
             .then(() => {
                 this.setState({
                     isGraded: true,
@@ -56,7 +56,7 @@ class TeacherHwPage extends React.Component{
                     isGraded: false,
                     successful: false
                 });
-            });*/
+            });
     }
 
     componentDidMount () {
@@ -122,7 +122,7 @@ class TeacherHwPage extends React.Component{
                                                     }       
                                                     {
                                                         homework.grade.trim() === "" ?
-                                                        <form onSubmit={(e) => this.handleGrade( e)} className="flex flex-col">
+                                                        <form onSubmit={this.handleGrade.bind(this, homework.id)} className="flex flex-col">
                                                             <div className="flex flex-row mb-2">
                                                                 <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                                     <strong>Grade: </strong></p>
