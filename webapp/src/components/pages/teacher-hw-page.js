@@ -28,6 +28,7 @@ class TeacherHwPage extends React.Component{
             isGraded: false,
         };          
     }
+
     onChangeGrade(e){
         this.setState({
             grade: e.target.value,
@@ -47,13 +48,12 @@ class TeacherHwPage extends React.Component{
     handleGrade(index, e){
         e.preventDefault();
         const { dispatch} = this.props;
-        dispatch(gradeHomework(this.state.homeworks[index].id, this.state.homeworks[index].student_fullname, this.state.homeworks[index].content, this.state.homeworks[index].submitted_at, this.state.homeworks[index].grade, this.state.homeworks[index].comments, this.state.hwPageID))
+        dispatch(gradeHomework(this.state.homeworks[index].id, this.state.homeworks[index].student_fullname, this.state.homeworks[index].content, this.state.homeworks[index].submitted_at, this.state.grade, this.state.comments, this.state.hwPageID))
             .then(() => {
                 this.setState({
                     isGraded: true,
                     successful: true
                 });
-                window.location.reload();
             })
             .catch(() => {
                 this.setState({
@@ -136,12 +136,12 @@ class TeacherHwPage extends React.Component{
                                                             <div className="flex flex-row mb-2">
                                                                 <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                                     <strong>Grade: </strong></p>
-                                                                <input  onChange={this.onChangeGrade} className=" w-10 text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
+                                                                <input onChange={this.onChangeGrade} className=" w-10 text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
                                                             </div>
                                                             <div className="flex flex-row">
                                                                 <p className="block tracking-wide text-gray-700 text-xs px-4 pt-1">
                                                                     <strong>Comments: </strong></p>
-                                                                <textarea  onChange={this.onChangeComments} className=" text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
+                                                                <textarea onChange={this.onChangeComments} className=" text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="" />
                                                                 <br />
                                                             </div>
                                                             <div>

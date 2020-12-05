@@ -54,7 +54,6 @@ const gradeHomework = (id, fullName, answer, submitDate, grade, comments, hwPage
     .put('/api/v1/homework/'+ id.toString(),{
       student_fullname: fullName,
       content: answer,
-      submitted_at: submitDate,
       grade: grade,
       comments: comments,
       homework_page_id: hwPageID
