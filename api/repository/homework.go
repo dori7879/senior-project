@@ -99,7 +99,7 @@ func CreateHomework(db *gorm.DB, homework *model.Homework) (*model.Homework, err
 }
 
 func UpdateHomework(db *gorm.DB, homework *model.Homework) error {
-	if err := db.First(&model.Homework{}, homework.ID).Update(homework).Error; err != nil {
+	if err := db.Model(&model.Homework{}).Where("homework_page_id = ?", homework.HomeworkPageID).Update(homework).Error; err != nil {
 		return err
 	}
 

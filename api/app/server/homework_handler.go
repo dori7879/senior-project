@@ -233,8 +233,10 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 
 	if claims != nil && claims["role"].(string) == "teacher" {
 		err = repository.UpdateHomeworkByTeacher(server.db, homeworkModel, claims["sub"].(string))
-	} else {
+	} else if claims != nil && claims["role"].(string) == "student" {
 		err = repository.UpdateHomeworkByOwner(server.db, homeworkModel, claims["sub"].(string))
+	} else {
+		err = repository.UpdateHomework(server.db, homeworkModel)
 	}
 
 	if err != nil {
