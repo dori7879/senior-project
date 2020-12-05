@@ -63,10 +63,18 @@ func (hws Homeworks) ToDto() HomeworkDtos {
 }
 
 func (f *HomeworkForm) ToModel() (*Homework, error) {
+	if f.Grade != "" || f.Comments != "" {
+		return &Homework{
+			Content:         f.Content,
+			Grade:           f.Grade,
+			Comments:        f.Comments,
+			StudentFullname: f.StudentFullname,
+			HomeworkPageID:  f.HomeworkPageID,
+		}, nil
+	}
+
 	return &Homework{
 		Content:         f.Content,
-		Grade:           f.Grade,
-		Comments:        f.Comments,
 		SubmittedAt:     time.Now(),
 		StudentFullname: f.StudentFullname,
 		HomeworkPageID:  f.HomeworkPageID,

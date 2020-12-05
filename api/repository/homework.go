@@ -112,7 +112,7 @@ func UpdateHomeworkByOwner(db *gorm.DB, homework *model.Homework, email string) 
 		return err
 	}
 
-	if err := db.Model(&model.Homework{}).Where("student_id = ? AND homework_page_id = ? AND id = ?", owner.ID, homework.HomeworkPageID, homework.ID).Update(homework).Error; err != nil {
+	if err := db.Model(&model.Homework{}).Where("student_id = ? AND homework_page_id = ?", owner.ID, homework.HomeworkPageID).Update(homework).Error; err != nil {
 		return err
 	}
 
@@ -130,7 +130,7 @@ func UpdateHomeworkByTeacher(db *gorm.DB, homework *model.Homework, email string
 		return err
 	}
 
-	if err := db.Model(&model.Homework{}).Where("homework_page_id = ? AND id = ?", hwp.ID, homework.ID).Update(homework).Error; err != nil {
+	if err := db.Model(&model.Homework{}).Where("homework_page_id = ?", hwp.ID).Update(homework).Error; err != nil {
 		return err
 	}
 
