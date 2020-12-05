@@ -30,7 +30,7 @@ func ListRelatedHomeworks(db *gorm.DB, hwpID uint) (model.Homeworks, error) {
 }
 
 func ReadHomeworkByIDandOwner(db *gorm.DB, id uint, email string) (*model.Homework, error) {
-	owner := &model.Student{}
+	owner := &model.User{}
 	if err := db.Where("email = ?", email).First(&owner).Error; err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func ReadHomeworkByIDandOwner(db *gorm.DB, id uint, email string) (*model.Homewo
 }
 
 func ReadHomeworkByIDandTeacher(db *gorm.DB, id uint, email string) (*model.Homework, error) {
-	teacher := &model.Teacher{}
+	teacher := &model.User{}
 	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func DeleteHomework(db *gorm.DB, id uint) error {
 }
 
 func DeleteHomeworkByTeacher(db *gorm.DB, id uint, email string) error {
-	teacher := &model.Teacher{}
+	teacher := &model.User{}
 	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
 		return err
 	}
@@ -107,7 +107,7 @@ func UpdateHomework(db *gorm.DB, homework *model.Homework) error {
 }
 
 func UpdateHomeworkByOwner(db *gorm.DB, homework *model.Homework, email string) error {
-	owner := &model.Student{}
+	owner := &model.User{}
 	if err := db.Where("email = ?", email).First(&owner).Error; err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func UpdateHomeworkByOwner(db *gorm.DB, homework *model.Homework, email string) 
 }
 
 func UpdateHomeworkByTeacher(db *gorm.DB, homework *model.Homework, email string) error {
-	teacher := &model.Teacher{}
+	teacher := &model.Student{}
 	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {
 		return err
 	}
