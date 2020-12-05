@@ -88,6 +88,10 @@ class StudentHwPage extends React.Component{
                     })
                 }
             })
+            .catch((response) => {
+                dispatch(setMessage("Only registered students can submit this homework!"))
+                return <Redirect to="/signin"/>;
+            })
     }
     render(){
         const isSubmitted = this.state.isSubmitted;

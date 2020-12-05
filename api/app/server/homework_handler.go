@@ -109,6 +109,7 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 		}
 		server.logger.Warn().Err(err).Msgf("StudentID: %v", user.ID)
 		homeworkModel.StudentID = user.ID
+		homeworkModel.StudentFullname = user.FirstName + user.LastName
 	} else {
 		hwp, err := repository.ReadHomeworkPage(server.db, homeworkModel.HomeworkPageID)
 		if err != nil {
