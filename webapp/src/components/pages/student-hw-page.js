@@ -5,6 +5,7 @@ import React from 'react';
 import axios from 'axios';
 import { connect } from "react-redux";
 import { submitHomework } from "../../actions/homework";
+import { setMessage } from "../../actions/message";
 
 class StudentHwPage extends React.Component{
     
@@ -30,7 +31,8 @@ class StudentHwPage extends React.Component{
             grade: "",
             comments: "",
             isSubmitted: false,
-            hwPageID: -1
+            hwPageID: -1,
+            mode: "all",
         };          
     }
     onChangeFullName(e) {
@@ -76,6 +78,7 @@ class StudentHwPage extends React.Component{
                 if (response.data) {
                     this.setState({
                         hwPageID: response.data.id,
+                        mode: response.data.mode,
                         course_title: response.data.course_title,
                         title: response.data.title,
                         description: response.data.content,
@@ -89,6 +92,13 @@ class StudentHwPage extends React.Component{
         const isEmptyDesc = this.state.description.trim() === "";
         const data = this.ckEditorRemoveTags(this.state.description);
         const isEmptyFile = this.state.files.length === 0; 
+        const { isLoggedIn, dispatch } = this.props;
+
+        if (this.state.mode == "registered" && !isLoggedIn) {
+            dispatch(setMessage("Only registered students can submit this homework!"))
+            return <Redirect to="/signin"/>;
+        }
+
         return(
             <div>
                 <Header />
@@ -172,4 +182,13 @@ class StudentHwPage extends React.Component{
     }
     }
 
-export default connect()(StudentHwPage); 
+function mapStateToProps(state) {
+    const { isLoggedIn } = state.auth;
+    const { message } = state.message;
+    return {
+        isLoggedIn,
+        message
+    };
+}
+
+export default connect(mapStateToProps)(StudentHwPage); 

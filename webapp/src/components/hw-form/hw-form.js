@@ -29,12 +29,16 @@ class HwForm extends React.Component {
           openDate: new Date(),
           closeDate: new Date(),
           successful: false,
-          isClicked: false
+          isClicked: false,
+          mode: "all",
         };          
     }
 
-    
-
+    onChangeMode(e) {    
+        this.setState({
+            mode: e.target.value
+        }); 
+    }
     onChangeFullName(e) {
         this.setState({
           fullName: e.target.value,
@@ -78,7 +82,7 @@ class HwForm extends React.Component {
         e.preventDefault();
         
         const { dispatch} = this.props;
-        dispatch(createHomework( this.state.courseTitle, this.state.title, this.state.description, this.state.files, this.state.openDate, this.state.closeDate, this.state.fullName))
+        dispatch(createHomework( this.state.courseTitle, this.state.title, this.state.description, this.state.files, this.state.openDate, this.state.closeDate, this.state.fullName, this.state.mode))
             .then(() => {
                 this.setState({
                     isClicked: true,
@@ -99,7 +103,7 @@ class HwForm extends React.Component {
         const isLoggedIn = this.props;
         return(
             <form onSubmit={this.handleSubmit} className="w-3/4 border border-purple-300 rounded bg-purple-300 p-4">
-               {
+                {
                    isLoggedIn ? 
                    null :
                    <div className="flex flex-row items items-center pb-2">
@@ -109,12 +113,21 @@ class HwForm extends React.Component {
                    <input  onChange={this.onChangeFullName} className="text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Enter your full name" />
                    </div>
                    
-               }
+                }
+                <div className="flex flex-row items items-center pb-2">
+                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
+                        Set who can submit homeworks*
+                    </label>
+                    <select value={this.state.mode} onChange={this.onChangeMode} className="text-xs bg-purple-100 border border-purple-300">
+                        <option value="all">Everyone</option>
+                        <option value="registered">Registered accounts</option>
+                    </select>
+                </div>
                 <div className="flex flex-row items items-center pb-2">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
                         Course title*
                     </label>
-                    <input onChange={this.onChangeCourseTitle} className="text-gray-700 border border-purple-400  rounded py-1 text-xs px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Enter course title" />
+                    <input onChange={this.onChangeCourseTitle} className="text-gray-700 border border-purple-400 rounded py-1 text-xs px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Enter course title" />
                 </div>
                 <div className="flex flex-row items items-center pb-2">
                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >

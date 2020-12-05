@@ -8,8 +8,8 @@ import {
 
 import HomeworkService from "../services/homework-service.js";
 
-export const createHomework = (courseTitle, title, description, files, openDate, closeDate, fullName) => (dispatch) => {
-    return HomeworkService.createHomework( courseTitle, title, description, files, openDate, closeDate, fullName).then(
+export const createHomework = (courseTitle, title, description, files, openDate, closeDate, fullName, mode) => (dispatch) => {
+    return HomeworkService.createHomework( courseTitle, title, description, files, openDate, closeDate, fullName, mode).then(
       (data) => {
         dispatch({
           type: CREATE_HOMEWORK,
@@ -42,8 +42,8 @@ export const submitHomework = (fullName, answer, submitDate, grade, comments, hw
     }
     ) 
 }
-export const gradeHomework = ( fullName, answer, submitDate, grade, comments, hwPageID, id) => (dispatch) => {
-  return HomeworkService.gradeHomework( fullName, answer, submitDate, grade, comments, hwPageID, id)
+export const gradeHomework = (id, fullName, answer, submitDate, grade, comments, hwPageID) => (dispatch) => {
+  return HomeworkService.gradeHomework(id, fullName, answer, submitDate, grade, comments, hwPageID)
     .then(
     (data) => {
       dispatch({

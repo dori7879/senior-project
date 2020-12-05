@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const createHomework = ( courseTitle, title, description, files, openDate, closeDate, fullName) => {
+const createHomework = ( courseTitle, title, description, files, openDate, closeDate, fullName, mode) => {
     return axios
       .post("/api/v1/homework-page", {
         course_title: courseTitle, 
@@ -8,7 +8,8 @@ const createHomework = ( courseTitle, title, description, files, openDate, close
         content: description, 
         opened_at: openDate.toJSON(), 
         closed_At: closeDate.toJSON(),
-        teacher_fullname: fullName
+        teacher_fullname: fullName,
+        mode: mode,
       })
       .then((response) => {
         localStorage.removeItem("teacher_link");
@@ -46,9 +47,9 @@ const submitHomework = (fullName, answer, submitDate, grade, comments, hwPageID)
     }) 
 }
 
-const gradeHomework = ( fullName, answer, submitDate, grade, comments, hwPageID, id) => {
+const gradeHomework = (id, fullName, answer, submitDate, grade, comments, hwPageID) => {
   return axios 
-    .put('/api/v1/homework/'+ id,{
+    .put('/api/v1/homework/'+ id.toString(),{
       student_fullname: fullName,
       content: answer,
       submitted_at: submitDate,

@@ -5,6 +5,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import { login } from "../../actions/auth";
+import { clearMessage } from "../../actions/message";
 
 const required = (value) => {
     if (!value) {
@@ -52,6 +53,8 @@ class LoginForm extends React.Component {
             .then(() => {
               window.location.reload();
             })
+          
+          dispatch(clearMessage())
         }
         
       }
