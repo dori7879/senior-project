@@ -106,25 +106,31 @@ class StudentHwPage extends React.Component{
                 <div className="min-h-screen flex items-center flex-col justify-top bg-purple-100 py-2 px-4 sm:px-6 lg:px-8 ">              
                     <div className="w-3/4 flex justify-center flex-col items-center pb-4">
                         <div className="text-purple-900 font-bold text-xl pt-2">Homework</div>
-                            <div className="w-full  flex flex-row items items-center border border-purple-300 rounded-t ">
-                                <div className="w-full border border-purple-300 bg-purple-300 rounded-tl p-4">
-                                    <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-3 px-4 pt-1">
-                                        <strong>Course Title:</strong> <span className="text-purple-900">{this.state.course_title}</span></h2>  
-                                    <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                        <strong>Homework Title:</strong> <span className="text-purple-900">{this.state.title}</span></h2>   
-                                </div>
-                                <div>
+                        <div className="w-full  flex flex-row items items-center border border-purple-300 rounded-t ">
+                            <div className="w-full border border-purple-300 bg-purple-300 rounded-tl p-4">
+                                <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-3 px-4 pt-1">
+                                    <strong>Course Title:</strong> <span className="text-purple-900">{this.state.course_title}</span>
+                                </h2>  
+                                <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
+                                    <strong>Homework Title:</strong> <span className="text-purple-900">{this.state.title}</span>
+                                </h2>   
+                            </div>
+                            <div>
+                                {
+                                isLoggedIn ? 
+                                null :
                                 <div className="flex flex-row items">
                                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-4 px-4 pt-1" >
                                         Full Name*:
                                     </label>
                                     <input onChange={this.onChangeFullName} className="mr-4 mb-3 text-gray-700 border border-purple-400  rounded  text-xs px-1 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Enter your full name" />
                                 </div>
+                                }
                                 <div className="flex flex-row items items-center">
                                     <h2 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
-                                    <strong>Time Remaining:</strong> <span className="text-purple-900">15min</span></h2>
+                                        <strong>Time Remaining:</strong> <span className="text-purple-900">15min</span>
+                                    </h2>
                                 </div>  
-                                
                             </div>     
                         </div>
                         <div  className="w-full border border-purple-300 rounded-b bg-purple-300 p-4">
@@ -160,7 +166,7 @@ class StudentHwPage extends React.Component{
                                         />
                                     </div>
                                     <div className="flex flex-row ml-2 pb-2 items items-center">
-                                    <label className="block uppercase tracking-wide  text-gray-700 text-xs font-bold mb-2 px-2 pt-1" >
+                                        <label className="block uppercase tracking-wide  text-gray-700 text-xs font-bold mb-2 px-2 pt-1" >
                                             Attach files
                                         </label>
                                         <input onChange={this.onChangeAttachments} className="border border-purple-400 text-xs text-gray-700 w-1/2 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="files" type="file" multiple />
