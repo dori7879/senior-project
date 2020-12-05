@@ -62,10 +62,12 @@ func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request)
 
 // HandleCreateHomework is a handler for creating a homework
 func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Request) {
-	val := r.Context().Value(middleware.CtxKeyJWTClaims)
-	claims := val.(jwt.MapClaims)
+	var claims jwt.MapClaims
+	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
+		claims = val.(jwt.MapClaims)
+	}
 
-	if claims["role"].(string) == "teacher" {
+	if claims != nil && claims["role"].(string) == "teacher" {
 		server.logger.Warn().Err(errors.New("Registered teacher tries to create a homework")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)

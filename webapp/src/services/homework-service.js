@@ -1,4 +1,5 @@
 import axios from "axios";
+import authHeader from "./auth-header";
 
 const createHomework = ( courseTitle, title, description, files, openDate, closeDate, fullName, mode) => {
     return axios
@@ -10,7 +11,7 @@ const createHomework = ( courseTitle, title, description, files, openDate, close
         closed_At: closeDate.toJSON(),
         teacher_fullname: fullName,
         mode: mode,
-      })
+      }, { headers: authHeader() })
       .then((response) => {
         localStorage.removeItem("teacher_link");
         localStorage.removeItem("student_link");
@@ -25,7 +26,8 @@ const createHomework = ( courseTitle, title, description, files, openDate, close
 const fetchHomework = (randomStr ) => {
   return axios
     .get(
-      `/api/v1/homework-page/student/${randomStr}`
+      `/api/v1/homework-page/student/${randomStr}`,
+      { headers: authHeader() }
     )
     .then((response) => {
       return response.data;
@@ -41,7 +43,7 @@ const submitHomework = (fullName, answer, submitDate, grade, comments, hwPageID)
       grade: grade,
       comments: comments,
       homework_page_id: hwPageID
-    })
+    }, { headers: authHeader() })
     .then((response) => {
       return response.data;
     }) 
@@ -56,7 +58,7 @@ const gradeHomework = (id, fullName, answer, submitDate, grade, comments, hwPage
       grade: grade,
       comments: comments,
       homework_page_id: hwPageID
-    })
+    }, { headers: authHeader() })
     .then((response) => {
       return response.data;
     }) 
