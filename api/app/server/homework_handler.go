@@ -62,17 +62,15 @@ func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request)
 
 // HandleCreateHomework is a handler for creating a homework
 func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Request) {
-	var claims jwt.MapClaims
-	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
-		server.logger.Warn().Msgf("val: %v", val)
-		claims = val.(jwt.MapClaims)
-		if claims["role"].(string) == "teacher" {
-			server.logger.Warn().Err(errors.New("Registered teacher tries to create a homework")).Msg("")
+	val := r.Context().Value(middleware.CtxKeyJWTClaims)
+	claims := val.(jwt.MapClaims)
 
-			w.WriteHeader(http.StatusUnauthorized)
-			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
-			return
-		}
+	if claims["role"].(string) == "teacher" {
+		server.logger.Warn().Err(errors.New("Registered teacher tries to create a homework")).Msg("")
+
+		w.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
+		return
 	}
 
 	form := &model.HomeworkForm{}
