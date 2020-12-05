@@ -3,6 +3,7 @@ import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import { submitHomework } from "../../actions/homework";
 import { setMessage } from "../../actions/message";
@@ -94,7 +95,7 @@ class StudentHwPage extends React.Component{
         const isEmptyFile = this.state.files.length === 0; 
         const { isLoggedIn, dispatch } = this.props;
 
-        if (this.state.mode == "registered" && !isLoggedIn) {
+        if (this.state.mode === "registered" && !isLoggedIn) {
             dispatch(setMessage("Only registered students can submit this homework!"))
             return <Redirect to="/signin"/>;
         }
