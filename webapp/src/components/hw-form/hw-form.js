@@ -17,6 +17,7 @@ class HwForm extends React.Component {
         this.onChangeFiles = this.onChangeFiles.bind(this);
         this.onChangeOpenDate = this.onChangeOpenDate.bind(this);
         this.onChangeCloseDate = this.onChangeCloseDate.bind(this);
+        this.onChangeMode = this.onChangeMode.bind(this);
         
 
     
@@ -30,13 +31,13 @@ class HwForm extends React.Component {
           closeDate: new Date(),
           successful: false,
           isClicked: false,
-          mode: "all",
+          mode: "",
         };          
     }
 
     onChangeMode(e) {    
         this.setState({
-            mode: e.target.value
+            mode: e.target.value,
         }); 
     }
     onChangeFullName(e) {
