@@ -193,15 +193,10 @@ func (server *Server) HandleReadHomework(w http.ResponseWriter, r *http.Request)
 
 // HandleUpdateHomework is a handler for updating a homework
 func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Request) {
-	var val interface{}
-	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val == nil {
-		server.logger.Warn().Err(errors.New("Guest tries to update a homework")).Msg("")
-
-		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
-		return
+	var claims jwt.MapClaims
+	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
+		claims = val.(jwt.MapClaims)
 	}
-	claims := val.(jwt.MapClaims)
 
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
 	if err != nil || id == 0 {
@@ -236,7 +231,7 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 
 	homeworkModel.ID = uint(id)
 
-	if claims["role"].(string) == "teacher" {
+	if claims != nil && claims["role"].(string) == "teacher" {
 		err = repository.UpdateHomeworkByTeacher(server.db, homeworkModel, claims["sub"].(string))
 	} else {
 		err = repository.UpdateHomeworkByOwner(server.db, homeworkModel, claims["sub"].(string))
