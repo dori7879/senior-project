@@ -54,6 +54,7 @@ class TeacherHwPage extends React.Component{
                     isGraded: true,
                     successful: true
                 });
+                window.location.reload();
             })
             .catch(() => {
                 this.setState({
