@@ -54,6 +54,7 @@ class LinkPage extends React.Component {
                                     <textarea
                                         ref={(textarea1) => this.textArea1 = textarea1}
                                         defaultValue={url_student}
+                                        rows="10"
                                     />
                                 </form>
                             </div>
@@ -70,6 +71,7 @@ class LinkPage extends React.Component {
                                     <textarea
                                         ref={(textarea) => this.textArea = textarea}
                                         defaultValue={url_teacher}
+                                        rows="10"
                                     />
                                 </form>
                             </div>

@@ -7,6 +7,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import { submitHomework } from "../../actions/homework";
 import { setMessage } from "../../actions/message";
+import authHeader from "../../services/auth-header";
 
 class StudentHwPage extends React.Component{
     
@@ -74,7 +75,7 @@ class StudentHwPage extends React.Component{
     }
     componentDidMount () {
         const { randomStr } = this.props.match.params;
-        axios.get(`/api/v1/homework-page/student/${randomStr}`)
+        axios.get(`/api/v1/homework-page/student/${randomStr}`, { headers: authHeader() })
             .then((response) => {
                 if (response.data) {
                     this.setState({

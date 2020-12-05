@@ -2,7 +2,10 @@ import Footer from '../footer';
 import Header from '../header';
 import React from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
+import { connect } from "react-redux";
 import { gradeHomework } from "../../actions/homework";
+import authHeader from "../../services/auth-header";
 
 class TeacherHwPage extends React.Component{
     
@@ -63,7 +66,7 @@ class TeacherHwPage extends React.Component{
 
     componentDidMount () {
         const { randomStr } = this.props.match.params;
-        axios.get(`/api/v1/homework-page/teacher/${randomStr}`)
+        axios.get(`/api/v1/homework-page/teacher/${randomStr}`, { headers: authHeader() })
             .then((response) => {
                 if (response.data) {
                     this.setState({
@@ -81,6 +84,12 @@ class TeacherHwPage extends React.Component{
         const isEmptyDesc = this.state.description.trim() === "";
         const isEmptyFile = this.state.files.length === 0; 
         const submitted_hw = this.state.homeworks.length;
+        const { isLoggedIn, role } = this.props;
+
+        if (isLoggedIn && role === "student") {
+            return <Redirect to="/"/>;
+        }
+
         return(
             <div>
                 <Header />
@@ -174,4 +183,12 @@ class TeacherHwPage extends React.Component{
     }
     }
 
-export default TeacherHwPage;
+function mapStateToProps(state) {
+    const { isLoggedIn, role } = state.auth;
+    return {
+        isLoggedIn,
+        role
+    };
+}
+
+export default connect(mapStateToProps)(TeacherHwPage);
