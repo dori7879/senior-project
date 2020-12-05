@@ -13,6 +13,7 @@ type HomeworkPage struct {
 	StudentLink     string `gorm:"unique"`
 	TeacherLink     string `gorm:"unique"`
 	CourseTitle     string
+	Mode            string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	OpenedAt        time.Time
@@ -31,6 +32,7 @@ type HomeworkPageDto struct {
 	StudentLink     string `json:"student_link"`
 	TeacherLink     string `json:"teacher_link"`
 	CourseTitle     string `json:"course_title"`
+	Mode            string `json:"mode"`
 	CreatedAt       string `json:"created_at"`
 	UpdatedAt       string `json:"updated_at"`
 	OpenedAt        string `json:"opened_at"`
@@ -46,6 +48,7 @@ type HomeworkPageNestedDto struct {
 	StudentLink     string       `json:"student_link"`
 	TeacherLink     string       `json:"teacher_link"`
 	CourseTitle     string       `json:"course_title"`
+	Mode            string       `json:"mode"`
 	CreatedAt       string       `json:"created_at"`
 	UpdatedAt       string       `json:"updated_at"`
 	OpenedAt        string       `json:"opened_at"`
@@ -59,6 +62,7 @@ type HomeworkPageForm struct {
 	Title           string `json:"title" form:"required,alpha_space,max=255"`
 	Content         string `json:"content" form:"required,max=255"`
 	CourseTitle     string `json:"course_title" form:"required,max=255"`
+	Mode            string `json:"mode" form:"required,max=16"`
 	OpenedAt        string `json:"opened_at" form:"required,date"`
 	ClosedAt        string `json:"closed_at" form:"required,date"`
 	TeacherFullname string `json:"teacher_fullname" form:"alpha_space,max=255"`
@@ -72,6 +76,7 @@ func (hwp HomeworkPage) ToDto() *HomeworkPageDto {
 		StudentLink:     hwp.StudentLink,
 		TeacherLink:     hwp.TeacherLink,
 		CourseTitle:     hwp.CourseTitle,
+		Mode:            hwp.Mode,
 		CreatedAt:       hwp.CreatedAt.Format(time.RFC3339),
 		UpdatedAt:       hwp.UpdatedAt.Format(time.RFC3339),
 		OpenedAt:        hwp.OpenedAt.Format(time.RFC3339),
@@ -89,6 +94,7 @@ func (hwp HomeworkPage) ToNestedDto(hws Homeworks) *HomeworkPageNestedDto {
 		StudentLink:     hwp.StudentLink,
 		TeacherLink:     hwp.TeacherLink,
 		CourseTitle:     hwp.CourseTitle,
+		Mode:            hwp.Mode,
 		CreatedAt:       hwp.CreatedAt.Format(time.RFC3339),
 		UpdatedAt:       hwp.UpdatedAt.Format(time.RFC3339),
 		OpenedAt:        hwp.OpenedAt.Format(time.RFC3339),
@@ -122,6 +128,7 @@ func (f *HomeworkPageForm) ToModel() (*HomeworkPage, error) {
 		Title:           f.Title,
 		Content:         f.Content,
 		CourseTitle:     f.CourseTitle,
+		Mode:            f.Mode,
 		OpenedAt:        openedAt,
 		ClosedAt:        closedAt,
 		TeacherFullname: f.TeacherFullname,

@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `homework_pages`
     `student_link`      VARCHAR(255) NOT NULL,
     `teacher_link`      VARCHAR(255) NOT NULL,
     `course_title`      VARCHAR(255) NOT NULL,
+    `mode`              VARCHAR(16)  NOT NULL,
     `created_at`        TIMESTAMP    NOT NULL,
     `updated_at`        TIMESTAMP    NULL,
     `opened_at`         TIMESTAMP    NULL,

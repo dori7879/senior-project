@@ -109,6 +109,21 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 		}
 		server.logger.Warn().Err(err).Msgf("StudentID: %v", user.ID)
 		homeworkModel.StudentID = user.ID
+	} else {
+		hwp, err := repository.ReadHomeworkPage(server.db, homeworkModel.HomeworkPageID)
+		if err != nil {
+			server.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+			return
+		}
+
+		if hwp.Mode == "registered" {
+			server.logger.Info().Msg("Guest tries to submit a homework to a registered-only HW Page")
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 	}
 
 	homework, err := repository.CreateHomework(server.db, homeworkModel)
@@ -179,7 +194,7 @@ func (server *Server) HandleReadHomework(w http.ResponseWriter, r *http.Request)
 func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Request) {
 	var val interface{}
 	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val == nil {
-		server.logger.Warn().Err(errors.New("Guest tries to read a homework")).Msg("")
+		server.logger.Warn().Err(errors.New("Guest tries to update a homework")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)

@@ -20,6 +20,15 @@ func ListHomeworkPagesByOwner(db *gorm.DB, email string) (model.HomeworkPages, e
 	return homeworkPages, nil
 }
 
+func ReadHomeworkPage(db *gorm.DB, id uint) (*model.HomeworkPage, error) {
+	homeworkPage := &model.HomeworkPage{}
+	if err := db.Where("id = ?", id).First(&homeworkPage).Error; err != nil {
+		return nil, err
+	}
+
+	return homeworkPage, nil
+}
+
 func ReadHomeworkPageWithNoOwner(db *gorm.DB, id uint) (*model.HomeworkPage, error) {
 	homeworkPage := &model.HomeworkPage{}
 	if err := db.Where("teacher_id is NULL AND id = ?", id).First(&homeworkPage).Error; err != nil {
