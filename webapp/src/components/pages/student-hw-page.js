@@ -89,9 +89,7 @@ class StudentHwPage extends React.Component{
                 }
             })
             .catch((response) => {
-                const { dispatch } = this.props;
-                dispatch(setMessage("Only registered students can submit this homework!"))
-                return <Redirect to="/signin"/>;
+                this.props.history.push('/signin')
             })
     }
     render(){
@@ -204,4 +202,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(StudentHwPage); 
+export default connect(mapStateToProps)(StudentHwPage);
