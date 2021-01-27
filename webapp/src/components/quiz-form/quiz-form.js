@@ -1,89 +1,162 @@
 import React, { Component } from 'react';
 
+import CKEditor from 'ckeditor4-react';
+import DateTimePicker from 'react-datetime-picker';
+import QuizQuestion from '../quiz-question';
+import { connect } from "react-redux";
+
 class QuizForm extends Component {
 
     state = {
-      isAdded:false,
-      selectedOption: 'one answer'
+      fullName: "",
+      courseTitle: "",
+      title: "",
+      description: "",
+      mode: "all",
+      openDate: new Date(),
+      closeDate: new Date(),
+    }
+
+    onChangeMode(e) {    
+      this.setState({
+          mode: e.target.value,
+      }); 
+    }
+    onChangeFullName(e) {
+      this.setState({
+        fullName: e.target.value,
+      });
+    }   
+    onChangeCourseTitle(e) {
+        this.setState({
+          courseTitle: e.target.value,
+        });
+    }
+    onChangeTitle(e) {
+        this.setState({
+          title: e.target.value,
+        });
+    }    
+    onChangeDescription(e) {
+        this.setState({
+        description: e.editor.getData()
+        });
+    }
+    onChangeOpenDate(date) {
+      this.setState({
+        openDate: date,
+       });
+      
+    }
+
+    onChangeCloseDate(date) {
+        this.setState({
+          closeDate: date,
+        });
+    }
+    
+    handleSubmit(e){
+      e.preventDefault();
+      
+      /*
+      const { dispatch} = this.props;
+      dispatch(createHomework( this.state.courseTitle, this.state.title, this.state.description, this.state.files, this.state.openDate, this.state.closeDate, this.state.fullName, this.state.mode))
+          .then(() => {
+              this.setState({
+                  isClicked: true,
+                  successful: true
+              });
+          })
+          .catch(() => {
+              this.setState({
+              successful: false,
+              isClicked: false
+              });
+          });*/
+  }
+
+    sendQuizViaAPI = () => {
+      return {
+        quiz: {
+          id: 1,
+        }
+      }
     }
   
-
-    handleClick = () => {
-      this.setState(
-        state => ({
-          ...state,
-          isAdded: true
-        })
-      );
-      console.log("question added")
-    }
-
-    change = (event) => {
-      this.setState(
-        state => ({
-          ...state,
-          selectedOption: event.target.value
-        })
-      )
-      console.log(this.state.selectedOption)
-    }
     render() {
-      
+      const isLoggedIn = this.props.isLoggedIn;
       return (
-        <div>
-          <div>
-            {this.state.isAdded ? 
-           
-            <div className="border border-purple-500 text-purple-800 text-xs flex flex-col justify-center items-center py-2 my-4">
-                <label htmlFor="question">Choose type of the question</label>
-                <select name="question" id="question" onChange={this.change}>
-                  <option value="one answer">One answer</option>
-                  <option value="multiple answers">Multiple answers</option>
-                  <option value="true/false">True/False</option>
-                  <option value="open">Open</option>
-                </select> 
-
+          <form className="w-3/4 border border-purple-300 rounded bg-purple-300 p-4">
+              {
+                isLoggedIn ? 
+                null :
                 <div className="flex flex-row items items-center pb-2">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
+                    Full name*
+                </label>
+                <input  onChange={this.onChangeFullName} className="text-gray-700 border border-purple-400 rounded text-xs py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Enter your full name" />
+                </div>
+                
+              }
+              <div className="flex flex-row items items-center pb-2">
                   <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
-                      Question 1
+                      Set who can submit quizzes*
                   </label>
-                  <input className=" h-6 text-gray-700 border border-purple-400 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="question" type="text" />
+                  <select value={this.state.mode} onChange={this.onChangeMode} className="text-xs bg-purple-100 border border-purple-300">
+                      <option value="all">Everyone</option>
+                      <option value="registered">Registered accounts</option>
+                  </select>
               </div>
-              <div className="flex flex-row items items-center pb-2">  
-                <label className="block uppercase tracking-wide text-gray-700 text-xs mb-2 px-4 pt-1" >
-                      option 1
+              <div className="flex flex-row items items-center pb-2">
+                  <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
+                      Course title*
                   </label>
-                  <input className="w-1/2 h-6 text-gray-700 border border-purple-400 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="option1" type="text" />
-              </div>  
-              <div className="flex flex-row items items-center pb-2">  
-                <label className="block uppercase tracking-wide text-gray-700 text-xs mb-2 px-4 pt-1" >
-                      option 2
+                  <input onChange={this.onChangeCourseTitle} className="text-gray-700 border border-purple-400 rounded py-1 text-xs px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Enter course title" />
+              </div>
+              <div className="flex flex-row items items-center pb-2">
+                  <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
+                      Title*
                   </label>
-                  <input className="w-1/2 h-6 text-gray-700 border border-purple-400 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="option2" type="text" />
-              </div>  
-              <div className="flex flex-row items items-center pb-2">  
-                <label className="block uppercase tracking-wide text-gray-700 text-xs mb-2 px-4 pt-1 " >
-                      option 3
+                  <input  onChange={this.onChangeTitle} className="text-gray-700 border border-purple-400 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="title" type="text" placeholder="Enter the title" />
+              </div>
+              <div className="flex flex-row pb-2">
+                  <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
+                      Description
                   </label>
-                  <input className="w-1/2 h-6 text-gray-700 border border-purple-400 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white" id="option3" type="text" />
-              </div>  
-              <input className="shadow bg-purple-800 hover:bg-purple-500 focus:shadow-outline focus:outline-none text-white py-1 px-2 rounded" type="button" value="Save"/>
-              
-            </div>
-
-            : null}
-          </div>
-          <div className="flex justify-center">
-            <button type='button' className=" w-3/4 border border-purple-500 border-dashed rounded px-4 py-5 mb-3 flex justify-center items items-center text-xl text-purple-700" onClick={this.handleClick}>
-              + Add Question
-            </button>
-
-          </div>
-
-        </div>
+                  <CKEditor
+                        data={this.state.description}
+                        onChange={this.onChangeDescription}
+                  />
+              </div>
+              <div className="flex flex-row pb-2 items items-center">
+                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1" >
+                        Open date and time*
+                    </label>
+                    <DateTimePicker value={this.state.openDate} onChange={this.onChangeOpenDate} />
+              </div>
+              <div className="flex flex-row pb-3 items items-center">
+                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 px-4 pt-1">
+                        Close date and time*
+                    </label>
+                    <DateTimePicker value={this.state.closeDate} onChange={this.onChangeCloseDate} />
+              </div>
+              <QuizQuestion />
+              <div className="flex justify-center">
+                     <button type="submit" className="mb-2 relative w-full flex justify-center py-1 px-2 border border-transparent text-sm leading-4 font-medium rounded-md text-purple-200 bg-purple-800 hover:bg-purple-500 focus:outline-none transition duration-150 ease-in-out">
+                       Generate Link
+                    </button>
+              </div>
+          </form>
         
       );
     }
   }
 
-  export default QuizForm;
+  function mapStateToProps(state) {
+    const { isLoggedIn } = state.auth;
+    return {
+      isLoggedIn
+    };
+  }
+
+  export default  connect(mapStateToProps)(QuizForm);

@@ -101,7 +101,7 @@ class HwForm extends React.Component {
         if (this.state.isClicked) {
             return <Redirect to="/link"/>;
         }
-        const isLoggedIn = this.props;
+        const {isLoggedIn} = this.props;
         return(
             <form onSubmit={this.handleSubmit} className="w-3/4 border border-purple-300 rounded bg-purple-300 p-4">
                 {
