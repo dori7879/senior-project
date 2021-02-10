@@ -10,7 +10,7 @@ type QuizSubmission struct {
 	ID              uint `gorm:"primaryKey"`
 	Grade           string
 	Comments        string
-	SubmittedAt     time.Time
+	SubmittedAt     time.Time `gorm:"default:null"`
 	UpdatedAt       time.Time
 	StudentFullname string
 	StudentID       uint `gorm:"default:null"`

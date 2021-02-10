@@ -7,14 +7,13 @@ import (
 type MultipleChoiceQuestions []*MultipleChoiceQuestion
 
 type MultipleChoiceQuestion struct {
-	ID             uint `gorm:"primaryKey"`
-	Content        string
-	Fixed          bool
-	SubmittedAt    time.Time
-	UpdatedAt      time.Time
-	QuizID         uint
-	AnswerChoices  []AnswerChoice  `gorm:"foreignKey:QuestionID;references:ID"`
-	StudentAnswers []StudentAnswer `gorm:"foreignKey:MultipleChoiceQuestionID;references:ID"`
+	ID            uint `gorm:"primaryKey"`
+	Content       string
+	Fixed         bool
+	SubmittedAt   time.Time
+	UpdatedAt     time.Time
+	QuizID        uint
+	AnswerChoices []AnswerChoice `gorm:"foreignKey:QuestionID;references:ID"`
 }
 
 type MultipleChoiceQuestionDtos []*MultipleChoiceQuestionDto
@@ -40,9 +39,10 @@ type MultipleChoiceQuestionNestedDto struct {
 }
 
 type MultipleChoiceQuestionForm struct {
-	Content string `json:"content" form:"max=255"`
-	Fixed   bool   `json:"fixed" form:""`
-	QuizID  uint   `json:"quiz_id" form:""`
+	Content       string              `json:"content" form:"max=255"`
+	Fixed         bool                `json:"fixed" form:""`
+	QuizID        uint                `json:"quiz_id" form:""`
+	AnswerChoices []*AnswerChoiceForm `json:"answer_choices"`
 }
 
 func (mcq MultipleChoiceQuestion) ToDto() *MultipleChoiceQuestionDto {
@@ -83,11 +83,13 @@ func (f *MultipleChoiceQuestionForm) ToModel() (*MultipleChoiceQuestion, error) 
 			SubmittedAt: time.Now(),
 			Content:     f.Content,
 			QuizID:      f.QuizID,
+			Fixed:       f.Fixed,
 		}, nil
 	}
 
 	return &MultipleChoiceQuestion{
 		SubmittedAt: time.Now(),
 		QuizID:      f.QuizID,
+		Fixed:       f.Fixed,
 	}, nil
 }

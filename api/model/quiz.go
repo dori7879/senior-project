@@ -13,6 +13,7 @@ type Quiz struct {
 	StudentLink             string `gorm:"unique"`
 	TeacherLink             string `gorm:"unique"`
 	CourseTitle             string
+	Mode                    string
 	CreatedAt               time.Time
 	UpdatedAt               time.Time
 	OpenedAt                time.Time
@@ -34,6 +35,7 @@ type QuizDto struct {
 	StudentLink     string `json:"student_link"`
 	TeacherLink     string `json:"teacher_link"`
 	CourseTitle     string `json:"course_title"`
+	Mode            string `json:"mode"`
 	CreatedAt       string `json:"created_at"`
 	UpdatedAt       string `json:"updated_at"`
 	OpenedAt        string `json:"opened_at"`
@@ -49,6 +51,7 @@ type QuizNestedDto struct {
 	StudentLink             string                     `json:"student_link"`
 	TeacherLink             string                     `json:"teacher_link"`
 	CourseTitle             string                     `json:"course_title"`
+	Mode                    string                     `json:"mode"`
 	CreatedAt               string                     `json:"created_at"`
 	UpdatedAt               string                     `json:"updated_at"`
 	OpenedAt                string                     `json:"opened_at"`
@@ -62,12 +65,16 @@ type QuizNestedDto struct {
 }
 
 type QuizForm struct {
-	Title           string `json:"title" form:"required,alpha_space,max=255"`
-	Content         string `json:"content" form:"required,max=255"`
-	CourseTitle     string `json:"course_title" form:"required,max=255"`
-	OpenedAt        string `json:"opened_at" form:"required,date"`
-	ClosedAt        string `json:"closed_at" form:"required,date"`
-	TeacherFullname string `json:"teacher_fullname" form:"alpha_space,max=255"`
+	Title                   string                        `json:"title" form:"required,alpha_space,max=255"`
+	Content                 string                        `json:"content" form:"required,max=255"`
+	CourseTitle             string                        `json:"course_title" form:"required,max=255"`
+	Mode                    string                        `json:"mode"`
+	OpenedAt                string                        `json:"opened_at" form:"required,date"`
+	ClosedAt                string                        `json:"closed_at" form:"required,date"`
+	TeacherFullname         string                        `json:"teacher_fullname" form:"alpha_space,max=255"`
+	OpenQuestions           []*OpenQuestionForm           `json:"open_questions"`
+	TrueFalseQuestions      []*TrueFalseQuestionForm      `json:"true_false_questions"`
+	MultipleChoiceQuestions []*MultipleChoiceQuestionForm `json:"multiple_choice_questions"`
 }
 
 func (q Quiz) ToDto() *QuizDto {
@@ -78,6 +85,7 @@ func (q Quiz) ToDto() *QuizDto {
 		StudentLink:     q.StudentLink,
 		TeacherLink:     q.TeacherLink,
 		CourseTitle:     q.CourseTitle,
+		Mode:            q.Mode,
 		CreatedAt:       q.CreatedAt.Format(time.RFC3339),
 		UpdatedAt:       q.UpdatedAt.Format(time.RFC3339),
 		OpenedAt:        q.OpenedAt.Format(time.RFC3339),
@@ -95,6 +103,7 @@ func (q Quiz) ToNestedDto(qss QuizSubmissions, oqs OpenQuestions, tfqs TrueFalse
 		StudentLink:             q.StudentLink,
 		TeacherLink:             q.TeacherLink,
 		CourseTitle:             q.CourseTitle,
+		Mode:                    q.Mode,
 		CreatedAt:               q.CreatedAt.Format(time.RFC3339),
 		UpdatedAt:               q.UpdatedAt.Format(time.RFC3339),
 		OpenedAt:                q.OpenedAt.Format(time.RFC3339),
@@ -131,6 +140,7 @@ func (f *QuizForm) ToModel() (*Quiz, error) {
 		Title:           f.Title,
 		Content:         f.Content,
 		CourseTitle:     f.CourseTitle,
+		Mode:            f.Mode,
 		OpenedAt:        openedAt,
 		ClosedAt:        closedAt,
 		TeacherFullname: f.TeacherFullname,

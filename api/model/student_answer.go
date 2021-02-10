@@ -31,15 +31,15 @@ type StudentAnswerDto struct {
 }
 
 type StudentAnswerForm struct {
-	Type                     string `json:"type" form="max=255"`
-	OpenAnswer               string `json:"open_answer" form=""`
-	TrueFalseAnswer          bool   `json:"true_false_answer" form=""`
-	MultipleChoiceAnswer     uint   `json:"multiple_choice_answer" form=""`
-	Comments                 string `json:"comments" form="max=255"`
-	QuizSubmissionID         uint   `json:"quiz_submission_id" form=""`
-	OpenQuestionID           uint   `json:"open_question_id" form=""`
-	TrueFalseQuestionID      uint   `json:"true_false_question_id" form=""`
-	MultipleChoiceQuestionID uint   `json:"multiple_choice_question_id" form=""`
+	Type                     string `json:"type" form:"max=255"`
+	OpenAnswer               string `json:"open_answer" form:""`
+	TrueFalseAnswer          bool   `json:"true_false_answer" form:""`
+	MultipleChoiceAnswer     uint   `json:"multiple_choice_answer" form:""`
+	Comments                 string `json:"comments" form:"max=255"`
+	QuizSubmissionID         uint   `json:"quiz_submission_id" form:""`
+	OpenQuestionID           uint   `json:"open_question_id" form:""`
+	TrueFalseQuestionID      uint   `json:"true_false_question_id" form:""`
+	MultipleChoiceQuestionID uint   `json:"multiple_choice_question_id" form:""`
 }
 
 func (sa StudentAnswer) ToDto() *StudentAnswerDto {

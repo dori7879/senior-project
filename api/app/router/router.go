@@ -17,7 +17,6 @@ func New(s *server.Server, conf *config.Conf) *chi.Mux {
 	l := s.Logger()
 
 	r := chi.NewRouter()
-	// r.Method("GET", "/", requestlog.NewHandler(s.HandleIndex, l))
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Use(middleware.ContentTypeJSON)

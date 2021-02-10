@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `quiz_submissions`
     `id`                INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `grade`             VARCHAR(255) NOT NULL,
     `comments`          VARCHAR(255) NOT NULL,
-    `submitted_at`      TIMESTAMP    NOT NULL,
+    `submitted_at`      TIMESTAMP    NULL,
     `updated_at`        TIMESTAMP    NULL,
     `student_fullname`  VARCHAR(255) NULL,
     `student_id`        INT UNSIGNED NULL DEFAULT NULL,

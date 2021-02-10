@@ -15,11 +15,11 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// HandleListHomework is a handler that lists homework
-func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request) {
+// HandleListQuizSubmission is a handler that lists quiz submission
+func (server *Server) HandleListQuizSubmission(w http.ResponseWriter, r *http.Request) {
 	var val interface{}
 	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val == nil {
-		server.logger.Warn().Err(errors.New("Guest tries to list homeworks")).Msg("")
+		server.logger.Warn().Err(errors.New("Guest tries to list quiz submissions")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
@@ -29,14 +29,14 @@ func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request)
 	claims := val.(jwt.MapClaims)
 
 	if claims["role"].(string) == "teacher" {
-		server.logger.Warn().Err(errors.New("Teacher tries to list homeworks")).Msg("")
+		server.logger.Warn().Err(errors.New("Teacher tries to list quiz submissions")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
 		return
 	}
 
-	homeworks, err := repository.ListHomeworksByOwnerEmail(server.db, claims["sub"].(string))
+	quizSubmissions, err := repository.ListQuizSubmissionsByOwnerEmail(server.db, claims["sub"].(string))
 	if err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -45,12 +45,12 @@ func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if homeworks == nil {
+	if quizSubmissions == nil {
 		fmt.Fprintf(w, "[]")
 		return
 	}
 
-	dtos := homeworks.ToDto()
+	dtos := quizSubmissions.ToDto()
 	if err := json.NewEncoder(w).Encode(dtos); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -60,22 +60,22 @@ func (server *Server) HandleListHomework(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-// HandleCreateHomework is a handler for creating a homework
-func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Request) {
+// HandleCreateQuizSubmission is a handler for creating a quiz submission
+func (server *Server) HandleCreateQuizSubmission(w http.ResponseWriter, r *http.Request) {
 	var claims jwt.MapClaims
 	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
 		claims = val.(jwt.MapClaims)
 	}
 
 	if claims != nil && claims["role"].(string) == "teacher" {
-		server.logger.Warn().Err(errors.New("Registered teacher tries to create a homework")).Msg("")
+		server.logger.Warn().Err(errors.New("Registered teacher tries to create a quiz submission")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
 		return
 	}
 
-	form := &model.HomeworkForm{}
+	form := &model.QuizSubmissionForm{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -89,7 +89,7 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	homeworkModel, err := form.ToModel()
+	qSubmissionModel, err := form.ToModel()
 	if err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -108,10 +108,10 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 			return
 		}
 
-		homeworkModel.StudentID = user.ID
-		homeworkModel.StudentFullname = user.FirstName + " " + user.LastName
+		qSubmissionModel.StudentID = user.ID
+		qSubmissionModel.StudentFullname = user.FirstName + " " + user.LastName
 	} else {
-		hwp, err := repository.ReadHomeworkPage(server.db, homeworkModel.HomeworkPageID)
+		qs, err := repository.ReadQuiz(server.db, qSubmissionModel.QuizID)
 		if err != nil {
 			server.logger.Warn().Err(err).Msg("")
 
@@ -120,14 +120,14 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 			return
 		}
 
-		if hwp.Mode == "registered" {
-			server.logger.Info().Msg("Guest tries to submit a homework to a registered-only HW Page")
+		if qs.Mode == "registered" {
+			server.logger.Info().Msg("Guest tries to submit a quiz submission to a registered-only Quiz")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 	}
 
-	homework, err := repository.CreateHomework(server.db, homeworkModel)
+	quizSubmission, err := repository.CreateQuizSubmission(server.db, qSubmissionModel)
 	if err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -136,15 +136,15 @@ func (server *Server) HandleCreateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	server.logger.Info().Msgf("New homework  created: %d", homework.ID)
+	server.logger.Info().Msgf("New quiz submission  created: %d", quizSubmission.ID)
 	w.WriteHeader(http.StatusCreated)
 }
 
-// HandleReadHomework is a handler for getting a single homework
-func (server *Server) HandleReadHomework(w http.ResponseWriter, r *http.Request) {
+// HandleReadQuizSubmission is a handler for getting a single quiz submission
+func (server *Server) HandleReadQuizSubmission(w http.ResponseWriter, r *http.Request) {
 	var val interface{}
 	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val == nil {
-		server.logger.Warn().Err(errors.New("Guest tries to read a homework")).Msg("")
+		server.logger.Warn().Err(errors.New("Guest tries to read a quiz submission")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
@@ -160,14 +160,13 @@ func (server *Server) HandleReadHomework(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	var homework *model.Homework
+	var quizSubmission *model.QuizSubmission
 
 	if claims["role"].(string) == "teacher" {
-		homework, err = repository.ReadHomeworkByIDandTeacher(server.db, uint(id), claims["sub"].(string))
+		quizSubmission, err = repository.ReadQuizSubmissionByIDandTeacher(server.db, uint(id), claims["sub"].(string))
 	} else {
-		homework, err = repository.ReadHomeworkByIDandOwner(server.db, uint(id), claims["sub"].(string))
+		quizSubmission, err = repository.ReadQuizSubmissionByIDandOwner(server.db, uint(id), claims["sub"].(string))
 	}
-
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			w.WriteHeader(http.StatusNotFound)
@@ -181,7 +180,7 @@ func (server *Server) HandleReadHomework(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	dto := homework.ToDto()
+	dto := quizSubmission.ToDto()
 	if err := json.NewEncoder(w).Encode(dto); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -191,8 +190,8 @@ func (server *Server) HandleReadHomework(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-// HandleUpdateHomework is a handler for updating a homework
-func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Request) {
+// HandleUpdateQuizSubmission is a handler for updating a quiz submission
+func (server *Server) HandleUpdateQuizSubmission(w http.ResponseWriter, r *http.Request) {
 	var claims jwt.MapClaims
 	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
 		claims = val.(jwt.MapClaims)
@@ -206,7 +205,7 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	form := &model.HomeworkForm{}
+	form := &model.QuizSubmissionForm{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -220,7 +219,7 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	homeworkModel, err := form.ToModel()
+	qSubmissionModel, err := form.ToModel()
 	if err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -229,14 +228,14 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	homeworkModel.ID = uint(id)
+	qSubmissionModel.ID = uint(id)
 
 	if claims != nil && claims["role"].(string) == "teacher" {
-		err = repository.UpdateHomeworkByTeacher(server.db, homeworkModel, claims["sub"].(string))
+		err = repository.UpdateQuizSubmissionByTeacher(server.db, qSubmissionModel, claims["sub"].(string))
 	} else if claims != nil && claims["role"].(string) == "student" {
-		err = repository.UpdateHomeworkByOwner(server.db, homeworkModel, claims["sub"].(string))
+		err = repository.UpdateQuizSubmissionByOwner(server.db, qSubmissionModel, claims["sub"].(string))
 	} else {
-		err = repository.UpdateHomework(server.db, homeworkModel)
+		err = repository.UpdateQuizSubmission(server.db, qSubmissionModel)
 	}
 
 	if err != nil {
@@ -252,15 +251,15 @@ func (server *Server) HandleUpdateHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	server.logger.Info().Msgf("Homework updated: %d", id)
+	server.logger.Info().Msgf("Quiz Submission updated: %d", id)
 	w.WriteHeader(http.StatusAccepted)
 }
 
-// HandleDeleteHomework is a handler for deleting a homework
-func (server *Server) HandleDeleteHomework(w http.ResponseWriter, r *http.Request) {
+// HandleDeleteQuizSubmission is a handler for deleting a quiz submission
+func (server *Server) HandleDeleteQuizSubmission(w http.ResponseWriter, r *http.Request) {
 	var val interface{}
 	if val = r.Context().Value(middleware.CtxKeyJWTClaims); val == nil {
-		server.logger.Warn().Err(errors.New("Guest tries to delete a homework")).Msg("")
+		server.logger.Warn().Err(errors.New("Guest tries to delete a quiz submission")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
@@ -270,7 +269,7 @@ func (server *Server) HandleDeleteHomework(w http.ResponseWriter, r *http.Reques
 	claims := val.(jwt.MapClaims)
 
 	if claims["role"].(string) == "student" {
-		server.logger.Warn().Err(errors.New("Student tries to delete a homework")).Msg("")
+		server.logger.Warn().Err(errors.New("Student tries to delete a quiz submission")).Msg("")
 
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessUnauthorized)
@@ -285,7 +284,7 @@ func (server *Server) HandleDeleteHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if err := repository.DeleteHomeworkByTeacher(server.db, uint(id), claims["sub"].(string)); err != nil {
+	if err := repository.DeleteQuizSubmissionByTeacher(server.db, uint(id), claims["sub"].(string)); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -293,6 +292,6 @@ func (server *Server) HandleDeleteHomework(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	server.logger.Info().Msgf("Homework  deleted: %d", id)
+	server.logger.Info().Msgf("Quiz Submission deleted: %d", id)
 	w.WriteHeader(http.StatusAccepted)
 }
