@@ -45,23 +45,23 @@ type QuizDto struct {
 }
 
 type QuizNestedDto struct {
-	ID                      uint                       `json:"id"`
-	Title                   string                     `json:"title"`
-	Content                 string                     `json:"content"`
-	StudentLink             string                     `json:"student_link"`
-	TeacherLink             string                     `json:"teacher_link"`
-	CourseTitle             string                     `json:"course_title"`
-	Mode                    string                     `json:"mode"`
-	CreatedAt               string                     `json:"created_at"`
-	UpdatedAt               string                     `json:"updated_at"`
-	OpenedAt                string                     `json:"opened_at"`
-	ClosedAt                string                     `json:"closed_at"`
-	TeacherFullname         string                     `json:"teacher_fullname"`
-	TeacherID               uint                       `json:"teacher_id"`
-	QuizSubmissions         QuizSubmissionDtos         `json:"quiz_submissions"`
-	OpenQuestions           OpenQuestionDtos           `json:"open_questions"`
-	TrueFalseQuestions      TrueFalseQuestionDtos      `json:"true_false_questions"`
-	MultipleChoiceQuestions MultipleChoiceQuestionDtos `json:"multiple_choice_questions"`
+	ID                      uint                             `json:"id"`
+	Title                   string                           `json:"title"`
+	Content                 string                           `json:"content"`
+	StudentLink             string                           `json:"student_link"`
+	TeacherLink             string                           `json:"teacher_link"`
+	CourseTitle             string                           `json:"course_title"`
+	Mode                    string                           `json:"mode"`
+	CreatedAt               string                           `json:"created_at"`
+	UpdatedAt               string                           `json:"updated_at"`
+	OpenedAt                string                           `json:"opened_at"`
+	ClosedAt                string                           `json:"closed_at"`
+	TeacherFullname         string                           `json:"teacher_fullname"`
+	TeacherID               uint                             `json:"teacher_id"`
+	QuizSubmissions         QuizSubmissionDtos               `json:"quiz_submissions"`
+	OpenQuestions           OpenQuestionDtos                 `json:"open_questions"`
+	TrueFalseQuestions      TrueFalseQuestionDtos            `json:"true_false_questions"`
+	MultipleChoiceQuestions MultipleChoiceQuestionNestedDtos `json:"multiple_choice_questions"`
 }
 
 type QuizForm struct {
@@ -113,7 +113,7 @@ func (q Quiz) ToNestedDto(qss QuizSubmissions, oqs OpenQuestions, tfqs TrueFalse
 		QuizSubmissions:         qss.ToDto(),
 		OpenQuestions:           oqs.ToDto(),
 		TrueFalseQuestions:      tfqs.ToDto(),
-		MultipleChoiceQuestions: mcqs.ToDto(),
+		MultipleChoiceQuestions: mcqs.ToNestedDto(),
 	}
 }
 

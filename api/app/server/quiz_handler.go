@@ -438,7 +438,25 @@ func (server *Server) HandleReadQuizByStudentLink(w http.ResponseWriter, r *http
 		return
 	}
 
-	dto := quiz.ToNestedDto(model.QuizSubmissions{}, oqs, tfqs, mcqs)
+	for _, mcq := range mcqs {
+		answerChoices, err := repository.ListRelatedAnswerChoices(server.db, mcq.ID)
+		if err != nil {
+			if err == gorm.ErrRecordNotFound {
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
+
+			server.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+			return
+		}
+
+		mcq.AnswerChoices = answerChoices
+	}
+
+	dto := quiz.ToNestedDto(nil, oqs, tfqs, mcqs)
 	if err := json.NewEncoder(w).Encode(dto); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 

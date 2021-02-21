@@ -10,7 +10,7 @@ type MultipleChoiceQuestion struct {
 	ID            uint `gorm:"primaryKey"`
 	Content       string
 	Fixed         bool
-	SubmittedAt   time.Time
+	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	QuizID        uint
 	AnswerChoices []AnswerChoice `gorm:"foreignKey:QuestionID;references:ID"`
@@ -19,23 +19,25 @@ type MultipleChoiceQuestion struct {
 type MultipleChoiceQuestionDtos []*MultipleChoiceQuestionDto
 
 type MultipleChoiceQuestionDto struct {
-	ID          uint   `json:"id"`
-	Content     string `json:"content"`
-	Fixed       bool   `json:"fixed"`
-	SubmittedAt string `json:"submitted_at"`
-	UpdatedAt   string `json:"updated_at"`
-	QuizID      uint   `json:"quiz_id"`
+	ID        uint   `json:"id"`
+	Content   string `json:"content"`
+	Fixed     bool   `json:"fixed"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+	QuizID    uint   `json:"quiz_id"`
 }
 
+type MultipleChoiceQuestionNestedDtos []*MultipleChoiceQuestionNestedDto
+
 type MultipleChoiceQuestionNestedDto struct {
-	ID             uint              `json:"id"`
-	Content        string            `json:"content"`
-	Fixed          bool              `json:"fixed"`
-	SubmittedAt    string            `json:"submitted_at"`
-	UpdatedAt      string            `json:"updated_at"`
-	QuizID         uint              `json:"quiz_id"`
-	AnswerChoices  AnswerChoiceDtos  `json:"answer_choices"`
-	StudentAnswers StudentAnswerDtos `json:"student_answers"`
+	ID            uint             `json:"id"`
+	Content       string           `json:"content"`
+	Fixed         bool             `json:"fixed"`
+	CreatedAt     string           `json:"created_at"`
+	UpdatedAt     string           `json:"updated_at"`
+	QuizID        uint             `json:"quiz_id"`
+	AnswerChoices AnswerChoiceDtos `json:"answer_choices"`
+	// StudentAnswers StudentAnswerDtos `json:"student_answers"`
 }
 
 type MultipleChoiceQuestionForm struct {
@@ -47,25 +49,21 @@ type MultipleChoiceQuestionForm struct {
 
 func (mcq MultipleChoiceQuestion) ToDto() *MultipleChoiceQuestionDto {
 	return &MultipleChoiceQuestionDto{
-		ID:          mcq.ID,
-		Content:     mcq.Content,
-		Fixed:       mcq.Fixed,
-		SubmittedAt: mcq.SubmittedAt.Format(time.RFC3339),
-		UpdatedAt:   mcq.UpdatedAt.Format(time.RFC3339),
-		QuizID:      mcq.QuizID,
+		ID:      mcq.ID,
+		Content: mcq.Content,
 	}
 }
 
-func (mcq MultipleChoiceQuestion) ToNestedDto(acs AnswerChoices, sts StudentAnswers) *MultipleChoiceQuestionNestedDto {
+func (mcq MultipleChoiceQuestion) ToNestedDto(acs AnswerChoices) *MultipleChoiceQuestionNestedDto {
 	return &MultipleChoiceQuestionNestedDto{
-		ID:             mcq.ID,
-		Content:        mcq.Content,
-		Fixed:          mcq.Fixed,
-		SubmittedAt:    mcq.SubmittedAt.Format(time.RFC3339),
-		UpdatedAt:      mcq.UpdatedAt.Format(time.RFC3339),
-		QuizID:         mcq.QuizID,
-		AnswerChoices:  acs.ToDto(),
-		StudentAnswers: sts.ToDto(),
+		ID:            mcq.ID,
+		Content:       mcq.Content,
+		Fixed:         mcq.Fixed,
+		CreatedAt:     mcq.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:     mcq.UpdatedAt.Format(time.RFC3339),
+		QuizID:        mcq.QuizID,
+		AnswerChoices: acs.ToDto(),
+		// StudentAnswers: sts.ToDto(),
 	}
 }
 
@@ -77,19 +75,31 @@ func (mcqs MultipleChoiceQuestions) ToDto() MultipleChoiceQuestionDtos {
 	return dtos
 }
 
+func (mcqs MultipleChoiceQuestions) ToNestedDto() MultipleChoiceQuestionNestedDtos {
+	dtos := make([]*MultipleChoiceQuestionNestedDto, len(mcqs))
+	for i, mcq := range mcqs {
+		answerChoices := make(AnswerChoices, len(mcq.AnswerChoices))
+		for i, v := range mcq.AnswerChoices {
+			answerChoices[i] = &v
+		}
+		dtos[i] = mcq.ToNestedDto(answerChoices)
+	}
+	return dtos
+}
+
 func (f *MultipleChoiceQuestionForm) ToModel() (*MultipleChoiceQuestion, error) {
 	if f.Content != "" {
 		return &MultipleChoiceQuestion{
-			SubmittedAt: time.Now(),
-			Content:     f.Content,
-			QuizID:      f.QuizID,
-			Fixed:       f.Fixed,
+			CreatedAt: time.Now(),
+			Content:   f.Content,
+			QuizID:    f.QuizID,
+			Fixed:     f.Fixed,
 		}, nil
 	}
 
 	return &MultipleChoiceQuestion{
-		SubmittedAt: time.Now(),
-		QuizID:      f.QuizID,
-		Fixed:       f.Fixed,
+		CreatedAt: time.Now(),
+		QuizID:    f.QuizID,
+		Fixed:     f.Fixed,
 	}, nil
 }

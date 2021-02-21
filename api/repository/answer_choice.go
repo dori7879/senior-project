@@ -6,8 +6,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func ListRelatedAnswerChoices(db *gorm.DB, mcqID uint) (model.AnswerChoices, error) {
-	answerChoices := make([]*model.AnswerChoice, 0)
+func ListRelatedAnswerChoices(db *gorm.DB, mcqID uint) ([]model.AnswerChoice, error) {
+	answerChoices := make([]model.AnswerChoice, 0)
 	if err := db.Where("question_id = ?", mcqID).Find(&answerChoices).Error; err != nil {
 		return nil, err
 	}

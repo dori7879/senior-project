@@ -44,10 +44,11 @@ type QuizSubmissionNestedDto struct {
 }
 
 type QuizSubmissionForm struct {
-	Grade           string `json:"grade" form:"max=255"`
-	Comments        string `json:"comments" form:"max=255"`
-	StudentFullname string `json:"student_fullname" form:"alpha_space,max=255"`
-	QuizID          uint   `json:"quiz_id" form:""`
+	Grade           string               `json:"grade" form:"max=255"`
+	Comments        string               `json:"comments" form:"max=255"`
+	StudentFullname string               `json:"student_fullname" form:"alpha_space,max=255"`
+	QuizID          uint                 `json:"quiz_id" form:""`
+	StudentAnswers  []*StudentAnswerForm `json:"student_answers" form:""`
 }
 
 func (qs QuizSubmission) ToDto() *QuizSubmissionDto {
@@ -90,6 +91,7 @@ func (f *QuizSubmissionForm) ToModel() (*QuizSubmission, error) {
 		return &QuizSubmission{
 			Grade:           f.Grade,
 			Comments:        f.Comments,
+			SubmittedAt:     time.Now(),
 			StudentFullname: f.StudentFullname,
 			QuizID:          f.QuizID,
 		}, nil

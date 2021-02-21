@@ -42,6 +42,23 @@ func New(s *server.Server, conf *config.Conf) *chi.Mux {
 		r.Method("GET", "/homework/{id}", requestlog.NewHandler(s.HandleReadHomework, l))
 		r.Method("PUT", "/homework/{id}", requestlog.NewHandler(s.HandleUpdateHomework, l))
 		r.Method("DELETE", "/homework/{id}", requestlog.NewHandler(s.HandleDeleteHomework, l))
+
+		// Routes for quizzes
+		r.Method("GET", "/quiz", requestlog.NewHandler(s.HandleListQuiz, l))
+		r.Method("POST", "/quiz", requestlog.NewHandler(s.HandleCreateQuiz, l))
+		r.Method("GET", "/quiz/{id}", requestlog.NewHandler(s.HandleReadQuiz, l))
+		r.Method("PUT", "/quiz/{id}", requestlog.NewHandler(s.HandleUpdateQuiz, l))
+		r.Method("DELETE", "/quiz/{id}", requestlog.NewHandler(s.HandleDeleteQuiz, l))
+
+		r.Method("GET", "/quiz/student/{str}", requestlog.NewHandler(s.HandleReadQuizByStudentLink, l))
+		r.Method("GET", "/quiz/teacher/{str}", requestlog.NewHandler(s.HandleReadQuizByTeacherLink, l))
+
+		// Routes for quiz submissions
+		r.Method("GET", "/quiz/submission", requestlog.NewHandler(s.HandleListQuizSubmission, l))
+		r.Method("POST", "/quiz/submission", requestlog.NewHandler(s.HandleCreateQuizSubmission, l))
+		r.Method("GET", "/quiz/submission/{id}", requestlog.NewHandler(s.HandleReadQuizSubmission, l))
+		r.Method("PUT", "/quiz/submission/{id}", requestlog.NewHandler(s.HandleUpdateQuizSubmission, l))
+		r.Method("DELETE", "/quiz/submission/{id}", requestlog.NewHandler(s.HandleDeleteQuizSubmission, l))
 	})
 
 	// Routes for healthz

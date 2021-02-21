@@ -136,6 +136,28 @@ func (server *Server) HandleCreateQuizSubmission(w http.ResponseWriter, r *http.
 		return
 	}
 
+	for _, sa := range form.StudentAnswers {
+		saModel, err := sa.ToModel()
+		if err != nil {
+			server.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			fmt.Fprintf(w, `{"error": "%v", "form": "%+v"}`, serverErrFormDecodingFailure, form)
+			return
+		}
+
+		saModel.QuizSubmissionID = quizSubmission.ID
+
+		_, err = repository.CreateStudentAnswer(server.db, saModel)
+		if err != nil {
+			server.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataCreationFailure)
+			return
+		}
+	}
+
 	server.logger.Info().Msgf("New quiz submission  created: %d", quizSubmission.ID)
 	w.WriteHeader(http.StatusCreated)
 }

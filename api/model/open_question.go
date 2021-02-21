@@ -11,7 +11,7 @@ type OpenQuestion struct {
 	Content        string
 	Answer         string
 	Fixed          bool
-	SubmittedAt    time.Time
+	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	QuizID         uint
 	StudentAnswers []StudentAnswer `gorm:"foreignKey:OpenQuestionID;references:ID"`
@@ -20,13 +20,13 @@ type OpenQuestion struct {
 type OpenQuestionDtos []*OpenQuestionDto
 
 type OpenQuestionDto struct {
-	ID          uint   `json:"id"`
-	Content     string `json:"content"`
-	Answer      string `json:"answer"`
-	Fixed       bool   `json:"fixed"`
-	SubmittedAt string `json:"submitted_at"`
-	UpdatedAt   string `json:"updated_at"`
-	QuizID      uint   `json:"quiz_id"`
+	ID        uint   `json:"id"`
+	Content   string `json:"content"`
+	Answer    string `json:"answer"`
+	Fixed     bool   `json:"fixed"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+	QuizID    uint   `json:"quiz_id"`
 }
 
 type OpenQuestionNestedDto struct {
@@ -34,7 +34,7 @@ type OpenQuestionNestedDto struct {
 	Content        string            `json:"content"`
 	Answer         string            `json:"answer"`
 	Fixed          bool              `json:"fixed"`
-	SubmittedAt    string            `json:"submitted_at"`
+	CreatedAt      string            `json:"created_at"`
 	UpdatedAt      string            `json:"updated_at"`
 	QuizID         uint              `json:"quiz_id"`
 	StudentAnswers StudentAnswerDtos `json:"student_answers"`
@@ -49,13 +49,8 @@ type OpenQuestionForm struct {
 
 func (oq OpenQuestion) ToDto() *OpenQuestionDto {
 	return &OpenQuestionDto{
-		ID:          oq.ID,
-		Content:     oq.Content,
-		Answer:      oq.Answer,
-		Fixed:       oq.Fixed,
-		SubmittedAt: oq.SubmittedAt.Format(time.RFC3339),
-		UpdatedAt:   oq.UpdatedAt.Format(time.RFC3339),
-		QuizID:      oq.QuizID,
+		ID:      oq.ID,
+		Content: oq.Content,
 	}
 }
 
@@ -65,7 +60,7 @@ func (oq OpenQuestion) ToNestedDto(sts StudentAnswers) *OpenQuestionNestedDto {
 		Content:        oq.Content,
 		Answer:         oq.Answer,
 		Fixed:          oq.Fixed,
-		SubmittedAt:    oq.SubmittedAt.Format(time.RFC3339),
+		CreatedAt:      oq.CreatedAt.Format(time.RFC3339),
 		UpdatedAt:      oq.UpdatedAt.Format(time.RFC3339),
 		QuizID:         oq.QuizID,
 		StudentAnswers: sts.ToDto(),
@@ -83,15 +78,17 @@ func (oqs OpenQuestions) ToDto() OpenQuestionDtos {
 func (f *OpenQuestionForm) ToModel() (*OpenQuestion, error) {
 	if f.Content != "" || f.Answer != "" {
 		return &OpenQuestion{
-			SubmittedAt: time.Now(),
-			Content:     f.Content,
-			Answer:      f.Answer,
-			QuizID:      f.QuizID,
+			CreatedAt: time.Now(),
+			Content:   f.Content,
+			Answer:    f.Answer,
+			Fixed:     f.Fixed,
+			QuizID:    f.QuizID,
 		}, nil
 	}
 
 	return &OpenQuestion{
-		SubmittedAt: time.Now(),
-		QuizID:      f.QuizID,
+		CreatedAt: time.Now(),
+		Fixed:     f.Fixed,
+		QuizID:    f.QuizID,
 	}, nil
 }

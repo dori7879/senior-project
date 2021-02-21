@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	alphaSpaceRegexString string = "^[a-zA-Z ]*$"
+	alphaSpaceRegexString string = "^[a-zA-Z0-9 ]*$"
 	dateRegexString       string = "^([0-9]+)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])[Tt]([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\\.[0-9]+)?(([Zz])|([\\+|\\-]([01][0-9]|2[0-3]):[0-5][0-9]))$"
 	emailRegexString      string = "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
 )
@@ -70,7 +70,7 @@ func ToErrResponse(err error) *ErrResponse {
 			case "url":
 				resp.Errors[i] = fmt.Sprintf("%s must be a valid URL", err.Field())
 			case "alpha_space":
-				resp.Errors[i] = fmt.Sprintf("%s can only contain alphabetic and space characters", err.Field())
+				resp.Errors[i] = fmt.Sprintf("%s can only contain alphabetic, digit and space characters", err.Field())
 			case "email":
 				resp.Errors[i] = fmt.Sprintf("%s must be a valid email address", err.Field())
 			case "date":

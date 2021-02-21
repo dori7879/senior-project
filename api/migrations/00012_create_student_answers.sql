@@ -13,9 +13,9 @@ CREATE TABLE IF NOT EXISTS `student_answers`
     `true_false_question_id`        INT UNSIGNED NULL DEFAULT NULL,
     `multiple_choice_question_id`   INT UNSIGNED NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`quiz_submission_id`) REFERENCES `quiz_submissions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-    FOREIGN KEY (`open_question_id`) REFERENCES `open_questions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-    FOREIGN KEY (`true_false_question_id`) REFERENCES `true_false_questions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`quiz_submission_id`) REFERENCES `quiz_submissions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`open_question_id`) REFERENCES `open_questions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`true_false_question_id`) REFERENCES `true_false_questions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`multiple_choice_question_id`) REFERENCES `multiple_choice_questions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) Engine=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 -- +goose Down
