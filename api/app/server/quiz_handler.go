@@ -397,12 +397,7 @@ func (server *Server) HandleReadQuizByStudentLink(w http.ResponseWriter, r *http
 	}
 
 	oqs, err := repository.ListRelatedOpenQuestions(server.db, quiz.ID)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-
+	if err != nil && err != gorm.ErrRecordNotFound {
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -411,12 +406,7 @@ func (server *Server) HandleReadQuizByStudentLink(w http.ResponseWriter, r *http
 	}
 
 	tfqs, err := repository.ListRelatedTrueFalseQuestions(server.db, quiz.ID)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-
+	if err != nil && err != gorm.ErrRecordNotFound {
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -425,12 +415,7 @@ func (server *Server) HandleReadQuizByStudentLink(w http.ResponseWriter, r *http
 	}
 
 	mcqs, err := repository.ListRelatedMultipleChoiceQuestions(server.db, quiz.ID)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-
+	if err != nil && err != gorm.ErrRecordNotFound {
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -440,20 +425,15 @@ func (server *Server) HandleReadQuizByStudentLink(w http.ResponseWriter, r *http
 
 	for _, mcq := range mcqs {
 		answerChoices, err := repository.ListRelatedAnswerChoices(server.db, mcq.ID)
-		if err != nil {
-			if err == gorm.ErrRecordNotFound {
-				w.WriteHeader(http.StatusNotFound)
-				return
-			}
-
+		if err != nil && err != gorm.ErrRecordNotFound {
 			server.logger.Warn().Err(err).Msg("")
 
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
 			return
+		} else {
+			mcq.AnswerChoices = answerChoices
 		}
-
-		mcq.AnswerChoices = answerChoices
 	}
 
 	dto := quiz.ToNestedDto(nil, oqs, tfqs, mcqs)
