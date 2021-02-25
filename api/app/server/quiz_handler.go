@@ -331,12 +331,7 @@ func (server *Server) HandleReadQuizByTeacherLink(w http.ResponseWriter, r *http
 	}
 
 	qss, err := repository.ListRelatedQuizSubmissions(server.db, quiz.ID)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-
+	if err != nil && err != gorm.ErrRecordNotFound {
 		server.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -344,7 +339,47 @@ func (server *Server) HandleReadQuizByTeacherLink(w http.ResponseWriter, r *http
 		return
 	}
 
-	dto := quiz.ToNestedDto(qss, model.OpenQuestions{}, model.TrueFalseQuestions{}, model.MultipleChoiceQuestions{})
+	oqs, err := repository.ListRelatedOpenQuestions(server.db, quiz.ID)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+		return
+	}
+
+	tfqs, err := repository.ListRelatedTrueFalseQuestions(server.db, quiz.ID)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+		return
+	}
+
+	mcqs, err := repository.ListRelatedMultipleChoiceQuestions(server.db, quiz.ID)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+		return
+	}
+
+	for _, mcq := range mcqs {
+		answerChoices, err := repository.ListRelatedAnswerChoices(server.db, mcq.ID)
+		if err != nil && err != gorm.ErrRecordNotFound {
+			server.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+			return
+		} else {
+			mcq.AnswerChoices = answerChoices
+		}
+	}
+
+	dto := quiz.ToNestedDto(qss, oqs, tfqs, mcqs)
 	if err := json.NewEncoder(w).Encode(dto); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
