@@ -80,7 +80,8 @@ func (mcqs MultipleChoiceQuestions) ToNestedDto() MultipleChoiceQuestionNestedDt
 	for i, mcq := range mcqs {
 		answerChoices := make(AnswerChoices, len(mcq.AnswerChoices))
 		for i, v := range mcq.AnswerChoices {
-			answerChoices[i] = &v
+			tempV := v
+			answerChoices[i] = &tempV
 		}
 		dtos[i] = mcq.ToNestedDto(answerChoices)
 	}
