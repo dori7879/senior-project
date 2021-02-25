@@ -339,6 +339,19 @@ func (server *Server) HandleReadQuizByTeacherLink(w http.ResponseWriter, r *http
 		return
 	}
 
+	for _, qs := range qss {
+		studentAnswers, err := repository.ListStudentAnswersByQuizSubmission(server.db, qs.ID)
+		if err != nil && err != gorm.ErrRecordNotFound {
+			server.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataAccessFailure)
+			return
+		} else {
+			qs.StudentAnswers = studentAnswers
+		}
+	}
+
 	oqs, err := repository.ListRelatedOpenQuestions(server.db, quiz.ID)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		server.logger.Warn().Err(err).Msg("")

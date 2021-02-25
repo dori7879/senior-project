@@ -58,7 +58,7 @@ type QuizNestedDto struct {
 	ClosedAt                string                           `json:"closed_at"`
 	TeacherFullname         string                           `json:"teacher_fullname"`
 	TeacherID               uint                             `json:"teacher_id"`
-	QuizSubmissions         QuizSubmissionDtos               `json:"quiz_submissions"`
+	QuizSubmissions         QuizSubmissionNestedDtos         `json:"quiz_submissions"`
 	OpenQuestions           OpenQuestionDtos                 `json:"open_questions"`
 	TrueFalseQuestions      TrueFalseQuestionDtos            `json:"true_false_questions"`
 	MultipleChoiceQuestions MultipleChoiceQuestionNestedDtos `json:"multiple_choice_questions"`
@@ -110,7 +110,7 @@ func (q Quiz) ToNestedDto(qss QuizSubmissions, oqs OpenQuestions, tfqs TrueFalse
 		ClosedAt:                q.ClosedAt.Format(time.RFC3339),
 		TeacherFullname:         q.TeacherFullname,
 		TeacherID:               q.TeacherID,
-		QuizSubmissions:         qss.ToDto(),
+		QuizSubmissions:         qss.ToNestedDto(),
 		OpenQuestions:           oqs.ToDto(),
 		TrueFalseQuestions:      tfqs.ToDto(),
 		MultipleChoiceQuestions: mcqs.ToNestedDto(),

@@ -6,8 +6,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func ListStudentAnswersByQuizSubmission(db *gorm.DB, qsID uint) (model.StudentAnswers, error) {
-	answers := make([]*model.StudentAnswer, 0)
+func ListStudentAnswersByQuizSubmission(db *gorm.DB, qsID uint) ([]model.StudentAnswer, error) {
+	answers := make([]model.StudentAnswer, 0)
 	if err := db.Where("quiz_submission_id = ?", qsID).Find(&answers).Error; err != nil {
 		return nil, err
 	}

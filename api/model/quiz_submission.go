@@ -31,6 +31,8 @@ type QuizSubmissionDto struct {
 	QuizID          uint   `json:"quiz_id"`
 }
 
+type QuizSubmissionNestedDtos []*QuizSubmissionNestedDto
+
 type QuizSubmissionNestedDto struct {
 	ID              uint              `json:"id"`
 	Grade           string            `json:"grade"`
@@ -82,6 +84,18 @@ func (qss QuizSubmissions) ToDto() QuizSubmissionDtos {
 	dtos := make([]*QuizSubmissionDto, len(qss))
 	for i, qs := range qss {
 		dtos[i] = qs.ToDto()
+	}
+	return dtos
+}
+
+func (qss QuizSubmissions) ToNestedDto() QuizSubmissionNestedDtos {
+	dtos := make([]*QuizSubmissionNestedDto, len(qss))
+	for i, qs := range qss {
+		studentAnswers := make(StudentAnswers, len(qs.StudentAnswers))
+		for i, v := range qs.StudentAnswers {
+			studentAnswers[i] = &v
+		}
+		dtos[i] = qs.ToNestedDto(studentAnswers)
 	}
 	return dtos
 }
