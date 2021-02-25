@@ -24,7 +24,8 @@ COPY --from=builder /app/api/migrations /migrations
 COPY --from=builder /app/api/.env /.env
 
 COPY --from=node_builder /build ./web
-RUN chmod +x ./app ./migrate
+RUN chmod +x ./app 
+#./migrate
 
 EXPOSE 8080
 CMD ./app
