@@ -137,7 +137,7 @@ func (server *Server) HandleCreateQuizSubmission(w http.ResponseWriter, r *http.
 	}
 
 	for _, sa := range form.StudentAnswers {
-		saModel, err := sa.ToModel()
+		saModels, err := sa.ToModel()
 		if err != nil {
 			server.logger.Warn().Err(err).Msg("")
 
@@ -146,15 +146,17 @@ func (server *Server) HandleCreateQuizSubmission(w http.ResponseWriter, r *http.
 			return
 		}
 
-		saModel.QuizSubmissionID = quizSubmission.ID
+		for _, v := range saModels {
+			(*v).QuizSubmissionID = quizSubmission.ID
 
-		_, err = repository.CreateStudentAnswer(server.db, saModel)
-		if err != nil {
-			server.logger.Warn().Err(err).Msg("")
+			_, err = repository.CreateStudentAnswer(server.db, v)
+			if err != nil {
+				server.logger.Warn().Err(err).Msg("")
 
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataCreationFailure)
-			return
+				w.WriteHeader(http.StatusInternalServerError)
+				fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataCreationFailure)
+				return
+			}
 		}
 	}
 

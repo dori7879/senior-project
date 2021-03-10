@@ -34,7 +34,7 @@ type StudentAnswerForm struct {
 	Type                     string `json:"type" form:"max=255"`
 	OpenAnswer               string `json:"open_answer" form:""`
 	TrueFalseAnswer          bool   `json:"true_false_answer" form:""`
-	MultipleChoiceAnswer     uint   `json:"multiple_choice_answer" form:""`
+	MultipleChoiceAnswer     []uint `json:"multiple_choice_answer" form:""`
 	Comments                 string `json:"comments" form:"max=255"`
 	QuizSubmissionID         uint   `json:"quiz_submission_id" form:""`
 	OpenQuestionID           uint   `json:"open_question_id" form:""`
@@ -65,16 +65,39 @@ func (sas StudentAnswers) ToDto() StudentAnswerDtos {
 	return dtos
 }
 
-func (f *StudentAnswerForm) ToModel() (*StudentAnswer, error) {
-	return &StudentAnswer{
-		Type:                     f.Type,
-		OpenAnswer:               f.OpenAnswer,
-		TrueFalseAnswer:          f.TrueFalseAnswer,
-		MultipleChoiceAnswer:     f.MultipleChoiceAnswer,
-		Comments:                 f.Comments,
-		QuizSubmissionID:         f.QuizSubmissionID,
-		OpenQuestionID:           f.OpenQuestionID,
-		TrueFalseQuestionID:      f.TrueFalseQuestionID,
-		MultipleChoiceQuestionID: f.MultipleChoiceQuestionID,
-	}, nil
+func (f *StudentAnswerForm) ToModel() ([]*StudentAnswer, error) {
+	var result []*StudentAnswer
+
+	if f.Type != "multiple" {
+		var mcAnswer uint
+		result = append(result, &StudentAnswer{
+			Type:                     f.Type,
+			OpenAnswer:               f.OpenAnswer,
+			TrueFalseAnswer:          f.TrueFalseAnswer,
+			MultipleChoiceAnswer:     mcAnswer,
+			Comments:                 f.Comments,
+			QuizSubmissionID:         f.QuizSubmissionID,
+			OpenQuestionID:           f.OpenQuestionID,
+			TrueFalseQuestionID:      f.TrueFalseQuestionID,
+			MultipleChoiceQuestionID: f.MultipleChoiceQuestionID,
+		})
+		return result, nil
+	}
+
+	for _, v := range f.MultipleChoiceAnswer {
+		mcAnswer := v
+		result = append(result, &StudentAnswer{
+			Type:                     f.Type,
+			OpenAnswer:               f.OpenAnswer,
+			TrueFalseAnswer:          f.TrueFalseAnswer,
+			MultipleChoiceAnswer:     mcAnswer,
+			Comments:                 f.Comments,
+			QuizSubmissionID:         f.QuizSubmissionID,
+			OpenQuestionID:           f.OpenQuestionID,
+			TrueFalseQuestionID:      f.TrueFalseQuestionID,
+			MultipleChoiceQuestionID: f.MultipleChoiceQuestionID,
+		})
+	}
+
+	return result, nil
 }
