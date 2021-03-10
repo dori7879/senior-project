@@ -9,6 +9,7 @@ type StudentAnswer struct {
 	TrueFalseAnswer          bool
 	MultipleChoiceAnswer     uint
 	Comments                 string
+	IsCorrect                bool
 	QuizSubmissionID         uint
 	OpenQuestionID           uint `gorm:"default:null"`
 	TrueFalseQuestionID      uint `gorm:"default:null"`
@@ -24,6 +25,7 @@ type StudentAnswerDto struct {
 	TrueFalseAnswer          bool   `json:"true_false_answer"`
 	MultipleChoiceAnswer     uint   `json:"multiple_choice_answer"`
 	Comments                 string `json:"comments"`
+	IsCorrect                bool   `json:"is_correct"`
 	QuizSubmissionID         uint   `json:"quiz_submission_id"`
 	OpenQuestionID           uint   `json:"open_question_id"`
 	TrueFalseQuestionID      uint   `json:"true_false_question_id"`
@@ -50,6 +52,7 @@ func (sa StudentAnswer) ToDto() *StudentAnswerDto {
 		TrueFalseAnswer:          sa.TrueFalseAnswer,
 		MultipleChoiceAnswer:     sa.MultipleChoiceAnswer,
 		Comments:                 sa.Comments,
+		IsCorrect:                sa.IsCorrect,
 		QuizSubmissionID:         sa.QuizSubmissionID,
 		OpenQuestionID:           sa.OpenQuestionID,
 		TrueFalseQuestionID:      sa.TrueFalseQuestionID,

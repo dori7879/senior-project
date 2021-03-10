@@ -15,6 +15,15 @@ func ListRelatedTrueFalseQuestions(db *gorm.DB, qID uint) (model.TrueFalseQuesti
 	return tfQuestions, nil
 }
 
+func ReadTrueFalseQuestion(db *gorm.DB, id uint) (*model.TrueFalseQuestion, error) {
+	tfq := &model.TrueFalseQuestion{}
+	if err := db.Where("id = ?", id).First(&tfq).Error; err != nil {
+		return nil, err
+	}
+
+	return tfq, nil
+}
+
 func DeleteTrueFalseQuestionByTeacher(db *gorm.DB, id uint, email string) error {
 	teacher := &model.User{}
 	if err := db.Where("email = ?", email).First(&teacher).Error; err != nil {

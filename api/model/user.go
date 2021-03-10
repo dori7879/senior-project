@@ -80,3 +80,22 @@ func (f *UserForm) ToModel() (*User, error) {
 		IsActive:     true,
 	}, nil
 }
+
+type ResetPasswordForm struct {
+	OldPassword string `json:"old_password" form:"required,max=25"`
+	NewPassword string `json:"new_password" form:"required,max=25"`
+}
+
+func (f *ResetPasswordForm) ToHashed() ([]byte, []byte, error) {
+	hashedOldPassword, err := bcrypt.GenerateFromPassword([]byte(f.OldPassword), 12)
+	if err != nil {
+		return []byte{}, []byte{}, err
+	}
+
+	hashedNewPassword, err := bcrypt.GenerateFromPassword([]byte(f.NewPassword), 12)
+	if err != nil {
+		return []byte{}, []byte{}, err
+	}
+
+	return hashedOldPassword, hashedNewPassword, nil
+}

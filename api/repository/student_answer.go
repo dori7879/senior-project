@@ -52,6 +52,36 @@ func DeleteStudentAnswer(db *gorm.DB, id uint) error {
 }
 
 func CreateStudentAnswer(db *gorm.DB, answer *model.StudentAnswer) (*model.StudentAnswer, error) {
+	if answer.Type == "multiple" {
+		answer.IsCorrect = false
+		acs, err := ListRelatedAnswerChoices(db, answer.MultipleChoiceQuestionID)
+		if err != nil {
+			return nil, err
+		}
+
+		contains := false
+		for _, ac := range acs {
+			if ac.ID == answer.MultipleChoiceAnswer {
+				contains = true
+			}
+		}
+
+		if contains {
+			answer.IsCorrect = true
+		}
+	} else if answer.Type == "truefalse" {
+		tfq, err := ReadTrueFalseQuestion(db, answer.TrueFalseQuestionID)
+		if err != nil {
+			return nil, err
+		}
+
+		if answer.TrueFalseAnswer == tfq.Answer {
+			answer.IsCorrect = true
+		} else {
+			answer.IsCorrect = false
+		}
+	}
+
 	if err := db.Create(answer).Error; err != nil {
 		return nil, err
 	}

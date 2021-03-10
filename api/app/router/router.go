@@ -39,6 +39,7 @@ func New(s *server.Server, conf *config.Conf) *chi.Mux {
 		r.Method("POST", "/signup", requestlog.NewHandler(s.HandleSignUp, l))
 		r.Method("POST", "/login", requestlog.NewHandler(s.HandleLogin, l))
 		r.Method("POST", "/refresh-token", requestlog.NewHandler(s.HandleTokenRefresh, l))
+		r.Method("POST", "/reset-password", requestlog.NewHandler(s.HandleResetPassword, l))
 
 		// Routes for homework pages
 		r.Method("GET", "/homework-page", requestlog.NewHandler(s.HandleListHomeworkPage, l))

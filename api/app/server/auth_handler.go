@@ -1,6 +1,7 @@
 package server
 
 import (
+	"api/app/router/middleware"
 	"api/model"
 	"api/repository"
 	"api/util/auth"
@@ -9,6 +10,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -137,6 +139,73 @@ func (server *Server) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrJSONCreationFailure)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
+}
+
+// HandleResetPassword is a handler that sets the new password
+func (server *Server) HandleResetPassword(w http.ResponseWriter, r *http.Request) {
+	var claims jwt.MapClaims
+	if val := r.Context().Value(middleware.CtxKeyJWTClaims); val != nil {
+		claims = val.(jwt.MapClaims)
+	}
+
+	form := &model.ResetPasswordForm{}
+	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrFormDecodingFailure)
+		return
+	}
+
+	if err := server.validator.Struct(form); err != nil {
+		handleValidationError(w, server.logger, err)
+		return
+	}
+
+	_, newPassword, err := form.ToHashed()
+	if err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "Incorrect password"}`)
+		return
+	}
+
+	user, err := repository.GetUserByEmail(server.db, claims["sub"].(string))
+	if err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "Incorrect password or email"}`)
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword(user.PasswordHash, []byte(form.OldPassword))
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprintf(w, `{"error": "Passwords are not matched"}`)
+		return
+	} else if err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, serverErrCompareHashPasswordFailure)
+		return
+	}
+
+	user.PasswordHash = newPassword
+	err = repository.UpdateUser(server.db, user)
+	if err != nil {
+		server.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "Could not update user"}`)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 

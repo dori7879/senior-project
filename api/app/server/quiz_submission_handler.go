@@ -160,8 +160,6 @@ func (server *Server) HandleCreateQuizSubmission(w http.ResponseWriter, r *http.
 		}
 	}
 
-	// Checking answers
-
 	server.logger.Info().Msgf("New quiz submission  created: %d", quizSubmission.ID)
 	w.WriteHeader(http.StatusCreated)
 }
