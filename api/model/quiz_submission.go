@@ -93,7 +93,8 @@ func (qss QuizSubmissions) ToNestedDto() QuizSubmissionNestedDtos {
 	for i, qs := range qss {
 		studentAnswers := make(StudentAnswers, len(qs.StudentAnswers))
 		for i, v := range qs.StudentAnswers {
-			studentAnswers[i] = &v
+			tempV := v
+			studentAnswers[i] = &tempV
 		}
 		dtos[i] = qs.ToNestedDto(studentAnswers)
 	}
