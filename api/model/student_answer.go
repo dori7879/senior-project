@@ -1,5 +1,7 @@
 package model
 
+import "fmt"
+
 type StudentAnswers []*StudentAnswer
 
 type StudentAnswer struct {
@@ -38,6 +40,21 @@ type StudentAnswerForm struct {
 	TrueFalseAnswer          bool   `json:"true_false_answer" form:""`
 	MultipleChoiceAnswer     []uint `json:"multiple_choice_answer" form:""`
 	Comments                 string `json:"comments" form:"max=255"`
+	IsCorrect                bool   `json:"is_correct"`
+	QuizSubmissionID         uint   `json:"quiz_submission_id" form:""`
+	OpenQuestionID           uint   `json:"open_question_id" form:""`
+	TrueFalseQuestionID      uint   `json:"true_false_question_id" form:""`
+	MultipleChoiceQuestionID uint   `json:"multiple_choice_question_id" form:""`
+}
+
+type StudentAnswerUpdateForm struct {
+	ID                       uint   `json:"id" form:""`
+	Type                     string `json:"type" form:"max=255"`
+	OpenAnswer               string `json:"open_answer" form:""`
+	TrueFalseAnswer          bool   `json:"true_false_answer" form:""`
+	MultipleChoiceAnswer     uint   `json:"multiple_choice_answer" form:""`
+	Comments                 string `json:"comments" form:"max=255"`
+	IsCorrect                bool   `json:"is_correct"`
 	QuizSubmissionID         uint   `json:"quiz_submission_id" form:""`
 	OpenQuestionID           uint   `json:"open_question_id" form:""`
 	TrueFalseQuestionID      uint   `json:"true_false_question_id" form:""`
@@ -79,6 +96,7 @@ func (f *StudentAnswerForm) ToModel() ([]*StudentAnswer, error) {
 			TrueFalseAnswer:          f.TrueFalseAnswer,
 			MultipleChoiceAnswer:     mcAnswer,
 			Comments:                 f.Comments,
+			IsCorrect:                f.IsCorrect,
 			QuizSubmissionID:         f.QuizSubmissionID,
 			OpenQuestionID:           f.OpenQuestionID,
 			TrueFalseQuestionID:      f.TrueFalseQuestionID,
@@ -95,11 +113,32 @@ func (f *StudentAnswerForm) ToModel() ([]*StudentAnswer, error) {
 			TrueFalseAnswer:          f.TrueFalseAnswer,
 			MultipleChoiceAnswer:     mcAnswer,
 			Comments:                 f.Comments,
+			IsCorrect:                f.IsCorrect,
 			QuizSubmissionID:         f.QuizSubmissionID,
 			OpenQuestionID:           f.OpenQuestionID,
 			TrueFalseQuestionID:      f.TrueFalseQuestionID,
 			MultipleChoiceQuestionID: f.MultipleChoiceQuestionID,
 		})
+	}
+
+	return result, nil
+}
+
+func (f *StudentAnswerUpdateForm) ToUpdateModel() (*StudentAnswer, error) {
+	fmt.Printf("%T %d\n", f.ID, f.ID)
+	fmt.Println(f.ID)
+	result := &StudentAnswer{
+		ID:                       f.ID,
+		Type:                     f.Type,
+		OpenAnswer:               f.OpenAnswer,
+		TrueFalseAnswer:          f.TrueFalseAnswer,
+		MultipleChoiceAnswer:     f.MultipleChoiceAnswer,
+		Comments:                 f.Comments,
+		IsCorrect:                f.IsCorrect,
+		QuizSubmissionID:         f.QuizSubmissionID,
+		OpenQuestionID:           f.OpenQuestionID,
+		TrueFalseQuestionID:      f.TrueFalseQuestionID,
+		MultipleChoiceQuestionID: f.MultipleChoiceQuestionID,
 	}
 
 	return result, nil

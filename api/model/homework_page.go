@@ -20,6 +20,7 @@ type HomeworkPage struct {
 	ClosedAt        time.Time
 	TeacherFullname string
 	TeacherID       uint       `gorm:"default:null"`
+	StudentGroupID  uint       `gorm:"default:null"`
 	Homeworks       []Homework `gorm:"foreignKey:HomeworkPageID;references:ID"`
 }
 

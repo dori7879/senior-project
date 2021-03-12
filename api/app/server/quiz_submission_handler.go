@@ -229,7 +229,7 @@ func (server *Server) HandleUpdateQuizSubmission(w http.ResponseWriter, r *http.
 		return
 	}
 
-	form := &model.QuizSubmissionForm{}
+	form := &model.QuizSubmissionUpdateForm{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
 		server.logger.Warn().Err(err).Msg("")
 
@@ -237,6 +237,7 @@ func (server *Server) HandleUpdateQuizSubmission(w http.ResponseWriter, r *http.
 		fmt.Fprintf(w, `{"error": "%v"}`, serverErrFormDecodingFailure)
 		return
 	}
+	fmt.Println(form)
 
 	if err := server.validator.Struct(form); err != nil {
 		handleValidationError(w, server.logger, err)
@@ -253,6 +254,27 @@ func (server *Server) HandleUpdateQuizSubmission(w http.ResponseWriter, r *http.
 	}
 
 	qSubmissionModel.ID = uint(id)
+	for _, sa := range form.StudentAnswers {
+		saModel, err := sa.ToUpdateModel()
+		if err != nil {
+			server.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			fmt.Fprintf(w, `{"error": "%v", "form": "%+v"}`, serverErrFormDecodingFailure, form)
+			return
+		}
+
+		saModel.QuizSubmissionID = qSubmissionModel.ID
+
+		err = repository.UpdateStudentAnswer(server.db, saModel)
+		if err != nil {
+			server.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, serverErrDataCreationFailure)
+			return
+		}
+	}
 
 	if claims != nil && claims["role"].(string) == "teacher" {
 		err = repository.UpdateQuizSubmissionByTeacher(server.db, qSubmissionModel, claims["sub"].(string))

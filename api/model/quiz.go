@@ -20,6 +20,7 @@ type Quiz struct {
 	ClosedAt                time.Time
 	TeacherFullname         string
 	TeacherID               uint                     `gorm:"default:null"`
+	StudentGroupID          uint                     `gorm:"default:null"`
 	QuizSubmissions         []QuizSubmission         `gorm:"foreignKey:QuizID;references:ID"`
 	OpenQuestions           []OpenQuestion           `gorm:"foreignKey:QuizID;references:ID"`
 	TrueFalseQuestions      []TrueFalseQuestion      `gorm:"foreignKey:QuizID;references:ID"`

@@ -53,6 +53,14 @@ type QuizSubmissionForm struct {
 	StudentAnswers  []*StudentAnswerForm `json:"student_answers" form:""`
 }
 
+type QuizSubmissionUpdateForm struct {
+	Grade           string                     `json:"grade" form:"max=255"`
+	Comments        string                     `json:"comments" form:"max=255"`
+	StudentFullname string                     `json:"student_fullname" form:"alpha_space,max=255"`
+	QuizID          uint                       `json:"quiz_id" form:""`
+	StudentAnswers  []*StudentAnswerUpdateForm `json:"student_answers" form:""`
+}
+
 func (qs QuizSubmission) ToDto() *QuizSubmissionDto {
 	return &QuizSubmissionDto{
 		ID:              qs.ID,
@@ -102,6 +110,24 @@ func (qss QuizSubmissions) ToNestedDto() QuizSubmissionNestedDtos {
 }
 
 func (f *QuizSubmissionForm) ToModel() (*QuizSubmission, error) {
+	if f.Grade != "" || f.Comments != "" {
+		return &QuizSubmission{
+			Grade:           f.Grade,
+			Comments:        f.Comments,
+			SubmittedAt:     time.Now(),
+			StudentFullname: f.StudentFullname,
+			QuizID:          f.QuizID,
+		}, nil
+	}
+
+	return &QuizSubmission{
+		SubmittedAt:     time.Now(),
+		StudentFullname: f.StudentFullname,
+		QuizID:          f.QuizID,
+	}, nil
+}
+
+func (f *QuizSubmissionUpdateForm) ToModel() (*QuizSubmission, error) {
 	if f.Grade != "" || f.Comments != "" {
 		return &QuizSubmission{
 			Grade:           f.Grade,

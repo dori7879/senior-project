@@ -3,9 +3,11 @@ package model
 type Teachers []*Teacher
 
 type Teacher struct {
-	ID            uint           `gorm:"primaryKey;column:teacher_id"`
-	User          User           `gorm:"foreignKey:ID;references:ID"`
-	HomeworkPages []HomeworkPage `gorm:"foreignKey:TeacherID;references:ID"`
+	ID                 uint           `gorm:"primaryKey;column:teacher_id"`
+	User               User           `gorm:"foreignKey:ID;references:ID"`
+	HomeworkPages      []HomeworkPage `gorm:"foreignKey:TeacherID;references:ID"`
+	OwnedStudentGroups []StudentGroup `gorm:"foreignKey:OwnerID;references:ID"`
+	StudentGroups      []StudentGroup `gorm:"many2many:teachers_student_groups;"`
 }
 
 type TeacherDtos []*TeacherDto
