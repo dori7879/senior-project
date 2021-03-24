@@ -14,7 +14,7 @@ type User struct {
 	Email     string `json:"Email"`
 	IsTeacher bool   `json:"IsTeacher"`
 
-	PasswordHash string `json:"-"`
+	PasswordHash []byte `json:"-"`
 
 	// Timestamps for user creation & last update.
 	DateJoined time.Time `json:"DateJoined"`
@@ -36,6 +36,10 @@ type UserService interface {
 	// Retrieves a user by ID.
 	// Returns ENOTFOUND if user does not exist.
 	FindUserByID(ctx context.Context, id int) (*User, error)
+
+	// Retrieves a user by email.
+	// Returns ENOTFOUND if user does not exist.
+	FindUserByEmail(ctx context.Context, email string) (*User, error)
 
 	// Retrieves a list of users by filter. Also returns total count of matching
 	// users which may differ from returned results if filter.Limit is specified.
@@ -72,6 +76,4 @@ type UserUpdate struct {
 	LastName  *string `json:"LastName"`
 	Email     *string `json:"Email"`
 	IsTeacher *bool   `json:"IsTeacher"`
-
-	PasswordHash *string `json:"-"`
 }

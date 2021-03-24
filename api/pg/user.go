@@ -37,6 +37,23 @@ func (s *UserService) FindUserByID(ctx context.Context, id int) (*api.User, erro
 	return user, nil
 }
 
+// FindUserByEmail retrieves a user by Email.
+// Returns ENOTFOUND if user does not exist.
+func (s *UserService) FindUserByEmail(ctx context.Context, email string) (*api.User, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	// Fetch user.
+	user, err := findUserByEmail(ctx, tx, email)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 // FindUsers retrieves a list of users by filter. Also returns total count of
 // matching users which may differ from returned results if filter.Limit is specified.
 func (s *UserService) FindUsers(ctx context.Context, filter api.UserFilter) ([]*api.User, int, error) {
@@ -253,9 +270,6 @@ func updateUser(ctx context.Context, tx *Tx, id int, upd api.UserUpdate) (*api.U
 	if v := upd.IsTeacher; v != nil {
 		user.IsTeacher = *v
 	}
-	if v := upd.PasswordHash; v != nil {
-		user.PasswordHash = *v
-	}
 
 	// Perform basic field validation.
 	if err := user.Validate(); err != nil {
@@ -269,14 +283,12 @@ func updateUser(ctx context.Context, tx *Tx, id int, upd api.UserUpdate) (*api.U
 			last_name = $2,
 		    email = $3,
 		    is_teacher = $4,
-			password_hash = $5
-		WHERE id = $6
+		WHERE id = $5
 	`,
 		user.FirstName,
 		user.LastName,
 		user.Email,
 		user.IsTeacher,
-		user.PasswordHash,
 		id,
 	); err != nil {
 		return user, FormatError(err)
