@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS quiz_submissions
     id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
     grade             DECIMAL(3,2) NULL,
     comments          VARCHAR(255) NOT NULL,
-    submitted_at      TIMESTAMP    NULL,
+    submitted_at      TIMESTAMP    NOT NULL,
     updated_at        TIMESTAMP    NULL,
     student_fullname  VARCHAR(255) NULL,
     student_id        INT UNSIGNED NULL DEFAULT NULL,

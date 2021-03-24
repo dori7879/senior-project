@@ -93,6 +93,6 @@ type HomeworkUpdate struct {
 	ClosedAt    *time.Time `json:"ClosedAt"`
 
 	TeacherFullName *string `json:"TeacherFullName"`
-	TeacherID       int     `json:"TeacherID"`
-	GroupID         int     `json:"GroupID"`
+	TeacherID       *int    `json:"TeacherID"`
+	GroupID         *int    `json:"GroupID"`
 }

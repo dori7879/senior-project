@@ -48,7 +48,7 @@ type QuizService interface {
 
 	// Retrieves a list of quizzes by filter. Also returns total count of matching
 	// quizzes which may differ from returned results if filter.Limit is specified.
-	FindQuizs(ctx context.Context, filter QuizFilter) ([]*Quiz, int, error)
+	FindQuizzes(ctx context.Context, filter QuizFilter) ([]*Quiz, int, error)
 
 	// Creates a new quiz.
 	CreateQuiz(ctx context.Context, quiz *Quiz) error
@@ -93,6 +93,6 @@ type QuizUpdate struct {
 	ClosedAt    *time.Time `json:"ClosedAt"`
 
 	TeacherFullName *string `json:"TeacherFullName"`
-	TeacherID       int     `json:"TeacherID"`
-	GroupID         int     `json:"GroupID"`
+	TeacherID       *int    `json:"TeacherID"`
+	GroupID         *int    `json:"GroupID"`
 }

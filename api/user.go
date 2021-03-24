@@ -18,7 +18,6 @@ type User struct {
 
 	// Timestamps for user creation & last update.
 	DateJoined time.Time `json:"DateJoined"`
-	LastLogin  time.Time `json:"LastLogin"`
 
 	Groups []*int `json:"Groups"`
 }

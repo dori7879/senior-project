@@ -23,8 +23,7 @@ type Question struct {
 	CreatedAt time.Time `json:"CreatedAt"`
 	UpdatedAt time.Time `json:"UpdatedAt"`
 
-	QuizID int   `json:"QuizID"`
-	Quiz   *Quiz `json:"Quiz"`
+	QuizID int `json:"QuizID"`
 }
 
 // Validate returns an error if the question contains invalid fields.
@@ -79,10 +78,10 @@ type QuestionUpdate struct {
 	Type    *int    `json:"Type"`
 	Fixed   *bool   `json:"Fixed"`
 
-	Choices []*string `json:"Choices"`
+	Choices *[]*string `json:"Choices"`
 
 	OpenAnswer           *string `json:"OpenAnswer"`
 	TrueFalseAnswer      *bool   `json:"TrueFalseAnswer"`
-	MultipleChoiceAnswer []*int  `json:"MultipleChoiceAnswer"`
+	MultipleChoiceAnswer *[]int  `json:"MultipleChoiceAnswer"`
 	SingleChoiceAnswer   *int    `json:"SingleChoiceAnswer"`
 }

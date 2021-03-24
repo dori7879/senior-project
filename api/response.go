@@ -20,6 +20,9 @@ type Response struct {
 
 	SubmissionID int             `json:"SubmissionID" db:"quiz_submission_id"`
 	Submission   *QuizSubmission `json:"Submission"`
+
+	QuestionID int       `json:"QuestionID"`
+	Question   *Question `json:"Question"`
 }
 
 // Validate returns an error if the response contains invalid fields.
@@ -57,11 +60,12 @@ type ResponseService interface {
 // ResponseFilter represents a filter passed to FindResponses().
 type ResponseFilter struct {
 	// Filtering fields.
-	ID        int  `json:"ID"`
-	IsCorrect bool `json:"IsCorrect"`
-	Type      int  `json:"Type"`
+	ID        *int  `json:"ID"`
+	IsCorrect *bool `json:"IsCorrect"`
+	Type      *int  `json:"Type"`
 
-	SubmissionID int `json:"SubmissionID"`
+	SubmissionID *int `json:"SubmissionID"`
+	QuestionID   *int `json:"QuestionID"`
 
 	// Restrict to subset of results.
 	Offset int `json:"Offset"`
@@ -70,13 +74,13 @@ type ResponseFilter struct {
 
 // ResponseUpdate represents a set of fields to be updated via UpdateResponse().
 type ResponseUpdate struct {
-	Comments  string  `json:"Comments"`
-	IsCorrect bool    `json:"IsCorrect"`
-	Grade     float32 `json:"Grade"`
-	Type      int     `json:"Type"`
+	Comments  *string  `json:"Comments"`
+	IsCorrect *bool    `json:"IsCorrect"`
+	Grade     *float32 `json:"Grade"`
+	Type      *int     `json:"Type"`
 
-	OpenResponse           string `json:"OpenResponse"`
-	TrueFalseResponse      bool   `json:"TrueFalseResponse"`
-	MultipleChoiceResponse []int  `json:"MultipleChoiceResponse"`
-	SingleChoiceResponse   int    `json:"SingleChoiceResponse"`
+	OpenResponse           *string `json:"OpenResponse"`
+	TrueFalseResponse      *bool   `json:"TrueFalseResponse"`
+	MultipleChoiceResponse *[]int  `json:"MultipleChoiceResponse"`
+	SingleChoiceResponse   *int    `json:"SingleChoiceResponse"`
 }

@@ -59,9 +59,9 @@ type QuizSubmissionService interface {
 // QuizSubmissionFilter represents a filter passed to FindQuizSubmissions().
 type QuizSubmissionFilter struct {
 	// Filtering fields.
-	ID          *int       `json:"ID"`
-	SubmittedAt *time.Time `json:"SubmittedAt"`
-	UpdatedAt   *time.Time `json:"UpdatedAt"`
+	ID                *int       `json:"ID"`
+	BeforeSubmittedAt *time.Time `json:"SubmittedAt"`
+	AfterUpdatedAt    *time.Time `json:"UpdatedAt"`
 
 	StudentFullName *string `json:"StudentFullName"`
 	StudentID       *int    `json:"StudentID"`
@@ -74,10 +74,8 @@ type QuizSubmissionFilter struct {
 
 // QuizSubmissionUpdate represents a set of fields to be updated via UpdateQuizSubmission().
 type QuizSubmissionUpdate struct {
-	Grade       *float32   `json:"Grade"`
-	Comments    *string    `json:"Comments"`
-	SubmittedAt *time.Time `json:"SubmittedAt"`
-	UpdatedAt   *time.Time `json:"UpdatedAt"`
+	Grade    *float32 `json:"Grade"`
+	Comments *string  `json:"Comments"`
 
 	StudentFullName *string `json:"StudentFullName"`
 	StudentID       *int    `json:"StudentID"`

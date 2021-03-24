@@ -58,9 +58,9 @@ type HWSubmissionService interface {
 // HWSubmissionFilter represents a filter passed to FindHWSubmissions().
 type HWSubmissionFilter struct {
 	// Filtering fields.
-	ID          *int       `json:"ID"`
-	SubmittedAt *time.Time `json:"SubmittedAt"`
-	UpdatedAt   *time.Time `json:"UpdatedAt"`
+	ID                *int       `json:"ID"`
+	BeforeSubmittedAt *time.Time `json:"SubmittedAt"`
+	AfterUpdatedAt    *time.Time `json:"UpdatedAt"`
 
 	StudentFullName *string `json:"StudentFullName"`
 	StudentID       *int    `json:"StudentID"`
@@ -73,11 +73,9 @@ type HWSubmissionFilter struct {
 
 // HWSubmissionUpdate represents a set of fields to be updated via UpdateHWSubmission().
 type HWSubmissionUpdate struct {
-	Response    *string    `json:"Response"`
-	Grade       *float32   `json:"Grade"`
-	Comments    *string    `json:"Comments"`
-	SubmittedAt *time.Time `json:"SubmittedAt"`
-	UpdatedAt   *time.Time `json:"UpdatedAt"`
+	Response *string  `json:"Response"`
+	Grade    *float32 `json:"Grade"`
+	Comments *string  `json:"Comments"`
 
 	StudentFullName *string `json:"StudentFullName"`
 	StudentID       *int    `json:"StudentID"`
