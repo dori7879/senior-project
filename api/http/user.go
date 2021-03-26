@@ -12,13 +12,13 @@ import (
 // registerUserRoutes is a helper function for registering all user and auth routes.
 func (s *Server) registerUserRoutes(r *mux.Router) {
 	r.HandleFunc("/login", s.handleLogin).Methods("POST")
-	// r.HandleFunc("/signup", s.handleSignup).Methods("POST")
+	r.HandleFunc("/signup", s.handleSignup).Methods("POST")
 
-	// r.HandleFunc("/password/change", s.handlePasswordChange).Methods("PATCH")
+	r.HandleFunc("/password/change", s.handlePasswordChange).Methods("PATCH")
 
-	// r.HandleFunc("/profile", s.handleProfileView).Methods("GET")
-	// r.HandleFunc("/profile", s.handleProfileUpdate).Methods("PUT")
-	// r.HandleFunc("/profile", s.handleProfileDelete).Methods("DELETE")
+	r.HandleFunc("/profile", s.handleProfileView).Methods("GET")
+	r.HandleFunc("/profile", s.handleProfileUpdate).Methods("PUT")
+	r.HandleFunc("/profile", s.handleProfileDelete).Methods("DELETE")
 }
 
 type authResponse struct {
@@ -56,13 +56,175 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *Server) handleSignup(w http.ResponseWriter, r *http.Request) {
+	// Parse password first
+	rawPassword := &struct {
+		Content string `json:"Password"`
+	}{}
+	if err := json.NewDecoder(r.Body).Decode(rawPassword); err != nil {
+		Error(w, r, api.Errorf(api.EINVALID, "Invalid password JSON field"))
+		return
+	}
+
+	// Parse rest of the fields
+	var user *api.User
+	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
+		Error(w, r, api.Errorf(api.EINVALID, "Invalid user JSON body"))
+		return
+	}
+
+	// Generate password hash and assign it to user
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(rawPassword.Content), 12)
+	if err != nil {
+		Error(w, r, err)
+		return
+	}
+	user.PasswordHash = passwordHash
+
+	// Create user
+	err = s.UserService.CreateUser(r.Context(), user)
+	if err != nil {
+		Error(w, r, api.Errorf(api.EINTERNAL, "Could not create user"))
+		return
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{}`))
+}
+
+func (s *Server) handlePasswordChange(w http.ResponseWriter, r *http.Request) {
+	passwords := &struct {
+		Old string `json:"OldPassword"`
+		New string `json:"NewPassword"`
+	}{}
+	if err := json.NewDecoder(r.Body).Decode(passwords); err != nil {
+		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
+		return
+	}
+
+	user := api.UserFromContext(r.Context())
+
+	if err := bcrypt.CompareHashAndPassword(user.PasswordHash, []byte(passwords.Old)); err == bcrypt.ErrMismatchedHashAndPassword {
+		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "Incorrect old password"))
+		return
+	} else if err != nil {
+		Error(w, r, err)
+		return
+	}
+
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(passwords.New), 12)
+	if err != nil {
+		Error(w, r, err)
+		return
+	}
+
+	// Construct update instance
+	upd := api.UserUpdate{
+		PasswordHash: &passwordHash,
+	}
+
+	_, err = s.UserService.UpdateUser(r.Context(), user.ID, upd)
+	if err != nil {
+		Error(w, r, err)
+		return
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{}`))
+}
+
+func (s *Server) handleProfileView(w http.ResponseWriter, r *http.Request) {
+	user := api.UserFromContext(r.Context())
+	var err error
+	var uFilter api.UserFilter
+	if err := json.NewDecoder(r.Body).Decode(&uFilter); err != nil {
+		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
+		return
+	}
+
+	if uFilter.Limit == 0 {
+		uFilter.Limit = 10
+	}
+	uFilter.ID = &user.ID
+	uFilter.IsTeacher = &user.IsTeacher
+
+	user.Groups, _, err = s.GroupService.FindGroupsByMember(r.Context(), uFilter)
+	if err != nil {
+		Error(w, r, err)
+		return
+	}
+
+	gFilter := api.GroupFilter{
+		OwnerID: &user.ID,
+	}
+
+	user.OwnedGroups, _, err = s.GroupService.FindGroups(r.Context(), gFilter)
+	if err != nil {
+		Error(w, r, err)
+		return
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		LogError(r, err)
+		return
+	}
+}
+
+func (s *Server) handleProfileUpdate(w http.ResponseWriter, r *http.Request) {
+	var upd *api.UserUpdate
+
+	if err := json.NewDecoder(r.Body).Decode(upd); err != nil {
+		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
+		return
+	}
+
+	if _, err := s.UserService.UpdateUser(r.Context(), api.UserIDFromContext(r.Context()), *upd); err != nil {
+		Error(w, r, err)
+		return
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{}`))
+}
+
+func (s *Server) handleProfileDelete(w http.ResponseWriter, r *http.Request) {
+	// Parse password to check for it's correctness
+	rawPassword := &struct {
+		Content string `json:"Password"`
+	}{}
+	if err := json.NewDecoder(r.Body).Decode(rawPassword); err != nil {
+		Error(w, r, api.Errorf(api.EINVALID, "Invalid password JSON field"))
+		return
+	}
+
+	user := api.UserFromContext(r.Context())
+
+	if err := bcrypt.CompareHashAndPassword(user.PasswordHash, []byte(rawPassword.Content)); err == bcrypt.ErrMismatchedHashAndPassword {
+		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "Incorrect password"))
+		return
+	} else if err != nil {
+		Error(w, r, err)
+		return
+	}
+
+	if err := s.UserService.DeleteUser(r.Context(), user.ID); err != nil {
+		Error(w, r, err)
+		return
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{}`))
+}
+
 // // Parse dial ID from path.
 // id, err := strconv.Atoi(mux.Vars(r)["id"])
 // if err != nil {
 // 	Error(w, r, wtf.Errorf(wtf.EINVALID, "Invalid ID format"))
 // 	return
 // }
-
-// // Write response to indicate success.
-// w.Header().Set("Content-type", "application/json")
-// w.Write([]byte(`{}`))

@@ -270,6 +270,9 @@ func updateUser(ctx context.Context, tx *Tx, id int, upd api.UserUpdate) (*api.U
 	if v := upd.IsTeacher; v != nil {
 		user.IsTeacher = *v
 	}
+	if v := upd.PasswordHash; v != nil {
+		user.PasswordHash = *v
+	}
 
 	// Perform basic field validation.
 	if err := user.Validate(); err != nil {
@@ -283,12 +286,14 @@ func updateUser(ctx context.Context, tx *Tx, id int, upd api.UserUpdate) (*api.U
 			last_name = $2,
 		    email = $3,
 		    is_teacher = $4,
-		WHERE id = $5
+			password_hash = $5
+		WHERE id = $6
 	`,
 		user.FirstName,
 		user.LastName,
 		user.Email,
 		user.IsTeacher,
+		user.PasswordHash,
 		id,
 	); err != nil {
 		return user, FormatError(err)

@@ -19,7 +19,8 @@ type User struct {
 	// Timestamps for user creation & last update.
 	DateJoined time.Time `json:"DateJoined"`
 
-	Groups []*int `json:"Groups"`
+	Groups      []*Group `json:"Groups"`
+	OwnedGroups []*Group `json:"OwnedGroups"`
 }
 
 // Validate returns an error if the user contains invalid fields.
@@ -63,7 +64,7 @@ type UserFilter struct {
 	// Filtering fields.
 	ID        *int    `json:"ID"`
 	Email     *string `json:"Email"`
-	IsTeacher *string `json:"IsTeacher"`
+	IsTeacher *bool   `json:"IsTeacher"`
 
 	// Restrict to subset of results.
 	Offset int `json:"Offset"`
@@ -72,8 +73,9 @@ type UserFilter struct {
 
 // UserUpdate represents a set of fields to be updated via UpdateUser().
 type UserUpdate struct {
-	FirstName *string `json:"FirstName"`
-	LastName  *string `json:"LastName"`
-	Email     *string `json:"Email"`
-	IsTeacher *bool   `json:"IsTeacher"`
+	FirstName    *string `json:"FirstName"`
+	LastName     *string `json:"LastName"`
+	Email        *string `json:"Email"`
+	IsTeacher    *bool   `json:"IsTeacher"`
+	PasswordHash *[]byte `json:"-"`
 }

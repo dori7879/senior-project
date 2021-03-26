@@ -11,9 +11,9 @@ type Group struct {
 	Title     string  `json:"Title"`
 	ShareLink string  `json:"ShareLink"`
 	OwnerID   int     `json:"OwnerID"`
-	Owner     *User   `json:"Owner"`
-	Teachers  []*User `json:"Teachers"`
-	Members   []*User `json:"Members"`
+	Owner     *User   `json:"Owner,omitempty"`
+	Teachers  []*User `json:"Teachers,omitempty"`
+	Members   []*User `json:"Members,omitempty"`
 }
 
 // Validate returns an error if the group contains invalid fields.
@@ -34,6 +34,10 @@ type GroupService interface {
 	// Retrieves a list of groups by filter. Also returns total count of matching
 	// groups which may differ from returned results if filter.Limit is specified.
 	FindGroups(ctx context.Context, filter GroupFilter) ([]*Group, int, error)
+
+	// Retrieves a list of groups for either a teacher who has been shared with
+	// or a student who is a member of.
+	FindGroupsByMember(ctx context.Context, filter UserFilter) ([]*Group, int, error)
 
 	// Creates a new group.
 	CreateGroup(ctx context.Context, group *Group) error

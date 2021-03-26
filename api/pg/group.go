@@ -37,6 +37,23 @@ func (s *GroupService) FindGroupByID(ctx context.Context, id int) (*api.Group, e
 	return group, nil
 }
 
+// FindGroupByShareLink retrieves a group by share link.
+// Returns ENOTFOUND if group does not exist.
+func (s *GroupService) FindGroupByShareLink(ctx context.Context, link string) (*api.Group, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	// Fetch group.
+	group, err := findGroupByShareLink(ctx, tx, link)
+	if err != nil {
+		return nil, err
+	}
+	return group, nil
+}
+
 // FindGroups retrieves a list of groups by filter. Also returns total count of
 // matching groups which may differ from returned results if filter.Limit is specified.
 func (s *GroupService) FindGroups(ctx context.Context, filter api.GroupFilter) ([]*api.Group, int, error) {
@@ -46,6 +63,17 @@ func (s *GroupService) FindGroups(ctx context.Context, filter api.GroupFilter) (
 	}
 	defer tx.Rollback()
 	return findGroups(ctx, tx, filter)
+}
+
+// FindGroupsByMember retrieves a list of groups for either a teacher who has been shared with
+// or a student who is a member of.
+func (s *GroupService) FindGroupsByMember(ctx context.Context, filter api.UserFilter) ([]*api.Group, int, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer tx.Rollback()
+	return findGroupsByMember(ctx, tx, filter)
 }
 
 // CreateGroup creates a new group.
@@ -153,6 +181,60 @@ func findGroups(ctx context.Context, tx *Tx, filter api.GroupFilter) (_ []*api.G
 		ORDER BY id ASC
 		`+FormatLimitOffset(filter.Limit, filter.Offset),
 		args...,
+	)
+	if err != nil {
+		return nil, n, err
+	}
+	defer rows.Close()
+
+	// Deserialize rows into Group objects.
+	groups := make([]*api.Group, 0)
+	for rows.Next() {
+		var group api.Group
+
+		if rows.Scan(
+			&group.ID,
+			&group.Title,
+			&group.ShareLink,
+			&group.OwnerID,
+			&n,
+		); err != nil {
+			return nil, 0, err
+		}
+
+		groups = append(groups, &group)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, 0, err
+	}
+
+	return groups, n, nil
+}
+
+// findGroupsByMember returns a list of groups by teacher ID or student ID.
+func findGroupsByMember(ctx context.Context, tx *Tx, filter api.UserFilter) (_ []*api.Group, n int, err error) {
+	var m2m string
+	if *filter.IsTeacher {
+		m2m = `LEFT JOIN teachers_groups t on t.group_id = g.id
+		WHERE t.teacher_id = ?`
+	} else {
+		m2m = `LEFT JOIN students_groups s on s.group_id = g.id
+		WHERE s.student_id = ?`
+	}
+
+	// Execute query to fetch group rows.
+	rows, err := tx.QueryContext(ctx, `
+		SELECT 
+		    g.id,
+		    g.title,
+		    g.share_link,
+		    g.owner_id,
+		    COUNT(*) OVER()
+		FROM groups g
+		`+m2m+`
+		ORDER BY id ASC
+		`+FormatLimitOffset(filter.Limit, filter.Offset),
+		*filter.ID,
 	)
 	if err != nil {
 		return nil, n, err
