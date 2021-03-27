@@ -19,8 +19,15 @@ type User struct {
 	// Timestamps for user creation & last update.
 	DateJoined time.Time `json:"DateJoined"`
 
-	Groups      []*Group `json:"Groups"`
-	OwnedGroups []*Group `json:"OwnedGroups"`
+	SharedGroups struct {
+		Groups []*Group `json:"Groups"`
+		N      int      `json:"n"`
+	} `json:"SharedGroups"`
+
+	OwnedGroups struct {
+		Groups []*Group `json:"Groups"`
+		N      int      `json:"n"`
+	} `json:"OwnedGroups"`
 }
 
 // Validate returns an error if the user contains invalid fields.
@@ -45,6 +52,10 @@ type UserService interface {
 	// Retrieves a list of users by filter. Also returns total count of matching
 	// users which may differ from returned results if filter.Limit is specified.
 	FindUsers(ctx context.Context, filter UserFilter) ([]*User, int, error)
+
+	// Retrieves a list of users by group. Also returns total count of matching
+	// users which may differ from returned results if filter.Limit is specified.
+	FindMembersByGroup(ctx context.Context, filter MemberFilter) ([]*User, int, error)
 
 	// Creates a new user.
 	CreateUser(ctx context.Context, user *User) error

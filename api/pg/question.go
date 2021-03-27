@@ -389,7 +389,9 @@ func deleteQuestion(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
 	if q, err := findQuestionByID(ctx, tx, id); err != nil {
 		return err
-	} else if q.ID != api.UserIDFromContext(ctx) {
+	} else if q.Quiz, err = findQuizByID(ctx, tx, q.QuizID); err != nil {
+		return err
+	} else if q.Quiz.TeacherID != api.UserIDFromContext(ctx) {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this question.")
 	}
 

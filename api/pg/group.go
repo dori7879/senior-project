@@ -2,6 +2,7 @@ package pg
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/dori7879/senior-project/api"
@@ -126,6 +127,51 @@ func (s *GroupService) DeleteGroup(ctx context.Context, id int) error {
 	return tx.Commit()
 }
 
+// AddStudents adds students to the group.
+func (s *GroupService) AddStudents(ctx context.Context, id int, users []int) error {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	// Add students to the group.
+	if err := addStudents(ctx, tx, id, users); err != nil {
+		return err
+	}
+	return tx.Commit()
+}
+
+// AddTeacher adds the teacher to the group.
+func (s *GroupService) AddTeacher(ctx context.Context, groupID int, teacherID int) error {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	// Add students to the group.
+	if err := addTeacher(ctx, tx, groupID, teacherID); err != nil {
+		return err
+	}
+	return tx.Commit()
+}
+
+// RemoveMember removes the member of the group.
+func (s *GroupService) RemoveMember(ctx context.Context, groupID, userID int, isTeacher bool) error {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	// Add students to the group.
+	if err := removeMember(ctx, tx, groupID, userID, isTeacher); err != nil {
+		return err
+	}
+	return tx.Commit()
+}
+
 // findGroupByID is a helper function to fetch a group by ID.
 // Returns ENOTFOUND if group does not exist.
 func findGroupByID(ctx context.Context, tx *Tx, id int) (*api.Group, error) {
@@ -216,10 +262,10 @@ func findGroupsByMember(ctx context.Context, tx *Tx, filter api.UserFilter) (_ [
 	var m2m string
 	if *filter.IsTeacher {
 		m2m = `LEFT JOIN teachers_groups t on t.group_id = g.id
-		WHERE t.teacher_id = ?`
+		WHERE t.teacher_id = $1`
 	} else {
 		m2m = `LEFT JOIN students_groups s on s.group_id = g.id
-		WHERE s.student_id = ?`
+		WHERE s.student_id = $1`
 	}
 
 	// Execute query to fetch group rows.
@@ -232,7 +278,7 @@ func findGroupsByMember(ctx context.Context, tx *Tx, filter api.UserFilter) (_ [
 		    COUNT(*) OVER()
 		FROM groups g
 		`+m2m+`
-		ORDER BY id ASC
+		ORDER BY g.id ASC
 		`+FormatLimitOffset(filter.Limit, filter.Offset),
 		*filter.ID,
 	)
@@ -299,6 +345,76 @@ func createGroup(ctx context.Context, tx *Tx, group *api.Group) error {
 	return nil
 }
 
+// addStudents adds users (students) to the group.
+func addStudents(ctx context.Context, tx *Tx, groupID int, users []int) error {
+	values := make([]string, 0, len(users))
+	args := make([]interface{}, 0, len(users)*2)
+	i := 0
+
+	for _, id := range users {
+		values = append(values, fmt.Sprintf("($%d, $%d)", i*2+1, i*2+2))
+		args = append(args, groupID)
+		args = append(args, id)
+		i++
+	}
+
+	stmt := fmt.Sprintf("INSERT INTO students_groups (group_id, student_id) VALUES %s",
+		strings.Join(values, ","))
+
+	_, err := tx.Exec(stmt, args...)
+
+	return err
+}
+
+// addTeacher adds users (students) to the group.
+func addTeacher(ctx context.Context, tx *Tx, groupID int, teacherID int) error {
+	// Execute insertion query.
+	result, err := tx.ExecContext(ctx, `
+		INSERT INTO teachers_groups (
+			group_id,
+			teacher_id
+		)
+		VALUES ($1, $2)
+	`,
+		groupID,
+		teacherID,
+	)
+	if err != nil {
+		return FormatError(err)
+	}
+
+	_, err = result.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// removeMember removes the member of the group.
+func removeMember(ctx context.Context, tx *Tx, groupID, userID int, isTeacher bool) error {
+	// Verify object exists.
+	currentUserID := api.UserIDFromContext(ctx)
+	if group, err := findGroupByID(ctx, tx, groupID); err != nil {
+		return err
+	} else if group.OwnerID != currentUserID && userID != currentUserID {
+		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this group.")
+	}
+
+	var m2m string
+	if isTeacher {
+		m2m = `teachers_groups WHERE group_id = $1 AND teacher_id = $2`
+	} else {
+		m2m = `students_groups WHERE group_id = $1 AND student_id = $2`
+	}
+
+	// Remove row from database.
+	if _, err := tx.ExecContext(ctx, `DELETE FROM `+m2m, groupID, userID); err != nil {
+		return FormatError(err)
+	}
+	return nil
+}
+
 // updateGroup updates fields on a group object. Returns EUNAUTHORIZED if current
 // group is not the group being updated.
 func updateGroup(ctx context.Context, tx *Tx, id int, upd api.GroupUpdate) (*api.Group, error) {
@@ -341,7 +457,7 @@ func deleteGroup(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
 	if group, err := findGroupByID(ctx, tx, id); err != nil {
 		return err
-	} else if group.ID != api.UserIDFromContext(ctx) {
+	} else if group.OwnerID != api.UserIDFromContext(ctx) {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this group.")
 	}
 

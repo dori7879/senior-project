@@ -464,7 +464,7 @@ func deleteQuiz(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
 	if qz, err := findQuizByID(ctx, tx, id); err != nil {
 		return err
-	} else if qz.ID != api.UserIDFromContext(ctx) {
+	} else if qz.TeacherID != api.UserIDFromContext(ctx) {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this quiz.")
 	}
 

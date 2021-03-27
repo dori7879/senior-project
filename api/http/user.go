@@ -9,11 +9,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// registerUserRoutes is a helper function for registering all user and auth routes.
+// registerUserRoutes is a helper function for registering user and auth routes.
 func (s *Server) registerUserRoutes(r *mux.Router) {
-	r.HandleFunc("/login", s.handleLogin).Methods("POST")
-	r.HandleFunc("/signup", s.handleSignup).Methods("POST")
-
 	r.HandleFunc("/password/change", s.handlePasswordChange).Methods("PATCH")
 
 	r.HandleFunc("/profile", s.handleProfileView).Methods("GET")
@@ -21,8 +18,10 @@ func (s *Server) registerUserRoutes(r *mux.Router) {
 	r.HandleFunc("/profile", s.handleProfileDelete).Methods("DELETE")
 }
 
-type authResponse struct {
-	Token string `json:"Token"`
+// registerAujthRoutes is a helper function for registering auth routes for unauthenticated users.
+func (s *Server) registerAuthRoutes(r *mux.Router) {
+	r.HandleFunc("/login", s.handleLogin).Methods("POST")
+	r.HandleFunc("/signup", s.handleSignup).Methods("POST")
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +49,11 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(authResponse{Token: token}); err != nil {
+	if err := json.NewEncoder(w).Encode(struct {
+		Token string `json:"Token"`
+	}{
+		Token: token,
+	}); err != nil {
 		LogError(r, err)
 		return
 	}
@@ -89,7 +92,7 @@ func (s *Server) handleSignup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte(`{}`))
 }
 
@@ -150,7 +153,7 @@ func (s *Server) handleProfileView(w http.ResponseWriter, r *http.Request) {
 	uFilter.ID = &user.ID
 	uFilter.IsTeacher = &user.IsTeacher
 
-	user.Groups, _, err = s.GroupService.FindGroupsByMember(r.Context(), uFilter)
+	user.SharedGroups.Groups, user.SharedGroups.N, err = s.GroupService.FindGroupsByMember(r.Context(), uFilter)
 	if err != nil {
 		Error(w, r, err)
 		return
@@ -160,7 +163,7 @@ func (s *Server) handleProfileView(w http.ResponseWriter, r *http.Request) {
 		OwnerID: &user.ID,
 	}
 
-	user.OwnedGroups, _, err = s.GroupService.FindGroups(r.Context(), gFilter)
+	user.OwnedGroups.Groups, user.OwnedGroups.N, err = s.GroupService.FindGroups(r.Context(), gFilter)
 	if err != nil {
 		Error(w, r, err)
 		return
@@ -221,10 +224,3 @@ func (s *Server) handleProfileDelete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{}`))
 }
-
-// // Parse dial ID from path.
-// id, err := strconv.Atoi(mux.Vars(r)["id"])
-// if err != nil {
-// 	Error(w, r, wtf.Errorf(wtf.EINVALID, "Invalid ID format"))
-// 	return
-// }

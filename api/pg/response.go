@@ -389,7 +389,11 @@ func deleteResponse(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
 	if r, err := findResponseByID(ctx, tx, id); err != nil {
 		return err
-	} else if r.ID != api.UserIDFromContext(ctx) {
+	} else if r.Submission, err = findQuizSubmissionByID(ctx, tx, r.SubmissionID); err != nil {
+		return err
+	} else if r.Submission.Quiz, err = findQuizByID(ctx, tx, r.Submission.QuizID); err != nil {
+		return err
+	} else if r.Submission.Quiz.TeacherID != api.UserIDFromContext(ctx) {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this response.")
 	}
 

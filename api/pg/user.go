@@ -65,6 +65,17 @@ func (s *UserService) FindUsers(ctx context.Context, filter api.UserFilter) ([]*
 	return findUsers(ctx, tx, filter)
 }
 
+// Retrieves a list of users by group. Also returns total count of matching
+// users which may differ from returned results if filter.Limit is specified.
+func (s *UserService) FindMembersByGroup(ctx context.Context, filter api.MemberFilter) ([]*api.User, int, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer tx.Rollback()
+	return findUsersByGroup(ctx, tx, filter)
+}
+
 // CreateUser creates a new user.
 func (s *UserService) CreateUser(ctx context.Context, user *api.User) error {
 	tx, err := s.db.BeginTx(ctx, nil)
@@ -170,6 +181,68 @@ func findUsers(ctx context.Context, tx *Tx, filter api.UserFilter) (_ []*api.Use
 		ORDER BY id ASC
 		`+FormatLimitOffset(filter.Limit, filter.Offset),
 		args...,
+	)
+	if err != nil {
+		return nil, n, err
+	}
+	defer rows.Close()
+
+	// Deserialize rows into User objects.
+	users := make([]*api.User, 0)
+	for rows.Next() {
+		var user api.User
+
+		if rows.Scan(
+			&user.ID,
+			&user.FirstName,
+			&user.LastName,
+			&user.Email,
+			&user.PasswordHash,
+			&user.DateJoined,
+			&user.IsTeacher,
+			&n,
+		); err != nil {
+			return nil, 0, err
+		}
+
+		users = append(users, &user)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, 0, err
+	}
+
+	return users, n, nil
+}
+
+// findUsersByGroup returns a list of users by group filter. Also returns a count of
+// total matching users which may differ if filter.Limit is set.
+func findUsersByGroup(ctx context.Context, tx *Tx, filter api.MemberFilter) (_ []*api.User, n int, err error) {
+	var m2m string
+	if *filter.IsTeacher {
+		m2m = `FROM teachers_groups t
+		LEFT JOIN users u on u.id = t.group_id
+		WHERE t.group_id = ?`
+	} else {
+		m2m = `FROM students_groups s
+		LEFT JOIN users u on u.id = s.group_id
+		WHERE s.group_id = ?`
+	}
+
+	// Execute query to fetch user rows.
+	rows, err := tx.QueryContext(ctx, `
+		SELECT 
+		    u.id,
+		    u.first_name,
+		    u.last_name,
+		    u.email,
+		    u.password_hash,
+		    u.date_joined,
+			u.is_teacher,
+		    COUNT(*) OVER()
+		`+m2m+`
+		ORDER BY u.id ASC
+		`+FormatLimitOffset(filter.Limit, filter.Offset),
+		*filter.GroupID,
 	)
 	if err != nil {
 		return nil, n, err

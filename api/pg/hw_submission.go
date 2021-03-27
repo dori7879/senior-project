@@ -369,7 +369,9 @@ func deleteHWSubmission(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
 	if sub, err := findHWSubmissionByID(ctx, tx, id); err != nil {
 		return err
-	} else if sub.ID != api.UserIDFromContext(ctx) {
+	} else if sub.Homework, err = findHomeworkByID(ctx, tx, sub.HomeworkID); err != nil {
+		return err
+	} else if sub.Homework.TeacherID != api.UserIDFromContext(ctx) {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this homework submission.")
 	}
 

@@ -8,12 +8,20 @@ import (
 type Group struct {
 	ID int `json:"ID"`
 
-	Title     string  `json:"Title"`
-	ShareLink string  `json:"ShareLink"`
-	OwnerID   int     `json:"OwnerID"`
-	Owner     *User   `json:"Owner,omitempty"`
-	Teachers  []*User `json:"Teachers,omitempty"`
-	Members   []*User `json:"Members,omitempty"`
+	Title     string `json:"Title"`
+	ShareLink string `json:"ShareLink"`
+	OwnerID   int    `json:"OwnerID"`
+	Owner     *User  `json:"Owner,omitempty"`
+
+	Teachers struct {
+		Users []*User `json:"Users"`
+		N     int     `json:"n"`
+	} `json:"Teachers"`
+
+	Members struct {
+		Users []*User `json:"Users"`
+		N     int     `json:"n"`
+	} `json:"Members"`
 }
 
 // Validate returns an error if the group contains invalid fields.
@@ -30,6 +38,8 @@ type GroupService interface {
 	// Retrieves a group by ID.
 	// Returns ENOTFOUND if group does not exist.
 	FindGroupByID(ctx context.Context, id int) (*Group, error)
+
+	FindGroupByShareLink(ctx context.Context, link string) (*Group, error)
 
 	// Retrieves a list of groups by filter. Also returns total count of matching
 	// groups which may differ from returned results if filter.Limit is specified.
@@ -50,6 +60,12 @@ type GroupService interface {
 	// if current group is not the group being deleted. Returns ENOTFOUND if
 	// group does not exist.
 	DeleteGroup(ctx context.Context, id int) error
+
+	AddStudents(ctx context.Context, id int, users []int) error
+
+	AddTeacher(ctx context.Context, groupID int, teacherID int) error
+
+	RemoveMember(ctx context.Context, groupID, userID int, isTeacher bool) error
 }
 
 // GroupFilter represents a filter passed to FindGroups().
@@ -59,6 +75,17 @@ type GroupFilter struct {
 	Title     *string `json:"Title"`
 	ShareLink *string `json:"ShareLink"`
 	OwnerID   *int    `json:"OwnerID"`
+
+	// Restrict to subset of results.
+	Offset int `json:"Offset"`
+	Limit  int `json:"Limit"`
+}
+
+// MemberFilter represents a filter passed to FindUsersByGroup().
+type MemberFilter struct {
+	// Filtering fields.
+	GroupID   *int  `json:"GroupID"`
+	IsTeacher *bool `json:"IsTeacher"`
 
 	// Restrict to subset of results.
 	Offset int `json:"Offset"`

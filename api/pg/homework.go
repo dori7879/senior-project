@@ -464,7 +464,7 @@ func deleteHomework(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
 	if hw, err := findHomeworkByID(ctx, tx, id); err != nil {
 		return err
-	} else if hw.ID != api.UserIDFromContext(ctx) {
+	} else if hw.TeacherID != api.UserIDFromContext(ctx) {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this homework.")
 	}
 

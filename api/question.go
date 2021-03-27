@@ -23,7 +23,8 @@ type Question struct {
 	CreatedAt time.Time `json:"CreatedAt"`
 	UpdatedAt time.Time `json:"UpdatedAt"`
 
-	QuizID int `json:"QuizID"`
+	QuizID int   `json:"QuizID"`
+	Quiz   *Quiz `json:"-"`
 }
 
 // Validate returns an error if the question contains invalid fields.
