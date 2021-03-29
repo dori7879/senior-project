@@ -133,8 +133,7 @@ func (s *Server) handleGroupCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleGroupUpdate handles the "PATCH /groups/:id" route. This route
-// reads in the updated fields and issues an update in the database. On success,
-// it redirects to the group's view page.
+// reads in the updated fields and issues an update in the database.
 func (s *Server) handleGroupUpdate(w http.ResponseWriter, r *http.Request) {
 	// Parse group ID from the path.
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
@@ -162,8 +161,7 @@ func (s *Server) handleGroupUpdate(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleGroupDelete handles the "DELETE /groups/:id" route. This route
-// permanently deletes the group and all its members and redirects to the
-// group listing page.
+// permanently deletes the group and all its members.
 func (s *Server) handleGroupDelete(w http.ResponseWriter, r *http.Request) {
 	// Parse group ID from path.
 	id, err := strconv.Atoi(mux.Vars(r)["id"])

@@ -278,10 +278,14 @@ func createQuizSubmission(ctx context.Context, tx *Tx, sub *api.QuizSubmission) 
 // submission is not the submission being updated.
 func updateQuizSubmission(ctx context.Context, tx *Tx, id int, upd api.QuizSubmissionUpdate) (*api.QuizSubmission, error) {
 	// Fetch current object state.
+	currentUserID := api.UserIDFromContext(ctx)
 	sub, err := findQuizSubmissionByID(ctx, tx, id)
 	if err != nil {
 		return sub, err
-	} else if sub.ID != api.UserIDFromContext(ctx) {
+	} else if sub.Quiz, err = findQuizByID(ctx, tx, sub.QuizID); err != nil {
+		return sub, err
+	} else if (currentUserID != 0 && sub.StudentID != 0 && sub.Quiz.TeacherID != 0) &&
+		(sub.StudentID != currentUserID && sub.Quiz.TeacherID != currentUserID) {
 		return nil, api.Errorf(api.EUNAUTHORIZED, "You are not allowed to update this quiz submission.")
 	}
 
@@ -346,11 +350,12 @@ func updateQuizSubmission(ctx context.Context, tx *Tx, id int, upd api.QuizSubmi
 // submission is not the one being deleted.
 func deleteQuizSubmission(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
+	currentUserID := api.UserIDFromContext(ctx)
 	if sub, err := findQuizSubmissionByID(ctx, tx, id); err != nil {
 		return err
 	} else if sub.Quiz, err = findQuizByID(ctx, tx, sub.QuizID); err != nil {
 		return err
-	} else if sub.Quiz.TeacherID != api.UserIDFromContext(ctx) {
+	} else if (currentUserID != 0 && sub.StudentID != 0 && sub.Quiz.TeacherID != 0) && sub.Quiz.TeacherID != currentUserID {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this quiz submission.")
 	}
 

@@ -290,10 +290,14 @@ func createHWSubmission(ctx context.Context, tx *Tx, sub *api.HWSubmission) erro
 // submission is not the submission being updated.
 func updateHWSubmission(ctx context.Context, tx *Tx, id int, upd api.HWSubmissionUpdate) (*api.HWSubmission, error) {
 	// Fetch current object state.
+	currentUserID := api.UserIDFromContext(ctx)
 	sub, err := findHWSubmissionByID(ctx, tx, id)
 	if err != nil {
 		return sub, err
-	} else if sub.ID != api.UserIDFromContext(ctx) {
+	} else if sub.Homework, err = findHomeworkByID(ctx, tx, sub.HomeworkID); err != nil {
+		return sub, err
+	} else if (currentUserID != 0 && sub.StudentID != 0 && sub.Homework.TeacherID != 0) &&
+		(sub.StudentID != currentUserID && sub.Homework.TeacherID != currentUserID) {
 		return nil, api.Errorf(api.EUNAUTHORIZED, "You are not allowed to update this homework submission.")
 	}
 
@@ -367,11 +371,12 @@ func updateHWSubmission(ctx context.Context, tx *Tx, id int, upd api.HWSubmissio
 // submission is not the one being deleted.
 func deleteHWSubmission(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
+	currentUserID := api.UserIDFromContext(ctx)
 	if sub, err := findHWSubmissionByID(ctx, tx, id); err != nil {
 		return err
 	} else if sub.Homework, err = findHomeworkByID(ctx, tx, sub.HomeworkID); err != nil {
 		return err
-	} else if sub.Homework.TeacherID != api.UserIDFromContext(ctx) {
+	} else if (currentUserID != 0 && sub.StudentID != 0 && sub.Homework.TeacherID != 0) && sub.Homework.TeacherID != currentUserID {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this homework submission.")
 	}
 

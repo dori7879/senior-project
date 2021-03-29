@@ -42,6 +42,44 @@ func (s *HomeworkService) FindHomeworkByID(ctx context.Context, id int) (*api.Ho
 	return hw, nil
 }
 
+// FindHomeworkByStudentLink retrieves a homework by the student link along with their associated group and owner objects.
+// Returns ENOTFOUND if homework does not exist.
+func (s *HomeworkService) FindHomeworkByStudentLink(ctx context.Context, link string) (*api.Homework, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	// Fetch homework and their associated group and owner objects.
+	hw, err := findHomeworkByStudentLink(ctx, tx, link)
+	if err != nil {
+		return nil, err
+	} else if err := attachHomeworkAssociations(ctx, tx, hw); err != nil {
+		return hw, err
+	}
+	return hw, nil
+}
+
+// FindHomeworkByTeacherLink retrieves a homework by the teacher link along with their associated group and owner objects.
+// Returns ENOTFOUND if homework does not exist.
+func (s *HomeworkService) FindHomeworkByTeacherLink(ctx context.Context, link string) (*api.Homework, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	// Fetch homework and their associated group and owner objects.
+	hw, err := findHomeworkByTeacherLink(ctx, tx, link)
+	if err != nil {
+		return nil, err
+	} else if err := attachHomeworkAssociations(ctx, tx, hw); err != nil {
+		return hw, err
+	}
+	return hw, nil
+}
+
 // FindHomeworks retrieves a list of homeworks by filter. Also returns total count of
 // matching homeworks which may differ from returned results if filter.Limit is specified.
 func (s *HomeworkService) FindHomeworks(ctx context.Context, filter api.HomeworkFilter) ([]*api.Homework, int, error) {
@@ -119,7 +157,7 @@ func findHomeworkByID(ctx context.Context, tx *Tx, id int) (*api.Homework, error
 	return a[0], nil
 }
 
-// findHomeworkByStudentLink is a helper function to fetch a homework by studentlink.
+// findHomeworkByStudentLink is a helper function to fetch a homework by the student link.
 // Returns ENOTFOUND if homework does not exist.
 func findHomeworkByStudentLink(ctx context.Context, tx *Tx, studentlink string) (*api.Homework, error) {
 	a, _, err := findHomeworks(ctx, tx, api.HomeworkFilter{StudentLink: &studentlink})
@@ -131,7 +169,7 @@ func findHomeworkByStudentLink(ctx context.Context, tx *Tx, studentlink string) 
 	return a[0], nil
 }
 
-// findHomeworkByTeacherLink is a helper function to fetch a homework by teacherlink.
+// findHomeworkByTeacherLink is a helper function to fetch a homework by the teacher link.
 // Returns ENOTFOUND if homework does not exist.
 func findHomeworkByTeacherLink(ctx context.Context, tx *Tx, teacherlink string) (*api.Homework, error) {
 	a, _, err := findHomeworks(ctx, tx, api.HomeworkFilter{TeacherLink: &teacherlink})
@@ -352,10 +390,11 @@ func createHomework(ctx context.Context, tx *Tx, hw *api.Homework) error {
 // homework is not the homework being updated.
 func updateHomework(ctx context.Context, tx *Tx, id int, upd api.HomeworkUpdate) (*api.Homework, error) {
 	// Fetch current object state.
+	currentUserID := api.UserIDFromContext(ctx)
 	hw, err := findHomeworkByID(ctx, tx, id)
 	if err != nil {
 		return hw, err
-	} else if hw.ID != api.UserIDFromContext(ctx) {
+	} else if currentUserID != 0 && hw.TeacherID != 0 && hw.TeacherID != currentUserID {
 		return nil, api.Errorf(api.EUNAUTHORIZED, "You are not allowed to update this homework.")
 	}
 
@@ -462,9 +501,10 @@ func updateHomework(ctx context.Context, tx *Tx, id int, upd api.HomeworkUpdate)
 // homework is not the one being deleted.
 func deleteHomework(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
+	currentUserID := api.UserIDFromContext(ctx)
 	if hw, err := findHomeworkByID(ctx, tx, id); err != nil {
 		return err
-	} else if hw.TeacherID != api.UserIDFromContext(ctx) {
+	} else if currentUserID != 0 && hw.TeacherID != 0 && hw.TeacherID != currentUserID {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this homework.")
 	}
 

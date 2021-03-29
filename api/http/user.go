@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/dori7879/senior-project/api"
 	"github.com/gorilla/mux"
@@ -11,7 +12,8 @@ import (
 
 // registerUserRoutes is a helper function for registering user and auth routes.
 func (s *Server) registerUserRoutes(r *mux.Router) {
-	r.HandleFunc("/password/change", s.handlePasswordChange).Methods("PATCH")
+	r.HandleFunc("/users/password", s.handlePasswordChange).Methods("PATCH")
+	r.HandleFunc("/users/suggestions", s.handleUserSuggestions).Methods("GET")
 
 	r.HandleFunc("/profile", s.handleProfileView).Methods("GET")
 	r.HandleFunc("/profile", s.handleProfileUpdate).Methods("PUT")
@@ -136,6 +138,44 @@ func (s *Server) handlePasswordChange(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{}`))
+}
+
+func (s *Server) handleUserSuggestions(w http.ResponseWriter, r *http.Request) {
+	var uFilter api.UserFilter
+
+	uFilter.Offset, _ = strconv.Atoi(r.URL.Query().Get("offset"))
+	uFilter.Limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
+	if uFilter.Limit == 0 {
+		uFilter.Limit = 10
+	}
+	emailSubStr := r.URL.Query().Get("email")
+	uFilter.EmailSubStr = &emailSubStr
+	isTeacher, _ := strconv.ParseBool(r.URL.Query().Get("isTeacher"))
+	uFilter.IsTeacher = &isTeacher
+
+	users, n, err := s.UserService.FindUsers(r.Context(), uFilter)
+	if err != nil {
+		Error(w, r, err)
+		return
+	}
+
+	userIDs := []int{}
+	for _, u := range users {
+		userIDs = append(userIDs, u.ID)
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(struct {
+		Users []int `json:"Users"`
+		N     int   `json:"n"`
+	}{
+		Users: userIDs,
+		N:     n,
+	}); err != nil {
+		LogError(r, err)
+		return
+	}
 }
 
 func (s *Server) handleProfileView(w http.ResponseWriter, r *http.Request) {

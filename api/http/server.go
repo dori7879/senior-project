@@ -181,7 +181,6 @@ func (s *Server) authenticate(next http.Handler) http.Handler {
 // This is used if a user goes to log in but is already logged in.
 func (s *Server) requireNoAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// If user is logged in, redirect to the home page.
 		if userID := api.UserIDFromContext(r.Context()); userID != 0 {
 			w.Header().Set("Content-type", "application/json")
 			w.WriteHeader(http.StatusForbidden)

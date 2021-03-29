@@ -352,10 +352,11 @@ func createQuiz(ctx context.Context, tx *Tx, qz *api.Quiz) error {
 // quiz is not the quiz being updated.
 func updateQuiz(ctx context.Context, tx *Tx, id int, upd api.QuizUpdate) (*api.Quiz, error) {
 	// Fetch current object state.
+	currentUserID := api.UserIDFromContext(ctx)
 	qz, err := findQuizByID(ctx, tx, id)
 	if err != nil {
 		return qz, err
-	} else if qz.ID != api.UserIDFromContext(ctx) {
+	} else if currentUserID != 0 && qz.TeacherID != 0 && qz.TeacherID != currentUserID {
 		return nil, api.Errorf(api.EUNAUTHORIZED, "You are not allowed to update this quiz.")
 	}
 
@@ -462,9 +463,10 @@ func updateQuiz(ctx context.Context, tx *Tx, id int, upd api.QuizUpdate) (*api.Q
 // quiz is not the one being deleted.
 func deleteQuiz(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
+	currentUserID := api.UserIDFromContext(ctx)
 	if qz, err := findQuizByID(ctx, tx, id); err != nil {
 		return err
-	} else if qz.TeacherID != api.UserIDFromContext(ctx) {
+	} else if currentUserID != 0 && qz.TeacherID != 0 && qz.TeacherID != currentUserID {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this quiz.")
 	}
 

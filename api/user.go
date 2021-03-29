@@ -73,9 +73,10 @@ type UserService interface {
 // UserFilter represents a filter passed to FindUsers().
 type UserFilter struct {
 	// Filtering fields.
-	ID        *int    `json:"ID"`
-	Email     *string `json:"Email"`
-	IsTeacher *bool   `json:"IsTeacher"`
+	ID          *int    `json:"ID"`
+	Email       *string `json:"Email"`
+	EmailSubStr *string `json:"EmailSubStr"`
+	IsTeacher   *bool   `json:"IsTeacher"`
 
 	// Restrict to subset of results.
 	Offset int `json:"Offset"`

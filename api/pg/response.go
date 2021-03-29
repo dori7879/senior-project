@@ -290,11 +290,16 @@ func createResponse(ctx context.Context, tx *Tx, r *api.Response) error {
 // response is not the response being updated.
 func updateResponse(ctx context.Context, tx *Tx, id int, upd api.ResponseUpdate) (*api.Response, error) {
 	// Fetch current object state.
+	currentUserID := api.UserIDFromContext(ctx)
 	r, err := findResponseByID(ctx, tx, id)
 	if err != nil {
 		return r, err
-	} else if r.ID != api.UserIDFromContext(ctx) {
-		return nil, api.Errorf(api.EUNAUTHORIZED, "You are not allowed to update this response.")
+	} else if r.Submission, err = findQuizSubmissionByID(ctx, tx, r.SubmissionID); err != nil {
+		return r, err
+	} else if r.Submission.Quiz, err = findQuizByID(ctx, tx, r.Submission.QuizID); err != nil {
+		return r, err
+	} else if currentUserID != 0 && r.Submission.StudentID != currentUserID && r.Submission.Quiz.TeacherID != currentUserID {
+		return nil, api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this response.")
 	}
 
 	// Update fields.
@@ -387,13 +392,14 @@ func updateResponse(ctx context.Context, tx *Tx, id int, upd api.ResponseUpdate)
 // response is not the one being deleted.
 func deleteResponse(ctx context.Context, tx *Tx, id int) error {
 	// Verify object exists.
+	currentUserID := api.UserIDFromContext(ctx)
 	if r, err := findResponseByID(ctx, tx, id); err != nil {
 		return err
 	} else if r.Submission, err = findQuizSubmissionByID(ctx, tx, r.SubmissionID); err != nil {
 		return err
 	} else if r.Submission.Quiz, err = findQuizByID(ctx, tx, r.Submission.QuizID); err != nil {
 		return err
-	} else if r.Submission.Quiz.TeacherID != api.UserIDFromContext(ctx) {
+	} else if currentUserID != 0 && r.Submission.Quiz.TeacherID != currentUserID {
 		return api.Errorf(api.EUNAUTHORIZED, "You are not allowed to delete this response.")
 	}
 

@@ -164,6 +164,9 @@ func findUsers(ctx context.Context, tx *Tx, filter api.UserFilter) (_ []*api.Use
 	if v := filter.IsTeacher; v != nil {
 		where, args = append(where, "is_teacher = $3"), append(args, *v)
 	}
+	if v := filter.EmailSubStr; v != nil {
+		where, args = append(where, "email LIKE '%$4%'"), append(args, *v)
+	}
 
 	// Execute query to fetch user rows.
 	rows, err := tx.QueryContext(ctx, `

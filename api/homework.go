@@ -46,6 +46,10 @@ type HomeworkService interface {
 	// Returns ENOTFOUND if homework does not exist.
 	FindHomeworkByID(ctx context.Context, id int) (*Homework, error)
 
+	FindHomeworkByStudentLink(ctx context.Context, link string) (*Homework, error)
+
+	FindHomeworkByTeacherLink(ctx context.Context, link string) (*Homework, error)
+
 	// Retrieves a list of homeworks by filter. Also returns total count of matching
 	// homeworks which may differ from returned results if filter.Limit is specified.
 	FindHomeworks(ctx context.Context, filter HomeworkFilter) ([]*Homework, int, error)

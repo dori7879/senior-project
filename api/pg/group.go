@@ -422,7 +422,7 @@ func updateGroup(ctx context.Context, tx *Tx, id int, upd api.GroupUpdate) (*api
 	group, err := findGroupByID(ctx, tx, id)
 	if err != nil {
 		return group, err
-	} else if group.ID != api.UserIDFromContext(ctx) {
+	} else if group.OwnerID != api.UserIDFromContext(ctx) {
 		return nil, api.Errorf(api.EUNAUTHORIZED, "You are not allowed to update this group.")
 	}
 
