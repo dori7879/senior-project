@@ -18,9 +18,9 @@ type AuthService struct {
 	VerifyKey []byte
 }
 
-// NewGroupService returns a new instance of AuthService.
-func NewGroupService(secretkey []byte) *AuthService {
-	return &AuthService{SignKey: secretkey}
+// NewAuthService returns a new instance of AuthService.
+func NewAuthService(signkey, verifykey []byte) *AuthService {
+	return &AuthService{SignKey: signkey, VerifyKey: verifykey}
 }
 
 func (a *AuthService) Login(auth *api.Auth, user *api.User) (string, error) {

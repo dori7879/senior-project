@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/dori7879/senior-project/api"
-	"github.com/dori7879/senior-project/api/jwt"
 	"github.com/gorilla/mux"
 )
 
@@ -33,7 +32,7 @@ type Server struct {
 	Domain string
 
 	// Servics used by the various HTTP routes.
-	AuthService           jwt.AuthService
+	AuthService           api.AuthService
 	UserService           api.UserService
 	GroupService          api.GroupService
 	HomeworkService       api.HomeworkService

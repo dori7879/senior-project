@@ -102,7 +102,7 @@ func (s *Server) handleGroupView(w http.ResponseWriter, r *http.Request) {
 // handleGroupCreate handles the "POST /groups" route.
 // It reads & writes data using with HTML or JSON.
 func (s *Server) handleGroupCreate(w http.ResponseWriter, r *http.Request) {
-	// Unmarshal data based on HTTP request's content type.
+	// Unmarshal data
 	var group api.Group
 	if err := json.NewDecoder(r.Body).Decode(&group); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
@@ -176,7 +176,7 @@ func (s *Server) handleGroupDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Render output to the client based on HTTP accept header.
+	// Response part
 	w.Header().Set("Content-type", "application/json")
 	w.Write([]byte(`{}`))
 }
@@ -292,7 +292,7 @@ func (s *Server) handleRemoveMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Render output to the client based on HTTP accept header.
+	// Response part
 	w.Header().Set("Content-type", "application/json")
 	w.Write([]byte(`{}`))
 }

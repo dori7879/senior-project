@@ -42,6 +42,44 @@ func (s *QuizService) FindQuizByID(ctx context.Context, id int) (*api.Quiz, erro
 	return qz, nil
 }
 
+// FindQuizByStudentLink retrieves a quiz by the student link along with their associated group and owner objects.
+// Returns ENOTFOUND if quiz does not exist.
+func (s *QuizService) FindQuizByStudentLink(ctx context.Context, link string) (*api.Quiz, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	// Fetch quiz and their associated group and owner objects.
+	qz, err := findQuizByStudentLink(ctx, tx, link)
+	if err != nil {
+		return nil, err
+	} else if err := attachQuizAssociations(ctx, tx, qz); err != nil {
+		return qz, err
+	}
+	return qz, nil
+}
+
+// FindQuizByTeacherLink retrieves a quiz by the teacher link along with their associated group and owner objects.
+// Returns ENOTFOUND if quiz does not exist.
+func (s *QuizService) FindQuizByTeacherLink(ctx context.Context, link string) (*api.Quiz, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	// Fetch quiz and their associated group and owner objects.
+	qz, err := findQuizByTeacherLink(ctx, tx, link)
+	if err != nil {
+		return nil, err
+	} else if err := attachQuizAssociations(ctx, tx, qz); err != nil {
+		return qz, err
+	}
+	return qz, nil
+}
+
 // FindQuizzes retrieves a list of quizzes by filter. Also returns total count of
 // matching quizzes which may differ from returned results if filter.Limit is specified.
 func (s *QuizService) FindQuizzes(ctx context.Context, filter api.QuizFilter) ([]*api.Quiz, int, error) {

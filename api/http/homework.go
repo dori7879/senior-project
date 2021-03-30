@@ -11,16 +11,19 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// registerHomeworkRoutes is a helper function for registering all homework routes.
-func (s *Server) registerHomeworkRoutes(r *mux.Router) {
+// registerHomeworkPrivateRoutes is a helper function for registering private homework routes.
+func (s *Server) registerHomeworkPrivateRoutes(r *mux.Router) {
 	// Listing of all homeworks a teacher is an owner of.
 	r.HandleFunc("/homeworks", s.handleHomeworkList).Methods("GET")
 
-	// API endpoint for creating homeworks.
-	r.HandleFunc("/homeworks", s.handleHomeworkCreate).Methods("POST")
-
 	// View a single homework.
 	r.HandleFunc("/homeworks/{id}", s.handleHomeworkView).Methods("GET")
+}
+
+// registerHomeworkPublicRoutes is a helper function for registering public homework routes.
+func (s *Server) registerHomeworkPublicRoutes(r *mux.Router) {
+	// API endpoint for creating homeworks.
+	r.HandleFunc("/homeworks", s.handleHomeworkCreate).Methods("POST")
 
 	// View a single homework.
 	r.HandleFunc("/homeworks/shared/{link}/teacher", s.handleHomeworkTeacherView).Methods("GET")
@@ -30,7 +33,6 @@ func (s *Server) registerHomeworkRoutes(r *mux.Router) {
 
 	// Removing a homework.
 	r.HandleFunc("/homeworks/{id}", s.handleHomeworkDelete).Methods("DELETE")
-
 }
 
 // handleHomeworkList handles the "GET /homeworks" route. This route can optionally
@@ -166,7 +168,7 @@ func (s *Server) handleHomeworkStudentView(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-// handleHomeworkCreate handles the "POST /homeworks" and "POST /homeworks/new" route.
+// handleHomeworkCreate handles the "POST /homeworks" route.
 func (s *Server) handleHomeworkCreate(w http.ResponseWriter, r *http.Request) {
 	user := api.UserFromContext(r.Context())
 	if user != nil && !user.IsTeacher {
@@ -251,7 +253,7 @@ func (s *Server) handleHomeworkDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Render output to the client based on HTTP accept header.
+	// Response part
 	w.Header().Set("Content-type", "application/json")
 	w.Write([]byte(`{}`))
 }

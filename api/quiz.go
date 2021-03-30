@@ -29,6 +29,7 @@ type Quiz struct {
 	Group   *Group `json:"Group"`
 
 	Submissions []*QuizSubmission `json:"Submissions"`
+	Questions   []*Question       `json:"Questions"`
 }
 
 // Validate returns an error if the quiz contains invalid fields.
@@ -45,6 +46,10 @@ type QuizService interface {
 	// Retrieves a quiz by ID.
 	// Returns ENOTFOUND if quiz does not exist.
 	FindQuizByID(ctx context.Context, id int) (*Quiz, error)
+
+	FindQuizByStudentLink(ctx context.Context, link string) (*Quiz, error)
+
+	FindQuizByTeacherLink(ctx context.Context, link string) (*Quiz, error)
 
 	// Retrieves a list of quizzes by filter. Also returns total count of matching
 	// quizzes which may differ from returned results if filter.Limit is specified.

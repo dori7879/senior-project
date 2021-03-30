@@ -21,7 +21,7 @@ type QuizSubmission struct {
 	QuizID int   `json:"QuizID"`
 	Quiz   *Quiz `json:"Quiz"`
 
-	Questions []*Question `json:"Questions"`
+	Responses []*Response `json:"Responses"`
 }
 
 // Validate returns an error if the quiz submission contains invalid fields.
