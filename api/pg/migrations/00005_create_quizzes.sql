@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS quizzes
 (
-    id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id                serial NOT NULL,
     title             VARCHAR(255) NOT NULL,
     content           TEXT         NULL,
     max_grade         DECIMAL(3,2) NOT NULL,
@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS quizzes
     opened_at         TIMESTAMP    NULL,
     closed_at         TIMESTAMP    NULL,
     teacher_fullname  VARCHAR(255) NULL,
-    teacher_id        INT UNSIGNED NULL DEFAULT NULL,
-    group_id          INT UNSIGNED NULL DEFAULT NULL,
+    teacher_id        integer  NULL DEFAULT NULL,
+    group_id          integer  NULL DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE (student_link, teacher_link),
     FOREIGN KEY (teacher_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,

@@ -13,6 +13,8 @@ import (
 	"github.com/dori7879/senior-project/api/http"
 	"github.com/dori7879/senior-project/api/jwt"
 	"github.com/dori7879/senior-project/api/pg"
+
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 // main is the entry point to our application binary. However, it has some poor
@@ -98,14 +100,20 @@ func (m *Main) Close() error {
 // This exists separately from the Run() function so that we can skip it
 // during end-to-end tests. Those tests will configure manually and call Run().
 func (m *Main) ParseFlags(ctx context.Context, args []string) error {
-	flag.StringVar(&m.Config.DB.DSN, "dsn", "main_user:mysecretuserpassword@/astyqbaga?parseTime=true", "MySQL/MariaDB database DSN")
+	var host, port, user, password, dbname string
+	flag.StringVar(&host, "db-host", "localhost", "PostgreSQL database: host")
+	flag.StringVar(&port, "db-port", "5432", "PostgreSQL database: port")
+	flag.StringVar(&user, "db-user", "main_user", "PostgreSQL database: user")
+	flag.StringVar(&password, "db-password", "mysecretuserpassword", "PostgreSQL database: password")
+	flag.StringVar(&dbname, "db-name", "easysubmit_db", "PostgreSQL database: db name")
 	flag.StringVar(&m.Config.FS.HashKey, "fs-hash-key", "00000000000000000000000000000000000000000000000000", "Hash key for naming files")
-	flag.StringVar(&m.Config.HTTP.Addr, "addr", ":4000", "HTTP network address")
+	flag.StringVar(&m.Config.HTTP.Addr, "addr", ":8080", "HTTP network address")
 	flag.StringVar(&m.Config.HTTP.Domain, "domain", "", "HTTP network address")
-	flag.StringVar(&m.Config.SignKey, "sign-key", "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "Sign key for JWT")
-	flag.StringVar(&m.Config.VerifyKey, "verify-key", "0000000000000000000000000000000000000000000000000000000000000000", "Verification key for JWT")
+	flag.StringVar(&m.Config.SignKey, "sign-key", "000000000000000000000000000000000000000000000000000000000000000", "Sign key for JWT")
+	flag.StringVar(&m.Config.VerifyKey, "verify-key", "000000000000000000000000000000000000000000000000000000000000000", "Verification key for JWT")
 	flag.Parse()
 
+	m.Config.DB.DSN = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	return nil
 }
 
@@ -152,11 +160,6 @@ func (m *Main) Run(ctx context.Context) (err error) {
 	m.HTTPServer.QuizSubmissionService = quizSubmissionService
 	m.HTTPServer.QuestionService = questionService
 	m.HTTPServer.ResponseService = responseService
-
-	// Start the HTTP server.
-	if err := m.HTTPServer.Open(); err != nil {
-		return err
-	}
 
 	// Start the HTTP server.
 	if err := m.HTTPServer.Open(); err != nil {

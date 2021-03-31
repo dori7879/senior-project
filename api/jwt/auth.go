@@ -67,7 +67,7 @@ func (a *AuthService) Validate(tokenStr string) (int, error) {
 	claims := jwt.MapClaims{}
 
 	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return a.VerifyKey, nil
+		return a.SignKey, nil
 	})
 
 	// Check if signatures are valid.

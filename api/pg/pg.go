@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/dori7879/senior-project/api"
-	_ "github.com/jackc/pgx/v4"
 )
 
 //go:embed migrations/*.sql
@@ -48,7 +47,7 @@ func (db *DB) Open() (err error) {
 	}
 
 	// Connect to the database.
-	if db.db, err = sql.Open("postgres", db.DSN); err != nil {
+	if db.db, err = sql.Open("pgx", db.DSN); err != nil {
 		return err
 	}
 
@@ -101,7 +100,7 @@ func (db *DB) migrateFile(name string) error {
 
 	// Ensure migration has not already been run.
 	var n int
-	if err := tx.QueryRow(`SELECT COUNT(*) FROM migrations WHERE name = ?`, name).Scan(&n); err != nil {
+	if err := tx.QueryRow(`SELECT COUNT(*) FROM migrations WHERE name = $1`, name).Scan(&n); err != nil {
 		return err
 	} else if n != 0 {
 		return nil // already run migration, skip
@@ -115,7 +114,7 @@ func (db *DB) migrateFile(name string) error {
 	}
 
 	// Insert record into migrations to prevent re-running migration.
-	if _, err := tx.Exec(`INSERT INTO migrations (name) VALUES (?)`, name); err != nil {
+	if _, err := tx.Exec(`INSERT INTO migrations (name) VALUES ($1)`, name); err != nil {
 		return err
 	}
 
