@@ -124,23 +124,30 @@ func findQuizSubmissionByID(ctx context.Context, tx *Tx, id int) (*api.QuizSubmi
 func findQuizSubmissions(ctx context.Context, tx *Tx, filter api.QuizSubmissionFilter) (_ []*api.QuizSubmission, n int, err error) {
 	// Build WHERE clause.
 	where, args := []string{"1 = 1"}, []interface{}{}
+	i := 1
 	if v := filter.ID; v != nil {
-		where, args = append(where, "id = $1"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.BeforeSubmittedAt; v != nil {
-		where, args = append(where, "submitted_at < $2"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("submitted_at < $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.AfterUpdatedAt; v != nil {
-		where, args = append(where, "updated_at >= $3"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("updated_at >= $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.StudentFullName; v != nil {
-		where, args = append(where, "student_fullname = $4"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("student_fullname = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.StudentID; v != nil {
-		where, args = append(where, "student_id = $5"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("student_id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.QuizID; v != nil {
-		where, args = append(where, "quiz_id = $6"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("quiz_id = $%d", i)), append(args, *v)
+		i++
 	}
 
 	// Execute query to fetch submission rows.
@@ -175,7 +182,7 @@ func findQuizSubmissions(ctx context.Context, tx *Tx, filter api.QuizSubmissionF
 		var studentID sql.NullInt32
 
 		var sub api.QuizSubmission
-		if rows.Scan(
+		if err := rows.Scan(
 			&sub.ID,
 			&grade,
 			&sub.Comments,
@@ -241,7 +248,7 @@ func createQuizSubmission(ctx context.Context, tx *Tx, sub *api.QuizSubmission) 
 	}
 
 	// Execute insertion query.
-	result, err := tx.ExecContext(ctx, `
+	row := tx.QueryRowContext(ctx, `
 		INSERT INTO quiz_submissions (
 			grade,
 			comments,
@@ -252,6 +259,7 @@ func createQuizSubmission(ctx context.Context, tx *Tx, sub *api.QuizSubmission) 
 			quiz_id
 		)
 		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING id
 	`,
 		grade,
 		sub.Comments,
@@ -261,15 +269,11 @@ func createQuizSubmission(ctx context.Context, tx *Tx, sub *api.QuizSubmission) 
 		studentID,
 		sub.QuizID,
 	)
+
+	err := row.Scan(&sub.ID)
 	if err != nil {
 		return FormatError(err)
 	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
-	sub.ID = int(id)
 
 	return nil
 }
@@ -292,6 +296,7 @@ func updateQuizSubmission(ctx context.Context, tx *Tx, id int, upd api.QuizSubmi
 	// Update fields.
 	if v := upd.Grade; v != nil {
 		sub.Grade = *v
+		sub.UpdatedAt = tx.now
 	}
 	if v := upd.Comments; v != nil {
 		sub.Comments = *v
@@ -302,9 +307,6 @@ func updateQuizSubmission(ctx context.Context, tx *Tx, id int, upd api.QuizSubmi
 	if v := upd.StudentID; v != nil {
 		sub.StudentID = *v
 	}
-
-	// Set last updated date to current time.
-	sub.UpdatedAt = tx.now
 
 	// Perform basic field validation.
 	if err := sub.Validate(); err != nil {
@@ -324,6 +326,10 @@ func updateQuizSubmission(ctx context.Context, tx *Tx, id int, upd api.QuizSubmi
 	if sub.StudentID != 0 {
 		studentID = &sub.StudentID
 	}
+	var updatedAt *time.Time
+	if !sub.UpdatedAt.IsZero() {
+		updatedAt = &sub.UpdatedAt
+	}
 
 	// Execute update query.
 	if _, err := tx.ExecContext(ctx, `
@@ -331,13 +337,15 @@ func updateQuizSubmission(ctx context.Context, tx *Tx, id int, upd api.QuizSubmi
 		SET grade = $1,
 		    comments = $2,
 		    student_fullname = $3,
-		    student_id = $4
-		WHERE id = $5
+		    student_id = $4,
+			updated_at = $5
+		WHERE id = $6
 	`,
 		grade,
 		sub.Comments,
 		studentFullname,
 		studentID,
+		updatedAt,
 		id,
 	); err != nil {
 		return sub, FormatError(err)
@@ -368,10 +376,12 @@ func deleteQuizSubmission(ctx context.Context, tx *Tx, id int) error {
 
 // attachQuizSubmissionAssociations attaches quiz and student objects associated with the submission.
 func attachQuizSubmissionAssociations(ctx context.Context, tx *Tx, sub *api.QuizSubmission) (err error) {
-	if sub.Student, err = findUserByID(ctx, tx, sub.StudentID); err != nil {
-		return fmt.Errorf("attach quiz submission user: %w", err)
-	} else if sub.Quiz, err = findQuizByID(ctx, tx, sub.QuizID); err != nil {
+	if sub.Quiz, err = findQuizByID(ctx, tx, sub.QuizID); err != nil {
 		return fmt.Errorf("attach quiz submission quiz: %w", err)
+	} else if sub.StudentID == 0 {
+		return nil
+	} else if sub.Student, err = findUserByID(ctx, tx, sub.StudentID); err != nil {
+		return fmt.Errorf("attach quiz submission user: %w", err)
 	}
 	return nil
 }

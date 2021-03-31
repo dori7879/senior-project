@@ -2,6 +2,7 @@ package pg
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"strings"
 
@@ -201,17 +202,22 @@ func findGroupByShareLink(ctx context.Context, tx *Tx, link string) (*api.Group,
 func findGroups(ctx context.Context, tx *Tx, filter api.GroupFilter) (_ []*api.Group, n int, err error) {
 	// Build WHERE clause.
 	where, args := []string{"1 = 1"}, []interface{}{}
+	i := 1
 	if v := filter.ID; v != nil {
-		where, args = append(where, "id = $1"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.Title; v != nil {
-		where, args = append(where, "title = $2"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("title = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.ShareLink; v != nil {
-		where, args = append(where, "share_link = $3"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("share_link = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.OwnerID; v != nil {
-		where, args = append(where, "owner_id = $4"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("owner_id = $%d", i)), append(args, *v)
+		i++
 	}
 
 	// Execute query to fetch group rows.
@@ -238,7 +244,7 @@ func findGroups(ctx context.Context, tx *Tx, filter api.GroupFilter) (_ []*api.G
 	for rows.Next() {
 		var group api.Group
 
-		if rows.Scan(
+		if err := rows.Scan(
 			&group.ID,
 			&group.Title,
 			&group.ShareLink,
@@ -292,7 +298,7 @@ func findGroupsByMember(ctx context.Context, tx *Tx, filter api.UserFilter) (_ [
 	for rows.Next() {
 		var group api.Group
 
-		if rows.Scan(
+		if err := rows.Scan(
 			&group.ID,
 			&group.Title,
 			&group.ShareLink,
@@ -320,27 +326,24 @@ func createGroup(ctx context.Context, tx *Tx, group *api.Group) error {
 	}
 
 	// Execute insertion query.
-	result, err := tx.ExecContext(ctx, `
+	row := tx.QueryRowContext(ctx, `
 		INSERT INTO groups (
 			title,
 			share_link,
 			owner_id
 		)
 		VALUES ($1, $2, $3)
+		RETURNING id
 	`,
 		group.Title,
 		group.ShareLink,
 		group.OwnerID,
 	)
+
+	err := row.Scan(&group.ID)
 	if err != nil {
 		return FormatError(err)
 	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
-	group.ID = int(id)
 
 	return nil
 }
@@ -361,15 +364,20 @@ func addStudents(ctx context.Context, tx *Tx, groupID int, users []int) error {
 	stmt := fmt.Sprintf("INSERT INTO students_groups (group_id, student_id) VALUES %s",
 		strings.Join(values, ","))
 
-	_, err := tx.Exec(stmt, args...)
+	row := tx.QueryRowContext(ctx, stmt, args...)
 
-	return err
+	err := row.Scan()
+	if err != nil && err != sql.ErrNoRows {
+		return FormatError(err)
+	}
+
+	return nil
 }
 
 // addTeacher adds users (students) to the group.
 func addTeacher(ctx context.Context, tx *Tx, groupID int, teacherID int) error {
 	// Execute insertion query.
-	result, err := tx.ExecContext(ctx, `
+	_, err := tx.ExecContext(ctx, `
 		INSERT INTO teachers_groups (
 			group_id,
 			teacher_id
@@ -381,11 +389,6 @@ func addTeacher(ctx context.Context, tx *Tx, groupID int, teacherID int) error {
 	)
 	if err != nil {
 		return FormatError(err)
-	}
-
-	_, err = result.LastInsertId()
-	if err != nil {
-		return err
 	}
 
 	return nil

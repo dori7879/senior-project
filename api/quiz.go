@@ -21,7 +21,7 @@ type Quiz struct {
 	OpenedAt    time.Time `json:"OpenedAt"`
 	ClosedAt    time.Time `json:"ClosedAt"`
 
-	TeacherFullName string `json:"TeacherFullName"`
+	TeacherFullName string `json:"TeacherFullName" db:"teacher_fullname"`
 	TeacherID       int    `json:"TeacherID"`
 	Teacher         *User  `json:"Teacher"`
 

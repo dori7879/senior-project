@@ -3,6 +3,7 @@ package pg
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"strings"
 	"time"
 
@@ -118,17 +119,22 @@ func findQuestionByID(ctx context.Context, tx *Tx, id int) (*api.Question, error
 func findQuestions(ctx context.Context, tx *Tx, filter api.QuestionFilter) (_ []*api.Question, n int, err error) {
 	// Build WHERE clause.
 	where, args := []string{"1 = 1"}, []interface{}{}
+	i := 1
 	if v := filter.ID; v != nil {
-		where, args = append(where, "id = $1"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.Type; v != nil {
-		where, args = append(where, "type = $2"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("type = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.Fixed; v != nil {
-		where, args = append(where, "fixed = $3"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("fixed = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.QuizID; v != nil {
-		where, args = append(where, "quiz_id = $4"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("quiz_id = $%d", i)), append(args, *v)
+		i++
 	}
 
 	// Execute query to fetch question rows.
@@ -169,7 +175,7 @@ func findQuestions(ctx context.Context, tx *Tx, filter api.QuestionFilter) (_ []
 		var updatedAt sql.NullTime
 
 		var q api.Question
-		if rows.Scan(
+		if err := rows.Scan(
 			&q.ID,
 			&q.Content,
 			&q.Type,
@@ -244,7 +250,7 @@ func createQuestion(ctx context.Context, tx *Tx, q *api.Question) error {
 	}
 
 	// Execute insertion query.
-	result, err := tx.ExecContext(ctx, `
+	row := tx.QueryRowContext(ctx, `
 		INSERT INTO questions (
 			content,
 			type,
@@ -259,6 +265,7 @@ func createQuestion(ctx context.Context, tx *Tx, q *api.Question) error {
 			quiz_id
 		)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+		RETURNING id
 	`,
 		q.Content,
 		q.Type,
@@ -272,15 +279,11 @@ func createQuestion(ctx context.Context, tx *Tx, q *api.Question) error {
 		updatedAt,
 		q.QuizID,
 	)
+
+	err := row.Scan(&q.ID)
 	if err != nil {
 		return FormatError(err)
 	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
-	q.ID = int(id)
 
 	return nil
 }

@@ -10,17 +10,17 @@ type HWSubmission struct {
 	ID int `json:"ID"`
 
 	Response    string    `json:"Response"`
-	Grade       float32   `json:"Grade"`
-	Comments    string    `json:"Comments"`
+	Grade       float32   `json:"Grade,omitempty"`
+	Comments    string    `json:"Comments,omitempty"`
 	SubmittedAt time.Time `json:"SubmittedAt"`
 	UpdatedAt   time.Time `json:"UpdatedAt"`
 
-	StudentFullName string `json:"StudentFullName"`
-	StudentID       int    `json:"StudentID"`
-	Student         *User  `json:"Student"`
+	StudentFullName string `json:"StudentFullName,omitempty"`
+	StudentID       int    `json:"StudentID,omitempty"`
+	Student         *User  `json:"Student,omitempty"`
 
-	HomeworkID int       `json:"HomeworkID"`
-	Homework   *Homework `json:"Homework"`
+	HomeworkID int       `json:"HomeworkID,omitempty"`
+	Homework   *Homework `json:"Homework,omitempty"`
 }
 
 // Validate returns an error if the hw submission contains invalid fields.
@@ -62,7 +62,7 @@ type HWSubmissionFilter struct {
 	BeforeSubmittedAt *time.Time `json:"SubmittedAt"`
 	AfterUpdatedAt    *time.Time `json:"UpdatedAt"`
 
-	StudentFullName *string `json:"StudentFullName"`
+	StudentFullName *string `json:"StudentFullName" db:"student_fullname"`
 	StudentID       *int    `json:"StudentID"`
 	HomeworkID      *int    `json:"HomeworkID"`
 

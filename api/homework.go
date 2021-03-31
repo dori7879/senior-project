@@ -28,7 +28,7 @@ type Homework struct {
 	GroupID int    `json:"GroupID"`
 	Group   *Group `json:"Group"`
 
-	Submissions []*HWSubmission `json:"Submissions"`
+	Submissions []*HWSubmission `json:"Submissions,omitempty"`
 }
 
 // Validate returns an error if the homework contains invalid fields.

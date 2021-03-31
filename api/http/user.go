@@ -27,7 +27,7 @@ func (s *Server) registerAuthRoutes(r *mux.Router) {
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
-	var auth *api.Auth
+	auth := &api.Auth{}
 	if err := json.NewDecoder(r.Body).Decode(auth); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
@@ -63,23 +63,24 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleSignup(w http.ResponseWriter, r *http.Request) {
 	// Parse password first
-	rawPassword := &struct {
-		Content string `json:"Password"`
+	in := &struct {
+		Password string `json:"Password"`
+		api.User
 	}{}
-	if err := json.NewDecoder(r.Body).Decode(rawPassword); err != nil {
-		Error(w, r, api.Errorf(api.EINVALID, "Invalid password JSON field"))
+	if err := json.NewDecoder(r.Body).Decode(in); err != nil {
+		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON field"))
 		return
 	}
 
 	// Parse rest of the fields
-	var user *api.User
-	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
-		Error(w, r, api.Errorf(api.EINVALID, "Invalid user JSON body"))
-		return
-	}
+	var user api.User
+	user.FirstName = in.FirstName
+	user.LastName = in.LastName
+	user.Email = in.Email
+	user.IsTeacher = in.IsTeacher
 
 	// Generate password hash and assign it to user
-	passwordHash, err := bcrypt.GenerateFromPassword([]byte(rawPassword.Content), 12)
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(in.Password), 12)
 	if err != nil {
 		Error(w, r, err)
 		return
@@ -87,7 +88,7 @@ func (s *Server) handleSignup(w http.ResponseWriter, r *http.Request) {
 	user.PasswordHash = passwordHash
 
 	// Create user
-	err = s.UserService.CreateUser(r.Context(), user)
+	err = s.UserService.CreateUser(r.Context(), &user)
 	if err != nil {
 		Error(w, r, api.Errorf(api.EINTERNAL, "Could not create user"))
 		return
@@ -181,7 +182,7 @@ func (s *Server) handleUserSuggestions(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleProfileView(w http.ResponseWriter, r *http.Request) {
 	user := api.UserFromContext(r.Context())
 	var err error
-	var uFilter api.UserFilter
+	uFilter := api.UserFilter{}
 	if err := json.NewDecoder(r.Body).Decode(&uFilter); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
@@ -218,14 +219,13 @@ func (s *Server) handleProfileView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleProfileUpdate(w http.ResponseWriter, r *http.Request) {
-	var upd *api.UserUpdate
-
-	if err := json.NewDecoder(r.Body).Decode(upd); err != nil {
+	upd := api.UserUpdate{}
+	if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
 	}
 
-	if _, err := s.UserService.UpdateUser(r.Context(), api.UserIDFromContext(r.Context()), *upd); err != nil {
+	if _, err := s.UserService.UpdateUser(r.Context(), api.UserIDFromContext(r.Context()), upd); err != nil {
 		Error(w, r, err)
 		return
 	}

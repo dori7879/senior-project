@@ -186,32 +186,42 @@ func findHomeworkByTeacherLink(ctx context.Context, tx *Tx, teacherlink string) 
 func findHomeworks(ctx context.Context, tx *Tx, filter api.HomeworkFilter) (_ []*api.Homework, n int, err error) {
 	// Build WHERE clause.
 	where, args := []string{"1 = 1"}, []interface{}{}
+	i := 1
 	if v := filter.ID; v != nil {
-		where, args = append(where, "id = $1"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.Title; v != nil {
-		where, args = append(where, "title = $2"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("title = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.StudentLink; v != nil {
-		where, args = append(where, "student_link = $3"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("student_link = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.TeacherLink; v != nil {
-		where, args = append(where, "teacher_link = $4"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("teacher_link = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.CourseTitle; v != nil {
-		where, args = append(where, "course_title = $5"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("course_title = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.Mode; v != nil {
-		where, args = append(where, "mode = $6"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("mode = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.TeacherFullName; v != nil {
-		where, args = append(where, "teacher_fullname = $7"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("teacher_fullname = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.TeacherID; v != nil {
-		where, args = append(where, "teacher_id = $8"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("teacher_id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.GroupID; v != nil {
-		where, args = append(where, "group_id = $9"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("group_id = $%d", i)), append(args, *v)
+		i++
 	}
 
 	// Execute query to fetch homework rows.
@@ -256,7 +266,7 @@ func findHomeworks(ctx context.Context, tx *Tx, filter api.HomeworkFilter) (_ []
 		var groupID sql.NullInt32
 
 		var hw api.Homework
-		if rows.Scan(
+		if err := rows.Scan(
 			&hw.ID,
 			&hw.Title,
 			&content,
@@ -347,41 +357,44 @@ func createHomework(ctx context.Context, tx *Tx, hw *api.Homework) error {
 	}
 
 	// Execute insertion query.
-	result, err := tx.ExecContext(ctx, `
+	row := tx.QueryRowContext(ctx, `
 		INSERT INTO homeworks (
 			title,
 			content,
 			max_grade,
+			student_link,
+			teacher_link,
 			course_title,
 			mode,
+			created_at,
 			opened_at,
 			closed_at,
 			teacher_fullname,
 			teacher_id,
 			group_id
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+		RETURNING id
 	`,
 		hw.Title,
 		content,
 		hw.MaxGrade,
+		hw.StudentLink,
+		hw.TeacherLink,
 		hw.CourseTitle,
 		hw.Mode,
+		hw.CreatedAt,
 		openedAt,
 		closedAt,
 		teacherFullname,
 		teacherID,
 		groupID,
 	)
+
+	err := row.Scan(&hw.ID)
 	if err != nil {
 		return FormatError(err)
 	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
-	hw.ID = int(id)
 
 	return nil
 }
@@ -517,8 +530,12 @@ func deleteHomework(ctx context.Context, tx *Tx, id int) error {
 
 // attachHomeworkAssociations attaches group and owner objects associated with the homework.
 func attachHomeworkAssociations(ctx context.Context, tx *Tx, hw *api.Homework) (err error) {
-	if hw.Teacher, err = findUserByID(ctx, tx, hw.TeacherID); err != nil {
+	if hw.TeacherID == 0 {
+		return nil
+	} else if hw.Teacher, err = findUserByID(ctx, tx, hw.TeacherID); err != nil {
 		return fmt.Errorf("attach homework user: %w", err)
+	} else if hw.GroupID == 0 {
+		return nil
 	} else if hw.Group, err = findGroupByID(ctx, tx, hw.GroupID); err != nil {
 		return fmt.Errorf("attach homework group: %w", err)
 	}

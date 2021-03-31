@@ -2,6 +2,7 @@ package pg
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/dori7879/senior-project/api"
@@ -155,30 +156,35 @@ func findUserByEmail(ctx context.Context, tx *Tx, email string) (*api.User, erro
 func findUsers(ctx context.Context, tx *Tx, filter api.UserFilter) (_ []*api.User, n int, err error) {
 	// Build WHERE clause.
 	where, args := []string{"1 = 1"}, []interface{}{}
+	i := 1
 	if v := filter.ID; v != nil {
-		where, args = append(where, "id = $1"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.Email; v != nil {
-		where, args = append(where, "email = $2"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("email = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.IsTeacher; v != nil {
-		where, args = append(where, "is_teacher = $3"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("is_teacher = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.EmailSubStr; v != nil {
-		where, args = append(where, "email LIKE '%$4%'"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("email LIKE '%%$%d%%'", i)), append(args, *v)
+		i++
 	}
 
 	// Execute query to fetch user rows.
 	rows, err := tx.QueryContext(ctx, `
 		SELECT 
-		    id,
-		    first_name,
-		    last_name,
-		    email,
-		    password_hash,
-		    date_joined,
+			id,
+			first_name,
+			last_name,
+			email,
+			password_hash,
+			date_joined,
 			is_teacher,
-		    COUNT(*) OVER()
+			COUNT(*) OVER()
 		FROM users
 		WHERE `+strings.Join(where, " AND ")+`
 		ORDER BY id ASC
@@ -195,7 +201,7 @@ func findUsers(ctx context.Context, tx *Tx, filter api.UserFilter) (_ []*api.Use
 	for rows.Next() {
 		var user api.User
 
-		if rows.Scan(
+		if err := rows.Scan(
 			&user.ID,
 			&user.FirstName,
 			&user.LastName,
@@ -223,12 +229,12 @@ func findUsersByGroup(ctx context.Context, tx *Tx, filter api.MemberFilter) (_ [
 	var m2m string
 	if *filter.IsTeacher {
 		m2m = `FROM teachers_groups t
-		LEFT JOIN users u on u.id = t.group_id
-		WHERE t.group_id = ?`
+		LEFT JOIN users u on u.id = t.teacher_id
+		WHERE t.group_id = $1`
 	} else {
 		m2m = `FROM students_groups s
-		LEFT JOIN users u on u.id = s.group_id
-		WHERE s.group_id = ?`
+		LEFT JOIN users u on u.id = s.student_id
+		WHERE s.group_id = $1`
 	}
 
 	// Execute query to fetch user rows.
@@ -257,7 +263,7 @@ func findUsersByGroup(ctx context.Context, tx *Tx, filter api.MemberFilter) (_ [
 	for rows.Next() {
 		var user api.User
 
-		if rows.Scan(
+		if err := rows.Scan(
 			&user.ID,
 			&user.FirstName,
 			&user.LastName,
@@ -291,7 +297,7 @@ func createUser(ctx context.Context, tx *Tx, user *api.User) error {
 	}
 
 	// Execute insertion query.
-	result, err := tx.ExecContext(ctx, `
+	row := tx.QueryRowContext(ctx, `
 		INSERT INTO users (
 			first_name,
 			last_name,
@@ -301,6 +307,7 @@ func createUser(ctx context.Context, tx *Tx, user *api.User) error {
 			is_teacher
 		)
 		VALUES ($1, $2, $3, $4, $5, $6)
+		RETURNING id
 	`,
 		user.FirstName,
 		user.LastName,
@@ -309,15 +316,11 @@ func createUser(ctx context.Context, tx *Tx, user *api.User) error {
 		user.DateJoined,
 		user.IsTeacher,
 	)
+
+	err := row.Scan(&user.ID)
 	if err != nil {
 		return FormatError(err)
 	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
-	user.ID = int(id)
 
 	return nil
 }

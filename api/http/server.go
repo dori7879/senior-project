@@ -63,19 +63,37 @@ func NewServer() *Server {
 	s.router.NotFoundHandler = http.HandlerFunc(s.handleNotFound)
 
 	// Setup a base router that excludes asset handling.
-	router := s.router.PathPrefix("/").Subrouter()
+	router := s.router.PathPrefix("/api/v1").Subrouter()
 	router.Use(s.authenticate)
 
 	// Register unauthenticated routes.
 	{
-		r := s.router.PathPrefix("/").Subrouter()
+		r := s.router.PathPrefix("/api/v1").Subrouter()
 		r.Use(s.requireNoAuth)
+		s.registerAuthRoutes(r)
+	}
+
+	// Register routes that can be fetched against authenticated or not authenticated.
+	{
+		r := router.PathPrefix("/").Subrouter()
+		s.registerHomeworkPublicRoutes(r)
+		s.registerHWSubmissionPublicRoutes(r)
+		s.registerQuizPublicRoutes(r)
+		s.registerQuizSubmissionPublicRoutes(r)
 	}
 
 	// Register authenticated routes.
 	{
 		r := router.PathPrefix("/").Subrouter()
 		r.Use(s.requireAuth)
+		s.registerUserRoutes(r)
+		s.registerGroupRoutes(r)
+		s.registerHWSubmissionPrivateRoutes(r)
+		s.registerHomeworkPrivateRoutes(r)
+		s.registerQuizSubmissionPrivateRoutes(r)
+		s.registerQuizPrivateRoutes(r)
+		s.registerQuestionRoutes(r)
+		s.registerResponseRoutes(r)
 	}
 
 	return s

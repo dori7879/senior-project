@@ -3,6 +3,7 @@ package pg
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"strings"
 
 	"github.com/dori7879/senior-project/api"
@@ -117,20 +118,26 @@ func findResponseByID(ctx context.Context, tx *Tx, id int) (*api.Response, error
 func findResponses(ctx context.Context, tx *Tx, filter api.ResponseFilter) (_ []*api.Response, n int, err error) {
 	// Build WHERE clause.
 	where, args := []string{"1 = 1"}, []interface{}{}
+	i := 1
 	if v := filter.ID; v != nil {
-		where, args = append(where, "id = $1"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.Type; v != nil {
-		where, args = append(where, "type = $2"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("type = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.IsCorrect; v != nil {
-		where, args = append(where, "is_correct = $3"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("is_correct = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.SubmissionID; v != nil {
-		where, args = append(where, "quiz_submission_id = $4"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("quiz_submission_id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.QuestionID; v != nil {
-		where, args = append(where, "question_id = $4"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("question_id = $%d", i)), append(args, *v)
+		i++
 	}
 
 	// Execute query to fetch response rows.
@@ -170,7 +177,7 @@ func findResponses(ctx context.Context, tx *Tx, filter api.ResponseFilter) (_ []
 		var singlechoiceResponse sql.NullInt32
 
 		var r api.Response
-		if rows.Scan(
+		if err := rows.Scan(
 			&r.ID,
 			&r.Comments,
 			&isCorrect,
@@ -247,7 +254,7 @@ func createResponse(ctx context.Context, tx *Tx, r *api.Response) error {
 	}
 
 	// Execute insertion query.
-	result, err := tx.ExecContext(ctx, `
+	row := tx.QueryRowContext(ctx, `
 		INSERT INTO responses (
 			comments,
 			is_correct,
@@ -261,6 +268,7 @@ func createResponse(ctx context.Context, tx *Tx, r *api.Response) error {
 			question_id
 		)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+		RETURNING id
 	`,
 		r.Comments,
 		isCorrect,
@@ -273,15 +281,11 @@ func createResponse(ctx context.Context, tx *Tx, r *api.Response) error {
 		r.SubmissionID,
 		r.QuestionID,
 	)
+
+	err := row.Scan(&r.ID)
 	if err != nil {
 		return FormatError(err)
 	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
-	r.ID = int(id)
 
 	return nil
 }

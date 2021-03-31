@@ -105,17 +105,14 @@ func (s *Server) handleQuizSubmissionCreate(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Unmarshal submission data first
-	var sub api.QuizSubmission
+	sub := api.QuizSubmission{}
 	if err := json.NewDecoder(r.Body).Decode(&sub); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
 	}
 
-	// Then unmarshal responses JSON data
-	var responses []*api.Response
-	if err := json.NewDecoder(r.Body).Decode(&responses); err != nil {
-		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
-		return
+	if user != nil {
+		sub.StudentID = user.ID
 	}
 
 	// Create submission in the database.
@@ -125,7 +122,7 @@ func (s *Server) handleQuizSubmissionCreate(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	for _, rn := range responses {
+	for _, rn := range sub.Responses {
 		rn.SubmissionID = sub.ID
 
 		err = s.ResponseService.CreateResponse(r.Context(), rn)
@@ -155,9 +152,15 @@ func (s *Server) handleQuizSubmissionUpdate(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Parse fields into an update object.
-	var upd api.QuizSubmissionUpdate
+	upd := api.QuizSubmissionUpdate{}
 	if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
+		return
+	}
+
+	user := api.UserFromContext(r.Context())
+	if user != nil && !user.IsTeacher && (upd.Comments != nil || upd.Grade != nil) {
+		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "Student attempts to update comments or grade"))
 		return
 	}
 

@@ -21,7 +21,7 @@ func (s *Server) registerHWSubmissionPrivateRoutes(r *mux.Router) {
 // registerHWSubmissionPublicRoutes is a helper function for registering public homework submission routes.
 func (s *Server) registerHWSubmissionPublicRoutes(r *mux.Router) {
 	// API endpoint for creating homework submissions.
-	r.HandleFunc("/homeworks/submissions", s.handleHWSubmissionCreate).Methods("POST")
+	r.HandleFunc("/homeworks/{hwID}/submissions", s.handleHWSubmissionCreate).Methods("POST")
 
 	r.HandleFunc("/homeworks/submissions/{id}", s.handleHWSubmissionUpdate).Methods("PATCH")
 
@@ -88,6 +88,12 @@ func (s *Server) handleHWSubmissionView(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	if sub.StudentID != user.ID {
+		w.Header().Set("Content-type", "application/json")
+		w.Write([]byte(`{}`))
+		return
+	}
+
 	// Format returned data based on HTTP accept header.
 	w.Header().Set("Content-type", "application/json")
 	if err := json.NewEncoder(w).Encode(sub); err != nil {
@@ -104,15 +110,28 @@ func (s *Server) handleHWSubmissionCreate(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	// Parse homework submission ID from the path.
+	hwID, err := strconv.Atoi(mux.Vars(r)["hwID"])
+	if err != nil {
+		Error(w, r, api.Errorf(api.EINVALID, "Invalid ID format"))
+		return
+	}
+
 	// Unmarshal data
-	var sub api.HWSubmission
+	sub := api.HWSubmission{}
 	if err := json.NewDecoder(r.Body).Decode(&sub); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
 	}
 
+	if user != nil {
+		sub.StudentID = user.ID
+	}
+
+	sub.HomeworkID = hwID
+
 	// Create submission in the database.
-	err := s.HWSubmissionService.CreateHWSubmission(r.Context(), &sub)
+	err = s.HWSubmissionService.CreateHWSubmission(r.Context(), &sub)
 	if err != nil {
 		Error(w, r, err)
 		return
@@ -138,9 +157,15 @@ func (s *Server) handleHWSubmissionUpdate(w http.ResponseWriter, r *http.Request
 	}
 
 	// Parse fields into an update object.
-	var upd api.HWSubmissionUpdate
+	upd := api.HWSubmissionUpdate{}
 	if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
+		return
+	}
+
+	user := api.UserFromContext(r.Context())
+	if user != nil && !user.IsTeacher && (upd.Comments != nil || upd.Grade != nil) {
+		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "Student attempts to update comments or grade"))
 		return
 	}
 

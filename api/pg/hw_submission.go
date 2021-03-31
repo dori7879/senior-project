@@ -124,23 +124,30 @@ func findHWSubmissionByID(ctx context.Context, tx *Tx, id int) (*api.HWSubmissio
 func findHWSubmissions(ctx context.Context, tx *Tx, filter api.HWSubmissionFilter) (_ []*api.HWSubmission, n int, err error) {
 	// Build WHERE clause.
 	where, args := []string{"1 = 1"}, []interface{}{}
+	i := 1
 	if v := filter.ID; v != nil {
-		where, args = append(where, "id = $1"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.BeforeSubmittedAt; v != nil {
-		where, args = append(where, "submitted_at < $2"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("submitted_at < $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.AfterUpdatedAt; v != nil {
-		where, args = append(where, "updated_at >= $3"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("updated_at >= $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.StudentFullName; v != nil {
-		where, args = append(where, "student_fullname = $4"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("student_fullname = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.StudentID; v != nil {
-		where, args = append(where, "student_id = $5"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("student_id = $%d", i)), append(args, *v)
+		i++
 	}
 	if v := filter.HomeworkID; v != nil {
-		where, args = append(where, "homework_id = $6"), append(args, *v)
+		where, args = append(where, fmt.Sprintf("homework_id = $%d", i)), append(args, *v)
+		i++
 	}
 
 	// Execute query to fetch submission rows.
@@ -177,7 +184,7 @@ func findHWSubmissions(ctx context.Context, tx *Tx, filter api.HWSubmissionFilte
 		var studentID sql.NullInt32
 
 		var sub api.HWSubmission
-		if rows.Scan(
+		if err := rows.Scan(
 			&sub.ID,
 			&response,
 			&grade,
@@ -251,7 +258,7 @@ func createHWSubmission(ctx context.Context, tx *Tx, sub *api.HWSubmission) erro
 	}
 
 	// Execute insertion query.
-	result, err := tx.ExecContext(ctx, `
+	row := tx.QueryRowContext(ctx, `
 		INSERT INTO hw_submissions (
 			response,
 			grade,
@@ -263,6 +270,7 @@ func createHWSubmission(ctx context.Context, tx *Tx, sub *api.HWSubmission) erro
 			homework_id
 		)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING id
 	`,
 		response,
 		grade,
@@ -273,15 +281,11 @@ func createHWSubmission(ctx context.Context, tx *Tx, sub *api.HWSubmission) erro
 		studentID,
 		sub.HomeworkID,
 	)
+
+	err := row.Scan(&sub.ID)
 	if err != nil {
 		return FormatError(err)
 	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
-	sub.ID = int(id)
 
 	return nil
 }
@@ -304,6 +308,7 @@ func updateHWSubmission(ctx context.Context, tx *Tx, id int, upd api.HWSubmissio
 	// Update fields.
 	if v := upd.Response; v != nil {
 		sub.Response = *v
+		sub.UpdatedAt = tx.now
 	}
 	if v := upd.Grade; v != nil {
 		sub.Grade = *v
@@ -317,9 +322,6 @@ func updateHWSubmission(ctx context.Context, tx *Tx, id int, upd api.HWSubmissio
 	if v := upd.StudentID; v != nil {
 		sub.StudentID = *v
 	}
-
-	// Set last updated date to current time.
-	sub.UpdatedAt = tx.now
 
 	// Perform basic field validation.
 	if err := sub.Validate(); err != nil {
@@ -343,22 +345,28 @@ func updateHWSubmission(ctx context.Context, tx *Tx, id int, upd api.HWSubmissio
 	if sub.StudentID != 0 {
 		studentID = &sub.StudentID
 	}
+	var updatedAt *time.Time
+	if !sub.UpdatedAt.IsZero() {
+		updatedAt = &sub.UpdatedAt
+	}
 
 	// Execute update query.
-	if _, err := tx.ExecContext(ctx, `
+	if _, err = tx.ExecContext(ctx, `
 		UPDATE hw_submissions
 		SET response = $1,
-		    grade = $2,
-		    comments = $3,
-		    student_fullname = $4,
-		    student_id = $5
-		WHERE id = $6
+			grade = $2,
+			comments = $3,
+			student_fullname = $4,
+			student_id = $5,
+			updated_at = $6
+		WHERE id = $7
 	`,
 		response,
 		grade,
 		sub.Comments,
 		studentFullname,
 		studentID,
+		updatedAt,
 		id,
 	); err != nil {
 		return sub, FormatError(err)
@@ -389,10 +397,12 @@ func deleteHWSubmission(ctx context.Context, tx *Tx, id int) error {
 
 // attachHWSubmissionAssociations attaches homework and student objects associated with the submission.
 func attachHWSubmissionAssociations(ctx context.Context, tx *Tx, sub *api.HWSubmission) (err error) {
-	if sub.Student, err = findUserByID(ctx, tx, sub.StudentID); err != nil {
-		return fmt.Errorf("attach homework submission user: %w", err)
-	} else if sub.Homework, err = findHomeworkByID(ctx, tx, sub.HomeworkID); err != nil {
+	if sub.Homework, err = findHomeworkByID(ctx, tx, sub.HomeworkID); err != nil {
 		return fmt.Errorf("attach homework submission homework: %w", err)
+	} else if sub.StudentID == 0 {
+		return nil
+	} else if sub.Student, err = findUserByID(ctx, tx, sub.StudentID); err != nil {
+		return fmt.Errorf("attach homework submission user: %w", err)
 	}
 	return nil
 }

@@ -9,17 +9,17 @@ import (
 type QuizSubmission struct {
 	ID int `json:"ID"`
 
-	Grade       float32   `json:"Grade"`
-	Comments    string    `json:"Comments"`
+	Grade       float32   `json:"Grade,omitempty"`
+	Comments    string    `json:"Comments,omitempty"`
 	SubmittedAt time.Time `json:"SubmittedAt"`
 	UpdatedAt   time.Time `json:"UpdatedAt"`
 
-	StudentFullName string `json:"StudentFullName"`
-	StudentID       int    `json:"StudentID"`
-	Student         *User  `json:"Student"`
+	StudentFullName string `json:"StudentFullName,omitempty" db:"student_fullname"`
+	StudentID       int    `json:"StudentID,omitempty"`
+	Student         *User  `json:"Student,omitempty"`
 
-	QuizID int   `json:"QuizID"`
-	Quiz   *Quiz `json:"Quiz"`
+	QuizID int   `json:"QuizID,omitempty"`
+	Quiz   *Quiz `json:"Quiz,omitempty"`
 
 	Responses []*Response `json:"Responses"`
 }

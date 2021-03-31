@@ -101,6 +101,12 @@ func (s *Server) handleHomeworkView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if homework.TeacherID != user.ID {
+		w.Header().Set("Content-type", "application/json")
+		w.Write([]byte(`{}`))
+		return
+	}
+
 	// Format returned data based on HTTP accept header.
 	w.Header().Set("Content-type", "application/json")
 	if err := json.NewEncoder(w).Encode(homework); err != nil {
@@ -177,7 +183,7 @@ func (s *Server) handleHomeworkCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Unmarshal data based on HTTP request's content type.
-	var homework api.Homework
+	homework := api.Homework{}
 	if err := json.NewDecoder(r.Body).Decode(&homework); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
@@ -186,6 +192,10 @@ func (s *Server) handleHomeworkCreate(w http.ResponseWriter, r *http.Request) {
 	rand.Seed(time.Now().UnixNano())
 	homework.StudentLink = api.RandStringSeq(11)
 	homework.TeacherLink = api.RandStringSeq(11)
+
+	if user != nil {
+		homework.TeacherID = user.ID
+	}
 
 	// Create homework in the database.
 	err := s.HomeworkService.CreateHomework(r.Context(), &homework)
@@ -220,7 +230,7 @@ func (s *Server) handleHomeworkUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse fields into an update object.
-	var upd api.HomeworkUpdate
+	upd := api.HomeworkUpdate{}
 	if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return

@@ -29,7 +29,7 @@ func (s *Server) handleResponseCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Unmarshal data
-	var rn api.Response
+	rn := api.Response{}
 	if err := json.NewDecoder(r.Body).Decode(&rn); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
@@ -62,7 +62,7 @@ func (s *Server) handleResponseUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse fields into an update object.
-	var upd api.ResponseUpdate
+	upd := api.ResponseUpdate{}
 	if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return

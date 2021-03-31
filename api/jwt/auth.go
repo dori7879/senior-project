@@ -45,7 +45,7 @@ func (a *AuthService) generateToken(id int) (string, error) {
 
 	// Declare the expiration time of the access token
 	// Here the expiration is 60 minutes
-	expirationTimeAccessToken := time.Now().Add(60 * time.Minute).Unix()
+	expirationTimeAccessToken := time.Now().Add(24 * time.Hour).Unix()
 
 	// Declare the token with the algorithm used for signing, and the claims
 	token := jwt.New(jwt.SigningMethodHS256)

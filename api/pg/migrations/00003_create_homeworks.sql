@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS homeworks
     id                serial NOT NULL,
     title             VARCHAR(255) NOT NULL,
     content           TEXT         NULL,
-    max_grade         DECIMAL(3,2) NOT NULL,
+    max_grade         DECIMAL(5,2) NOT NULL,
     student_link      VARCHAR(255) NOT NULL,
     teacher_link      VARCHAR(255) NOT NULL,
     course_title      VARCHAR(255) NOT NULL,

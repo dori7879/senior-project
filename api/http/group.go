@@ -102,8 +102,14 @@ func (s *Server) handleGroupView(w http.ResponseWriter, r *http.Request) {
 // handleGroupCreate handles the "POST /groups" route.
 // It reads & writes data using with HTML or JSON.
 func (s *Server) handleGroupCreate(w http.ResponseWriter, r *http.Request) {
+	user := api.UserFromContext(r.Context())
+	if !user.IsTeacher {
+		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "You are not a teacher"))
+		return
+	}
+
 	// Unmarshal data
-	var group api.Group
+	group := api.Group{}
 	if err := json.NewDecoder(r.Body).Decode(&group); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
@@ -114,7 +120,7 @@ func (s *Server) handleGroupCreate(w http.ResponseWriter, r *http.Request) {
 	group.ShareLink = api.RandStringSeq(11)
 
 	// Assign owner
-	group.OwnerID = api.UserIDFromContext(r.Context())
+	group.OwnerID = user.ID
 
 	// Create group in the database.
 	err := s.GroupService.CreateGroup(r.Context(), &group)
@@ -143,7 +149,7 @@ func (s *Server) handleGroupUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse fields into an update object.
-	var upd api.GroupUpdate
+	upd := api.GroupUpdate{}
 	if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
@@ -223,6 +229,11 @@ func (s *Server) handleAcceptGroupShare(w http.ResponseWriter, r *http.Request) 
 	group, err := s.GroupService.FindGroupByShareLink(r.Context(), shareLink)
 	if err != nil {
 		Error(w, r, err)
+		return
+	}
+
+	if group.OwnerID == user.ID {
+		Error(w, r, api.Errorf(api.EINVALID, "The owner cannot accept a share link"))
 		return
 	}
 

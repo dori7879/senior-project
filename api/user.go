@@ -21,12 +21,12 @@ type User struct {
 
 	SharedGroups struct {
 		Groups []*Group `json:"Groups"`
-		N      int      `json:"n"`
+		N      int      `json:"N"`
 	} `json:"SharedGroups"`
 
 	OwnedGroups struct {
 		Groups []*Group `json:"Groups"`
-		N      int      `json:"n"`
+		N      int      `json:"N"`
 	} `json:"OwnedGroups"`
 }
 

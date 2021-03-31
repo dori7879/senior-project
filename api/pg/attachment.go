@@ -121,7 +121,7 @@ func findAttachments(ctx context.Context, tx *Tx, filter api.AttachmentFilter) (
 	// Build WHERE clause.
 	where, args := []string{"1 = 1"}, []interface{}{}
 	if v := filter.Hash; v != nil {
-		where, args = append(where, "hash = ?"), append(args, *v)
+		where, args = append(where, "hash = $1"), append(args, *v)
 	}
 
 	// Execute query to fetch attachment rows.

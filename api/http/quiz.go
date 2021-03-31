@@ -179,6 +179,12 @@ func (s *Server) handleQuizStudentView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if quiz.TeacherID != user.ID {
+		w.Header().Set("Content-type", "application/json")
+		w.Write([]byte(`{}`))
+		return
+	}
+
 	// Format returned data based on HTTP accept header.
 	w.Header().Set("Content-type", "application/json")
 	if err := json.NewEncoder(w).Encode(quiz); err != nil {
@@ -196,15 +202,8 @@ func (s *Server) handleQuizCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Unmarshal quiz data first
-	var quiz api.Quiz
+	quiz := api.Quiz{}
 	if err := json.NewDecoder(r.Body).Decode(&quiz); err != nil {
-		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
-		return
-	}
-
-	// Then unmarshal questions JSON data
-	var questions []*api.Question
-	if err := json.NewDecoder(r.Body).Decode(&questions); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
 	}
@@ -213,6 +212,10 @@ func (s *Server) handleQuizCreate(w http.ResponseWriter, r *http.Request) {
 	quiz.StudentLink = api.RandStringSeq(11)
 	quiz.TeacherLink = api.RandStringSeq(11)
 
+	if user != nil {
+		quiz.TeacherID = user.ID
+	}
+
 	// Create quiz in the database.
 	err := s.QuizService.CreateQuiz(r.Context(), &quiz)
 	if err != nil {
@@ -220,7 +223,7 @@ func (s *Server) handleQuizCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, q := range questions {
+	for _, q := range quiz.Questions {
 		q.QuizID = quiz.ID
 
 		err = s.QuestionService.CreateQuestion(r.Context(), q)
@@ -256,7 +259,7 @@ func (s *Server) handleQuizUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse fields into an update object.
-	var upd api.QuizUpdate
+	upd := api.QuizUpdate{}
 	if err := json.NewDecoder(r.Body).Decode(&upd); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
 		return
