@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
+import './i18n';
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Suspense fallback={null}>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </Suspense>,
   document.getElementById('root')
 );
 
