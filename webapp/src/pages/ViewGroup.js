@@ -36,10 +36,10 @@ const Group = () => {
         setOwnerEmail(response.data.Owner.Email)
         setOwnerFirstName(response.data.Owner.FirstName)
         setOwnerLastName(response.data.Owner.LastName)
-        if (response.data.Teachers) {
+        if (response.data.Teachers.Users) {
           setTeachers(response.data.Teachers.Users)
         }
-        if (response.data.Members) {
+        if (response.data.Members.Users) {
             setMembers(response.data.Members.Users)
         }
       },

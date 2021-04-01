@@ -21,11 +21,11 @@ const PersonalData = () => {
         setLastName(response.data.LastName)
         setEmail(response.data.Email)
         setIsTeacher(response.data.IsTeacher)
-        if (response.data.OwnedGroups) {
+        if (response.data.OwnedGroups.Groups) {
           setOwnedGroups(response.data.OwnedGroups.Groups)
         }
 
-        if (response.data.SharedGroups) {
+        if (response.data.SharedGroups.Groups) {
           setSharedGroups(response.data.SharedGroups.Groups)
         }
       },

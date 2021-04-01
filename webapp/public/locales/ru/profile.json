@@ -10,5 +10,14 @@
   "role": "Роль:",
   "teacher": "Учитель",
   "student": "Ученик",
-  "caption": "Мой Профиль"
+  "createGroup": "Создать группу",
+  "nogroups": "Студентов нет",
+  "groupShareAccept": "Принять приглашение группы",
+  "groupShareStarted": "Приглашение принимается...",
+  "caption": "Мой Профиль",
+  "groupCaption": "Группа",
+  "owner": "Владелец",
+  "sharelink": "Поделиться ссылкой с учителями",
+  "teachers": "Учителя",
+  "students": "Ученики"
 }
