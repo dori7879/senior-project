@@ -1,0 +1,14 @@
+{
+  "old": "Old Password",
+  "password": "Password",
+  "new": "New Password",
+  "save": "Save",
+  "change": "Password has changed",
+  "firstname": "First Name:",
+  "lastname": "Last Name:",
+  "email": "Email:",
+  "role": "Role:",
+  "teacher": "Teacher",
+  "student": "Student",
+  "caption": "My Profile"
+}

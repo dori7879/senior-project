@@ -88,7 +88,7 @@ const HwForm = () => {
       </div>
       <div className="flex flex-row items-center pb-2 items">
         <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-        {t('homework:coursetitle', 'Course Title*')}
+        {t('homework:coursetitle', 'Course Title')}*
         </label>
         <input
           ref={register}
