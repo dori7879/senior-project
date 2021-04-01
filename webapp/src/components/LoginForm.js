@@ -1,34 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux'
-
 import { Redirect } from 'react-router-dom'
 import { login } from '../actions/auth'
 import { useForm } from "react-hook-form";
 import { useTranslation } from 'react-i18next';
 
-const required = (value) => {
-    if (!value) {
-      return (
-        <div
-          className='text-center text-red-800 bg-red-200 border border-rounded'
-          role='alert'
-        >
-          This field is required!
-        </div>
-      )
-    }
-  }
 const LoginForm = () => {
+  const dispatch = useDispatch()
   const { t } = useTranslation(['translation', 'login']);
+  const message = useSelector((state) => state.message.message)
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
   const { register, handleSubmit, errors } = useForm();
-  const onSubmit = data =>  console.log(data);
- // const dispatch = useDispatch()
-
+  
+  const onSubmit = data => dispatch(login({ ...data }));
 
   if (isLoggedIn) return <Redirect to='/profile' />
 
   return (
-    <form name='loginForm' onSubmit={handleSubmit(onSubmit)} className='mt-8' ref={register}>
+    <form onSubmit={handleSubmit(onSubmit)} className='mt-8' ref={register}>
       
       <div className='rounded shadow-sm'>
         <div>
@@ -58,6 +46,14 @@ const LoginForm = () => {
           />
         </div>
       </div>
+
+      {message && (
+        <div className='form-group'>
+          <div className='alert alert-danger' role='alert'>
+            {message}
+          </div>
+        </div>
+      )}
 
       <div className='flex flex-row justify-between mt-2'>
         <div className='flex items-center'>

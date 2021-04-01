@@ -3,19 +3,33 @@ import { useDispatch, useSelector } from 'react-redux'
 import CKEditor from "ckeditor4-react";
 import DateTimePicker from "react-datetime-picker";
 import { Redirect } from 'react-router-dom'
-//import { createHomeworkPage } from '../actions/homework'
 import { useState, useEffect } from 'react'
-import {useForm, Controller} from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next';
+import UserService from '../services/user';
 
 const HwForm = () => {
   const { t } = useTranslation(['translation', 'homework']);
   const [successfull, setSuccessfull] = useState(false)
   const [isClicked, setIsClicked] = useState(false)
+  const [ownedGroups, setOwnedGroups] = useState([])
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
   const dispatch = useDispatch()
   const { register, handleSubmit, control, setValue } = useForm();
 
+  useEffect(()=> {
+    UserService.getProfile()
+    .then(
+      (response) => {
+        if (response.data.OwnedGroups) {
+          setOwnedGroups(response.data.OwnedGroups.Groups)
+        }
+      },
+      (error) => {
+        console.log(error.message)
+      }
+    )
+  }, [])
 
   const onSubmit = (data) => {
     console.log(data);
@@ -25,30 +39,6 @@ const HwForm = () => {
   useEffect(() => {
     register("Content");
   });
-  /*const handleSubmit = (e) => {
-    e.preventDefault()
-
-    dispatch(
-      createHomeworkPage(
-        courseTitle,
-        title,
-        description,
-        files,
-        openDate,
-        closeDate,
-        fullName,
-        mode
-      )
-    )
-      .then(() => {
-        setSuccessfull(true)
-        setIsClicked(true)
-      })
-      .catch(() => {
-        setSuccessfull(false)
-        setIsClicked(false)
-      })
-  }*/
 
   if (isClicked) {
     return <Redirect to='/link' />
@@ -97,6 +87,20 @@ const HwForm = () => {
           type="text"
           placeholder="Enter course title"
         />
+      </div>
+      <div className="flex flex-row items-center pb-2 items">
+        <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
+        {t('homework:group', 'Group')}*
+        </label>
+        <select
+          ref={register}
+          name="Group"
+          className="px-2 py-1 text-xs leading-tight text-gray-700 border border-purple-400 rounded focus:outline-none focus:bg-white"
+        >
+          {ownedGroups.map((group, idx) => {
+            return <option value={group.ID} key={idx}>{group.Title}</option>
+          })}
+        </select>
       </div>
       <div className="flex flex-row items-center pb-2 items">
         <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
@@ -162,7 +166,7 @@ const HwForm = () => {
       <div className="flex justify-center">
         <button
           type="submit"
-          className="relative flex justify-center w-full px-2 py-1 mb-2 text-sm font-medium leading-4  hover:text-white text-purple-200 transition duration-150 ease-in-out bg-purple-800 border border-transparent rounded-md hover:bg-purple-500 focus:outline-none"
+          className="relative flex justify-center w-full px-2 py-1 mb-2 text-sm font-medium leading-4 text-purple-200 transition duration-150 ease-in-out bg-purple-800 border border-transparent rounded-md hover:text-white hover:bg-purple-500 focus:outline-none"
         >
          {t('homework:generate', 'Generate Link')}
         </button>

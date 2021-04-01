@@ -1,11 +1,8 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useState } from 'react'
 
-import Footer from '../components/Footer'
 import Form from 'react-validation/build/form'
-import Header from '../components/Header'
 import Input from 'react-validation/build/input'
-import { Redirect } from 'react-router-dom'
 import authHeader from '../services/auth-header'
 import axios from 'axios'
 import { useTranslation } from 'react-i18next';
@@ -15,9 +12,6 @@ const ChangePassword = () => {
     const { t } = useTranslation(['translation', 'profile']);
     const [oldPassword, setOldPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
-    const { access_token, role } = useSelector(
-      (state) => state.auth
-    )
     const [success, setSuccess] = useState(false)
   
     const required = (value) => {
@@ -51,7 +45,7 @@ const ChangePassword = () => {
           setSuccess(true)
         })
         .catch((er) => {
-          //history.push('/signin')
+          //history.push('/login')
           console.log(er.message)
         })
     }
@@ -61,7 +55,7 @@ const ChangePassword = () => {
           <p className='mt-3 text-purple-900'>
             <strong>Change Password </strong>
           </p>
-          <Form className='mt-8' onSubmit={handleSubmit}>
+          <Form className='mt-3' onSubmit={handleSubmit}>
             <div className='flex flex-row items-center pb-2 items'>
               <div className='flex flex-col'>
                 <label className='block w-full px-4 pt-1 mb-2 ml-5 text-xs font-bold tracking-wide text-gray-700 uppercase'>

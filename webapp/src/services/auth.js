@@ -1,41 +1,44 @@
 /* eslint-disable import/no-anonymous-default-export */
 import axios from 'axios'
+import { BASE_URL } from './index'
 
-const register = (firstName, lastName, email, password, role) => {
-  return axios.post('/api/v1/signup', {
-    first_name: firstName,
-    last_name: lastName,
-    email,
-    password,
-    role,
+const signup = ({ FirstName, LastName, Email, Password, IsTeacher }) => {
+  return axios.post(BASE_URL + '/api/v1/signup', {
+    FirstName,
+    LastName,
+    Email,
+    Password,
+    IsTeacher: (IsTeacher === 'true'),
   })
 }
 
 const login = (email, password) => {
   return axios
-    .post('/api/v1/login', {
-      email,
-      password,
+    .post(BASE_URL + '/api/v1/login', {
+      Email: email,
+      Password: password,
     })
     .then((response) => {
       if (response.data) {
         localStorage.setItem(
-          'access_token',
-          JSON.stringify(response.data.access_token)
+          'token',
+          JSON.stringify(response.data.Token)
         )
-        localStorage.setItem('role', JSON.stringify(response.data.role))
+        if (response.data.role) {
+          localStorage.setItem('role', JSON.stringify(response.data.role))
+        }
       }
       return response.data
     })
 }
 
 const logout = () => {
-  localStorage.removeItem('access_token')
+  localStorage.removeItem('token')
   localStorage.removeItem('role')
 }
 
 export default {
-  register,
+  signup,
   login,
   logout,
 }

@@ -6,6 +6,8 @@ import CreateHomework from './pages/CreateHomework'
 import Profile from './pages/Profile'
 import Links from './pages/Links'
 import SubmitHomework from './pages/SubmitHomework'
+import ViewGroup from './pages/ViewGroup'
+import AcceptGroupShare from './pages/AcceptGroupShare'
 /*
 import Attendance from './pages/Attendance'
 import LinksQuiz from './pages/LinksQuiz.js'
@@ -19,7 +21,7 @@ function App() {
       <main role='main'>
         <Switch>
           <Route path='/' exact component={Home} />
-          <Route path='/signin' exact component={Login} />
+          <Route path='/login' exact component={Login} />
           <Route path='/signup' exact component={Registration} />
           <Route path='/homework' exact component={CreateHomework} />
           <Route path='/link' exact component={Links} />
@@ -28,6 +30,14 @@ function App() {
           <Route
             path='/student-hw-page/:randomStr'
             component={SubmitHomework}
+          />
+          <Route
+            path='/groups/:groupID'
+            component={ViewGroup}
+          />
+          <Route
+            path='/accept-group-link/:shareHash'
+            component={AcceptGroupShare}
           />
            {/*<Route path='/attendance' exact component={Attendance} />
           <Route path='/teacher-hw-page/:randomStr' component={ViewHomeworks} />

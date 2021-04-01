@@ -183,10 +183,10 @@ func (s *Server) handleProfileView(w http.ResponseWriter, r *http.Request) {
 	user := api.UserFromContext(r.Context())
 	var err error
 	uFilter := api.UserFilter{}
-	if err := json.NewDecoder(r.Body).Decode(&uFilter); err != nil {
-		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
-		return
-	}
+	// if err := json.NewDecoder(r.Body).Decode(&uFilter); err != nil {
+	// 	Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
+	// 	return
+	// }
 
 	if uFilter.Limit == 0 {
 		uFilter.Limit = 10

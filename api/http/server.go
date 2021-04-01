@@ -13,6 +13,7 @@ import (
 
 	"github.com/dori7879/senior-project/api"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 // ShutdownTimeout is the time given for outstanding requests to finish before shutdown.
@@ -54,10 +55,20 @@ func NewServer() *Server {
 	// Report panics to external service.
 	s.router.Use(reportPanic)
 
+	c := cors.New(cors.Options{
+		// AllowedOrigins: []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		AllowedOrigins:   []string{"*"}, // All origins
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	})
+
 	// Our router is wrapped by another function handler to perform some
 	// middleware-like tasks that cannot be performed by actual middleware.
 	// This includes changing route paths for JSON endpoints & overridding methods.
-	s.server.Handler = http.HandlerFunc(s.serveHTTP)
+	s.server.Handler = c.Handler(http.HandlerFunc(s.serveHTTP))
 
 	// Setup error handling routes.
 	s.router.NotFoundHandler = http.HandlerFunc(s.handleNotFound)

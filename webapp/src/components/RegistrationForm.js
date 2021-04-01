@@ -1,23 +1,32 @@
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux'
+import { Redirect } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { register } from '../actions/auth'
+import AuthService from '../services/auth'
 
 
 
 const RegistrationForm = () => {
   const { t } = useTranslation(['translation', 'registration']);
   const { register, handleSubmit } = useForm();
-  const dispatch = useDispatch()
   const [successful, setSuccesfull] = useState(false)
+
   const onSubmit = data => {
-    console.log(data);
-    setSuccesfull(true)
+    AuthService.signup({ ...data })
+      .then(
+        (data) => {
+          setSuccesfull(true)
+        },
+        (error) => {
+          console.log(error.message)
+        }
+      )
   }
 
+  if (successful) return <Redirect to='/login' />
+
   return (
-    <form className='mt-8'onSubmit={handleSubmit(onSubmit)} name='registration'>
+    <form className='mt-8'onSubmit={handleSubmit(onSubmit)}>
       {successful ? (
         <div className='flex items-center justify-center'>
         <h2 className='mt-3 mb-10 text-2xl font-extrabold leading-7 text-center text-purple-900 uppercase'>

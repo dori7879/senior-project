@@ -75,12 +75,12 @@ const SubmitHomework = () => {
         }
       })
       .catch((response) => {
-        //history.push('/signin')
+        //history.push('/login')
       })
   }, [])
 */
   if (mode === 'registered' && !isLoggedIn) {
-    return <Redirect to='/signin' />
+    return <Redirect to='/login' />
   }
   const onSubmit = data =>  console.log(data);
   const isEmptyDesc = description.trim() === ''

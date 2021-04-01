@@ -11,12 +11,12 @@ import PersonalData from '../components/PersonalData'
 
 const Profile = () => {
   const { t } = useTranslation(['translation', 'profile']);
-  const { access_token, role } = useSelector(
+  const { token, role } = useSelector(
     (state) => state.auth
   )
 
-  if (!access_token) {
-    //return <Redirect to='/signin' />
+  if (!token) {
+    //return <Redirect to='/login' />
   }
   
   return (
