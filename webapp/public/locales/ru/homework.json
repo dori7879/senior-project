@@ -1,0 +1,14 @@
+{
+  "fullname": "Full name*",
+  "submit": "Set who can submit homeworks*",
+  "everyone": "Everyone",
+  "registered": "Registered Accounts",
+  "coursetitle": "Course Title*",
+  "title": "Title*",
+  "description": "Description",
+  "open": "Open date and time*",
+  "close": "Close date and time*",
+  "generate": "Generate Link",
+  "caption": "Creating a Homework Assignment",
+  "required": "* - Required field"
+}

@@ -4,14 +4,21 @@ import './index.css';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 import './i18n';
+import store from './store'
 
 ReactDOM.render(
   <Suspense fallback={null}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    <Provider store={store}>
+      <React.StrictMode>
+        <Router>
+          <App />
+        </Router>
+      </React.StrictMode>
+    </Provider>
   </Suspense>,
   document.getElementById('root')
 );
