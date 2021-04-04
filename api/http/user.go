@@ -183,18 +183,10 @@ func (s *Server) handleProfileView(w http.ResponseWriter, r *http.Request) {
 	user := api.UserFromContext(r.Context())
 	var err error
 	uFilter := api.UserFilter{}
-	// if err := json.NewDecoder(r.Body).Decode(&uFilter); err != nil {
-	// 	Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
-	// 	return
-	// }
-
-	if uFilter.Limit == 0 {
-		uFilter.Limit = 10
-	}
 	uFilter.ID = &user.ID
 	uFilter.IsTeacher = &user.IsTeacher
 
-	user.SharedGroups.Groups, user.SharedGroups.N, err = s.GroupService.FindGroupsByMember(r.Context(), uFilter)
+	user.SharedGroups.Groups, _, err = s.GroupService.FindGroupsByMember(r.Context(), uFilter)
 	if err != nil {
 		Error(w, r, err)
 		return
@@ -204,7 +196,7 @@ func (s *Server) handleProfileView(w http.ResponseWriter, r *http.Request) {
 		OwnerID: &user.ID,
 	}
 
-	user.OwnedGroups.Groups, user.OwnedGroups.N, err = s.GroupService.FindGroups(r.Context(), gFilter)
+	user.OwnedGroups.Groups, _, err = s.GroupService.FindGroups(r.Context(), gFilter)
 	if err != nil {
 		Error(w, r, err)
 		return

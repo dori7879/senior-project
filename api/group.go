@@ -15,12 +15,10 @@ type Group struct {
 
 	Teachers struct {
 		Users []*User `json:"Users"`
-		N     int     `json:"N"`
 	} `json:"Teachers"`
 
 	Members struct {
 		Users []*User `json:"Users"`
-		N     int     `json:"N"`
 	} `json:"Members"`
 }
 

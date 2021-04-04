@@ -41,20 +41,6 @@ func (s *Server) handleGroupView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var sFilter api.MemberFilter
-	sFilter.Offset, _ = strconv.Atoi(r.URL.Query().Get("student_offset"))
-	sFilter.Limit, _ = strconv.Atoi(r.URL.Query().Get("student_limit"))
-	if sFilter.Limit == 0 {
-		sFilter.Limit = 10
-	}
-
-	var tFilter api.MemberFilter
-	tFilter.Offset, _ = strconv.Atoi(r.URL.Query().Get("teacher_offset"))
-	tFilter.Limit, _ = strconv.Atoi(r.URL.Query().Get("teacher_limit"))
-	if tFilter.Limit == 0 {
-		tFilter.Limit = 10
-	}
-
 	// Fetch group from the database.
 	group, err := s.GroupService.FindGroupByID(r.Context(), id)
 	if err != nil {
@@ -72,9 +58,7 @@ func (s *Server) handleGroupView(w http.ResponseWriter, r *http.Request) {
 	var student bool = false
 
 	// Fetch associated memberships from the database.
-	sFilter.IsTeacher = &student
-	sFilter.GroupID = &group.ID
-	group.Members.Users, group.Members.N, err = s.UserService.FindMembersByGroup(r.Context(), sFilter)
+	group.Members.Users, _, err = s.UserService.FindMembersByGroup(r.Context(), api.MemberFilter{IsTeacher: &student, GroupID: &group.ID})
 	if err != nil {
 		Error(w, r, err)
 		return
@@ -82,9 +66,7 @@ func (s *Server) handleGroupView(w http.ResponseWriter, r *http.Request) {
 
 	user := api.UserFromContext(r.Context())
 	if user.IsTeacher {
-		tFilter.IsTeacher = &teacher
-		tFilter.GroupID = &group.ID
-		group.Teachers.Users, group.Teachers.N, err = s.UserService.FindMembersByGroup(r.Context(), tFilter)
+		group.Teachers.Users, _, err = s.UserService.FindMembersByGroup(r.Context(), api.MemberFilter{IsTeacher: &teacher, GroupID: &group.ID})
 		if err != nil {
 			Error(w, r, err)
 			return
@@ -255,13 +237,13 @@ func (s *Server) handleAcceptGroupShare(w http.ResponseWriter, r *http.Request) 
 	var student bool = false
 
 	// Fetch associated memberships from the database.
-	group.Members.Users, group.Members.N, err = s.UserService.FindMembersByGroup(r.Context(), api.MemberFilter{IsTeacher: &student, GroupID: &group.ID})
+	group.Members.Users, _, err = s.UserService.FindMembersByGroup(r.Context(), api.MemberFilter{IsTeacher: &student, GroupID: &group.ID})
 	if err != nil {
 		Error(w, r, err)
 		return
 	}
 
-	group.Teachers.Users, group.Teachers.N, err = s.UserService.FindMembersByGroup(r.Context(), api.MemberFilter{IsTeacher: &teacher, GroupID: &group.ID})
+	group.Teachers.Users, _, err = s.UserService.FindMembersByGroup(r.Context(), api.MemberFilter{IsTeacher: &teacher, GroupID: &group.ID})
 	if err != nil {
 		Error(w, r, err)
 		return
