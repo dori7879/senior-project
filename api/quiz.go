@@ -34,9 +34,11 @@ type Quiz struct {
 
 // Validate returns an error if the quiz contains invalid fields.
 // This only performs basic validation.
-func (u *Quiz) Validate() error {
-	if u.Title == "" {
+func (q *Quiz) Validate() error {
+	if q.Title == "" {
 		return Errorf(EINVALID, "Title required.")
+	} else if q.Mode != All && q.Mode != Registered {
+		return Errorf(EINVALID, "Mode is incorrect.")
 	}
 	return nil
 }

@@ -5,6 +5,13 @@ import (
 	"time"
 )
 
+const (
+	// All
+	All = "all"
+	// Registered
+	Registered = "registered"
+)
+
 // Homework represents a homework in the system.
 type Homework struct {
 	ID int `json:"ID"`
@@ -36,6 +43,8 @@ type Homework struct {
 func (u *Homework) Validate() error {
 	if u.Title == "" {
 		return Errorf(EINVALID, "Title required.")
+	} else if u.Mode != All && u.Mode != Registered {
+		return Errorf(EINVALID, "Mode is incorrect.")
 	}
 	return nil
 }

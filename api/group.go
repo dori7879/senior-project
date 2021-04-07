@@ -84,6 +84,7 @@ type MemberFilter struct {
 	// Filtering fields.
 	GroupID   *int  `json:"GroupID"`
 	IsTeacher *bool `json:"IsTeacher"`
+	UserID    *int
 
 	// Restrict to subset of results.
 	Offset int `json:"Offset"`

@@ -214,6 +214,20 @@ func (s *Server) handleAcceptGroupShare(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	var teacher bool = true
+
+	if _, n, err := s.UserService.FindMembersByGroup(r.Context(), api.MemberFilter{
+		IsTeacher: &teacher,
+		GroupID:   &group.ID,
+		UserID:    &user.ID,
+	}); err != nil {
+		Error(w, r, err)
+		return
+	} else if n > 0 {
+		Error(w, r, api.Errorf(api.ECONFLICT, "You have already accepted the share link."))
+		return
+	}
+
 	if group.OwnerID == user.ID {
 		Error(w, r, api.Errorf(api.EINVALID, "The owner cannot accept a share link"))
 		return
@@ -233,7 +247,6 @@ func (s *Server) handleAcceptGroupShare(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var teacher bool = true
 	var student bool = false
 
 	// Fetch associated memberships from the database.

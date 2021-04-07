@@ -237,6 +237,18 @@ func findUsersByGroup(ctx context.Context, tx *Tx, filter api.MemberFilter) (_ [
 		WHERE s.group_id = $1`
 	}
 
+	args := []interface{}{}
+	args = append(args, *filter.GroupID)
+
+	if v := filter.UserID; v != nil {
+		if *filter.IsTeacher {
+			m2m += " and t.teacher_id = $2"
+		} else {
+			m2m += " and s.student_id = $2"
+		}
+		args = append(args, *v)
+	}
+
 	// Execute query to fetch user rows.
 	rows, err := tx.QueryContext(ctx, `
 		SELECT 
@@ -251,7 +263,7 @@ func findUsersByGroup(ctx context.Context, tx *Tx, filter api.MemberFilter) (_ [
 		`+m2m+`
 		ORDER BY u.id ASC
 		`+FormatLimitOffset(filter.Limit, filter.Offset),
-		*filter.GroupID,
+		args...,
 	)
 	if err != nil {
 		return nil, n, err

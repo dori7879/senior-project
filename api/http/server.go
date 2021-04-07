@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	_ "net/http/pprof"
+	"os"
 	"strings"
 	"time"
 
@@ -69,6 +70,9 @@ func NewServer() *Server {
 	// middleware-like tasks that cannot be performed by actual middleware.
 	// This includes changing route paths for JSON endpoints & overridding methods.
 	s.server.Handler = c.Handler(http.HandlerFunc(s.serveHTTP))
+
+	// Serve static files
+	fileServer(s.router)
 
 	// Setup error handling routes.
 	s.router.NotFoundHandler = http.HandlerFunc(s.handleNotFound)
@@ -256,4 +260,19 @@ func (s *Server) handleNotFound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusNotFound)
 	json.NewEncoder(w).Encode(&ErrorResponse{Error: "Not Found"})
+}
+
+// fileServer is serving static files.
+func fileServer(router *mux.Router) {
+	root := "./web"
+	fs := http.FileServer(http.Dir(root))
+
+	router.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
+		if _, err := os.Stat(root + r.RequestURI); os.IsNotExist(err) {
+			http.StripPrefix(r.RequestURI, fs).ServeHTTP(w, r)
+		} else {
+			fs.ServeHTTP(w, r)
+		}
+	}).Methods("GET")
+
 }
