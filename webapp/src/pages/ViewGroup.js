@@ -7,7 +7,7 @@ import { Redirect, useParams } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 import { useTranslation } from 'react-i18next';
 import GroupService from '../services/group';
-import { BASE_URL } from '../services'
+import { BASE_API_URL } from '../services'
 
 const Group = () => {
   const { groupID } = useParams()
@@ -76,7 +76,7 @@ const Group = () => {
                 <strong>{t('profile:sharelink', "Share link for teachers")}:</strong>
             </p>
             <p className="px-2">
-                <a href={BASE_URL + "/accept-group-link/" + shareLink}>{BASE_URL + "/accept-group-link/" + shareLink}</a>
+                <a href={BASE_API_URL + "/accept-group-link/" + shareLink}>{BASE_API_URL + "/accept-group-link/" + shareLink}</a>
             </p>
 
             <div className="flex items-center justify-between mt-2">

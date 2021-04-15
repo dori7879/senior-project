@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer'
 import Header from '../components/Header'
-import { BASE_URL } from '../services/index'
 
 
 const LinksAttendance = (props) => {
@@ -13,8 +12,8 @@ const LinksAttendance = (props) => {
   const studentTextArea = useRef(null)
   const teacherTextArea = useRef(null)
 
-  const fullStudentLink = `${BASE_URL}/attendances/submit/${props.location.state.studentLink}`
-  const fullTeacherLink = `${BASE_URL}/attendances/list-submissions/${props.location.state.teacherLink}`
+  const fullStudentLink = `/attendances/submit/${props.location.state.studentLink}`
+  const fullTeacherLink = `/attendances/list-submissions/${props.location.state.teacherLink}`
 
   const copyLinkClipboard = (e, caller) => {
     if (caller === 'student') {

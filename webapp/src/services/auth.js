@@ -1,9 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import axios from 'axios'
-import { BASE_URL } from './index'
+import { BASE_API_URL } from './index'
 
 const signup = ({ FirstName, LastName, Email, Password, IsTeacher }) => {
-  return axios.post(BASE_URL + '/api/v1/signup', {
+  return axios.post(BASE_API_URL + '/api/v1/signup', {
     FirstName,
     LastName,
     Email,
@@ -14,7 +14,7 @@ const signup = ({ FirstName, LastName, Email, Password, IsTeacher }) => {
 
 const login = (email, password) => {
   return axios
-    .post(BASE_URL + '/api/v1/login', {
+    .post(BASE_API_URL + '/api/v1/login', {
       Email: email,
       Password: password,
     })

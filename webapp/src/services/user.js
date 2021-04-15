@@ -1,9 +1,9 @@
 import axios from 'axios'
 import authHeader from './auth-header'
-import { BASE_URL } from './index'
+import { BASE_API_URL } from './index'
 
 const getProfile = () => {
-  return axios.get(BASE_URL + '/api/v1/profile', { headers: authHeader() })
+  return axios.get(BASE_API_URL + '/api/v1/profile', { headers: authHeader() })
 }
 
 const UserService = {

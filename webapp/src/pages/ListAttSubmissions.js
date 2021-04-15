@@ -1,4 +1,4 @@
-import { Redirect, useParams, Link } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import Footer from '../components/Footer'
