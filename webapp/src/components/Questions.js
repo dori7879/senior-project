@@ -20,7 +20,7 @@ const Questions = ({ control, register, getValues, setValue, errors }) => {
     <>
       <ul>
       {fields.map((question, index) => {
-        switch (type) {
+        switch (question.Type) {
           case 'single':
             return (
               <li key={question.keyID} className="mt-5">

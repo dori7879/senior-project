@@ -17,7 +17,7 @@ const Single = ({ index, control, register, remove, question }) => {
 
                 <input
                   name={`Questions[${index}].Content`}
-                  defaultValue={`${question.content}`} // make sure to set up defaultValue
+                  defaultValue={question.Content} // make sure to set up defaultValue
                   ref={register()}
                   className='px-2 py-1 text-xs leading-tight text-gray-700 border border-purple-400 rounded w-80 focus:outline-none focus:bg-white'
                   placeholder='Enter your question'

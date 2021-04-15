@@ -40,17 +40,17 @@ const QuizForm = () => {
 
   const onSubmit = (data) => {
     console.log(data);
-    QuizService.createQuiz(data)
-      .then(
-        (response) => {
-          setStudentLink(response.data.studentLink)
-          setTeacherLink(response.data.teacherLink)
-          setSuccessfull(true);
-        },
-        (error) => {
-          alert(error.message);
-        }
-      )
+    // QuizService.createQuiz(data)
+    //   .then(
+    //     (response) => {
+    //       setStudentLink(response.data.studentLink)
+    //       setTeacherLink(response.data.teacherLink)
+    //       setSuccessfull(true);
+    //     },
+    //     (error) => {
+    //       alert(error.message);
+    //     }
+    //   )
   }
 
   if (successfull) {

@@ -16,7 +16,7 @@ const TrueFalse = ({ index, control, register, remove, question }) => {
 
                 <input
                   name={`Questions[${index}].Content`}
-                  defaultValue={`${question.content}`} // make sure to set up defaultValue
+                  defaultValue={question.Content} // make sure to set up defaultValue
                   ref={register()}
                   className='px-2 py-1 text-xs leading-tight text-gray-700 border border-purple-400 rounded w-80 focus:outline-none focus:bg-white'
                   placeholder='Enter your question'
@@ -44,13 +44,12 @@ const TrueFalse = ({ index, control, register, remove, question }) => {
         <div className='ml-4'>
             <input
                 type='radio'
+                ref={register()}
                 name={`Questions[${index}].TrueFalseAnswer`}
-                value='true'
+                defaultValue={true}
                 className='outline-none'
-                checked={question.TrueFalseAnswer}
             />
             <label
-                htmlFor={`Questions[${index}].TrueFalseAnswer`}
                 className='px-1 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase '
             >
                 true
@@ -58,13 +57,12 @@ const TrueFalse = ({ index, control, register, remove, question }) => {
             <br></br>
             <input
                 type='radio'
+                ref={register()}
                 name={`Questions[${index}].TrueFalseAnswer`}
-                value='false'
+                defaultValue={false}
                 className='outline-none'
-                checked={question.TrueFalseAnswer}
             />
             <label
-                htmlFor={`Questions[${index}].TrueFalseAnswer`}
                 className='px-1 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase '
             >
                 false

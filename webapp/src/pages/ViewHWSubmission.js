@@ -79,7 +79,7 @@ const ViewHWSubmission = (props) => {
               <div className='flex flex-row items-center items'>
                 <h2 className='block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase'>
                   <strong>{t('homework:submittedat', 'Submitted At:')}</strong>{' '}
-                  <span className='text-purple-900'>15{t('homework:min', 'min')}</span>
+                  <span className='text-purple-900'>{JSON.stringify(submittedDate)}</span>
                 </h2>
               </div>
             </div>
