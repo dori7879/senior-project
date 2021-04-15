@@ -37,7 +37,7 @@ func (s *Server) registerHomeworkPublicRoutes(r *mux.Router) {
 
 // handleHomeworkList handles the "GET /homeworks" route. This route can optionally
 // accept filter arguments and outputs a list of all homeworks that the current
-// user is a member of.
+// user is related to.
 func (s *Server) handleHomeworkList(w http.ResponseWriter, r *http.Request) {
 	user := api.UserFromContext(r.Context())
 	if user == nil {

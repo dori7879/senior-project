@@ -38,7 +38,7 @@ func (s *Server) registerQuizPublicRoutes(r *mux.Router) {
 
 // handleQuizList handles the "GET /quizzes" route. This route can optionally
 // accept filter arguments and outputs a list of all quizzes that the current
-// user is a member of.
+// user is related to.
 func (s *Server) handleQuizList(w http.ResponseWriter, r *http.Request) {
 	user := api.UserFromContext(r.Context())
 	if user == nil {

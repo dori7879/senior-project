@@ -31,7 +31,7 @@ func (s *Server) registerHWSubmissionPublicRoutes(r *mux.Router) {
 
 // handleHWSubmissionList handles the "GET /homeworks/submissions" route. This route can optionally
 // accept filter arguments and outputs a list of all homeworks that the current
-// user is a member of.
+// user is related to.
 func (s *Server) handleHWSubmissionList(w http.ResponseWriter, r *http.Request) {
 	user := api.UserFromContext(r.Context())
 	if user == nil {

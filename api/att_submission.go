@@ -10,6 +10,7 @@ type AttSubmission struct {
 	ID int `json:"ID"`
 
 	Present     bool      `json:"Present"`
+	PIN         string    `json:"PIN"`
 	SubmittedAt time.Time `json:"SubmittedAt"`
 	UpdatedAt   time.Time `json:"UpdatedAt"`
 

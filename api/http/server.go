@@ -43,6 +43,8 @@ type Server struct {
 	QuizSubmissionService api.QuizSubmissionService
 	QuestionService       api.QuestionService
 	ResponseService       api.ResponseService
+	AttendanceService     api.AttendanceService
+	AttSubmissionService  api.AttSubmissionService
 }
 
 // NewServer returns a new instance of Server.
@@ -95,6 +97,8 @@ func NewServer() *Server {
 		s.registerHWSubmissionPublicRoutes(r)
 		s.registerQuizPublicRoutes(r)
 		s.registerQuizSubmissionPublicRoutes(r)
+		s.registerAttendancePublicRoutes(r)
+		s.registerAttSubmissionPublicRoutes(r)
 	}
 
 	// Register authenticated routes.
@@ -109,6 +113,8 @@ func NewServer() *Server {
 		s.registerQuizPrivateRoutes(r)
 		s.registerQuestionRoutes(r)
 		s.registerResponseRoutes(r)
+		s.registerAttSubmissionPrivateRoutes(r)
+		s.registerAttendancePrivateRoutes(r)
 	}
 
 	return s

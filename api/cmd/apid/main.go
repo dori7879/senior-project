@@ -145,6 +145,8 @@ func (m *Main) Run(ctx context.Context) (err error) {
 	quizSubmissionService := pg.NewQuizSubmissionService(m.DB)
 	questionService := pg.NewQuestionService(m.DB)
 	responseService := pg.NewResponseService(m.DB)
+	attendanceService := pg.NewAttendanceService(m.DB)
+	attSubmissionService := pg.NewAttSubmissionService(m.DB)
 
 	// Copy configuration settings to the HTTP server.
 	m.HTTPServer.Addr = m.Config.HTTP.Addr
@@ -160,6 +162,8 @@ func (m *Main) Run(ctx context.Context) (err error) {
 	m.HTTPServer.QuizSubmissionService = quizSubmissionService
 	m.HTTPServer.QuestionService = questionService
 	m.HTTPServer.ResponseService = responseService
+	m.HTTPServer.AttendanceService = attendanceService
+	m.HTTPServer.AttSubmissionService = attSubmissionService
 
 	// Start the HTTP server.
 	if err := m.HTTPServer.Open(); err != nil {
