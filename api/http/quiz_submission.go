@@ -13,15 +13,15 @@ import (
 func (s *Server) registerQuizSubmissionPrivateRoutes(r *mux.Router) {
 	// Listing of all quiz submissions a student is an owner of.
 	r.HandleFunc("/quizzes/submissions", s.handleQuizSubmissionList).Methods("GET")
-
-	// View a single quiz.
-	r.HandleFunc("/quizzes/submissions/{id}", s.handleQuizSubmissionView).Methods("GET")
 }
 
 // registerQuizSubmissionPublicRoutes is a helper function for registering public quiz submission routes.
 func (s *Server) registerQuizSubmissionPublicRoutes(r *mux.Router) {
+	// View a single quiz submission.
+	r.HandleFunc("/quizzes/submissions/{id}", s.handleQuizSubmissionView).Methods("GET")
+
 	// API endpoint for creating quiz submissions.
-	r.HandleFunc("/quizzes/submissions", s.handleQuizSubmissionCreate).Methods("POST")
+	r.HandleFunc("/quizzes/{quizID}/submissions", s.handleQuizSubmissionCreate).Methods("POST")
 
 	r.HandleFunc("/quizzes/submissions/{id}", s.handleQuizSubmissionUpdate).Methods("PATCH")
 
@@ -66,13 +66,6 @@ func (s *Server) handleQuizSubmissionList(w http.ResponseWriter, r *http.Request
 // handleQuizSubmissionView handles the "GET /quizzes/submissions/:id" route.
 func (s *Server) handleQuizSubmissionView(w http.ResponseWriter, r *http.Request) {
 	user := api.UserFromContext(r.Context())
-	if user == nil {
-		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "You must be logged in"))
-		return
-	} else if user.IsTeacher {
-		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "You are not a student"))
-		return
-	}
 
 	// Parse ID from path.
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
@@ -85,6 +78,12 @@ func (s *Server) handleQuizSubmissionView(w http.ResponseWriter, r *http.Request
 	sub, err := s.QuizSubmissionService.FindQuizSubmissionByID(r.Context(), id)
 	if err != nil {
 		Error(w, r, err)
+		return
+	}
+
+	if user != nil && !user.IsTeacher && sub.StudentID != user.ID {
+		w.Header().Set("Content-type", "application/json")
+		w.Write([]byte(`{}`))
 		return
 	}
 
@@ -104,7 +103,14 @@ func (s *Server) handleQuizSubmissionCreate(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	// Unmarshal submission data first
+	// Parse homework submission ID from the path.
+	quizID, err := strconv.Atoi(mux.Vars(r)["quizID"])
+	if err != nil {
+		Error(w, r, api.Errorf(api.EINVALID, "Invalid ID format"))
+		return
+	}
+
+	// Unmarshal submission data
 	sub := api.QuizSubmission{}
 	if err := json.NewDecoder(r.Body).Decode(&sub); err != nil {
 		Error(w, r, api.Errorf(api.EINVALID, "Invalid JSON body"))
@@ -115,8 +121,10 @@ func (s *Server) handleQuizSubmissionCreate(w http.ResponseWriter, r *http.Reque
 		sub.StudentID = user.ID
 	}
 
+	sub.QuizID = quizID
+
 	// Create submission in the database.
-	err := s.QuizSubmissionService.CreateQuizSubmission(r.Context(), &sub)
+	err = s.QuizSubmissionService.CreateQuizSubmission(r.Context(), &sub)
 	if err != nil {
 		Error(w, r, err)
 		return

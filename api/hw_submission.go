@@ -19,7 +19,7 @@ type HWSubmission struct {
 	StudentID       int    `json:"StudentID,omitempty"`
 	Student         *User  `json:"Student,omitempty"`
 
-	HomeworkID int       `json:"HomeworkID,omitempty"`
+	HomeworkID int       `json:"HomeworkID"`
 	Homework   *Homework `json:"Homework,omitempty"`
 }
 

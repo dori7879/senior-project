@@ -6,8 +6,8 @@ const getProfile = () => {
   return axios.get(BASE_URL + '/api/v1/profile', { headers: authHeader() })
 }
 
-
-
-export default {
+const UserService = {
   getProfile,
 }
+
+export default UserService

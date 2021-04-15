@@ -14,8 +14,10 @@ const createGroup = (title) => {
   return axios.post(BASE_URL + '/api/v1/groups', { Title: title}, { headers: authHeader() })
 }
 
-export default {
+const GroupService = {
   getGroup,
   acceptGroupShare,
   createGroup,
 }
+
+export default GroupService

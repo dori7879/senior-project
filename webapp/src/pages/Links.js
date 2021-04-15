@@ -1,24 +1,20 @@
 import { useRef, useState } from 'react'
-
+import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer'
 import Header from '../components/Header'
-import { useSelector } from 'react-redux'
+import { BASE_URL } from '../services/index'
 
-import { useTranslation } from 'react-i18next';
 
-const Links = () => {
+const Links = (props) => {
   const { t } = useTranslation(['translation', 'links']);
   const [studentLinkCopied, setStudentLinkCopied] = useState(false)
   const [teacherLinkCopied, setTeacherLinkCopied] = useState(false)
 
-  const studentLink = useSelector((state) => state.homework.studentLink)
-  const teacherLink = useSelector((state) => state.homework.teacherLink)
-
   const studentTextArea = useRef(null)
   const teacherTextArea = useRef(null)
 
-  const fullStudentLink = `/student-hw-page/${studentLink}`
-  const fullTeacherLink = `/teacher-hw-page/${teacherLink}`
+  const fullStudentLink = `${BASE_URL}/homeworks/submit/${props.location.state.studentLink}`
+  const fullTeacherLink = `${BASE_URL}/homeworks/list-submissions/${props.location.state.teacherLink}`
 
   const copyLinkClipboard = (e, caller) => {
     if (caller === 'student') {

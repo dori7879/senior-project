@@ -4,6 +4,7 @@ import RegistrationForm from '../components/RegistrationForm'
 import { useTranslation } from 'react-i18next';
 
 const Registration = () => {
+  // eslint-disable-next-line no-unused-vars
   const { t } = useTranslation(['translation', 'registration']);
   return (
     <div>

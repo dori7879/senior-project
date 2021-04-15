@@ -8,12 +8,15 @@ import Links from './pages/Links'
 import SubmitHomework from './pages/SubmitHomework'
 import ViewGroup from './pages/ViewGroup'
 import AcceptGroupShare from './pages/AcceptGroupShare'
-/*
-import Attendance from './pages/Attendance'
-import LinksQuiz from './pages/LinksQuiz.js'
-import Quiz from './pages/Quiz'
-import ViewHomeworks from './pages/ViewHomeworks'
-import ViewQuizzes from './pages/ViewQuizzes'*/
+import ListHWSubmissions from './pages/ListHWSubmissions'
+import LinksQuiz from './pages/LinksQuiz'
+import CreateQuiz from './pages/CreateQuiz'
+import ListQuizSubmissions from './pages/ListQuizSubmissions'
+import SubmitQuiz from './pages/SubmitQuiz'
+import ViewHWSubmission from './pages/ViewHWSubmission'
+import ViewQuizSubmission from './pages/ViewQuizSubmission'
+
+// import Attendance from './pages/Attendance'
 
 function App() {
   return (
@@ -23,14 +26,8 @@ function App() {
           <Route path='/' exact component={Home} />
           <Route path='/login' exact component={Login} />
           <Route path='/signup' exact component={Registration} />
-          <Route path='/homework' exact component={CreateHomework} />
-          <Route path='/link' exact component={Links} />
+          {/* Profile and Groups */}
           <Route path='/profile' exact component={Profile} />
-          <Route path='/student-hw-page' exact component={SubmitHomework} />
-          <Route
-            path='/student-hw-page/:randomStr'
-            component={SubmitHomework}
-          />
           <Route
             path='/groups/:groupID'
             component={ViewGroup}
@@ -39,17 +36,28 @@ function App() {
             path='/accept-group-link/:shareHash'
             component={AcceptGroupShare}
           />
-           {/*<Route path='/attendance' exact component={Attendance} />
-          <Route path='/teacher-hw-page/:randomStr' component={ViewHomeworks} />
-          <Route path='/quiz' exact component={Quiz} />
-          <Route path='/teacher-hw-page' exact component={ViewHomeworks} />
-          <Route path='/link_quiz' exact component={LinksQuiz} />
-          <Route path='/teacher-quiz-page' exact component={ViewQuizzes} />
+          {/* Homework */}
+          <Route path='/homeworks' exact component={CreateHomework} />
           <Route
-            path='/teacher-quiz-page/c4gtnV23yui'
+            path='/homeworks/submit/:randomStr'
+            component={SubmitHomework}
+          />
+          <Route path='/homeworks/list-submissions/:randomStr' component={ListHWSubmissions} />
+          <Route path='/link' exact render={(props) => <Links {...props}/>} />
+          <Route path='/homeworks/view' exact render={(props) => <ViewHWSubmission {...props}/>} />
+          {/* Quiz */}
+          <Route path='/quizzes' exact component={CreateQuiz} />
+          <Route
+            path='/quizzes/submit/:randomStr'
+            component={SubmitQuiz}
+          />
+          <Route
+            path='/quizzes/list-submissions/:randomStr'
             exact
-            component={ViewQuizzes}
-          />*/}
+            component={ListQuizSubmissions}
+          />
+          <Route path='/link-quiz' exact render={(props) => <LinksQuiz {...props}/>} />
+          <Route path='/quizzes/view' exact render={(props) => <ViewQuizSubmission {...props}/>} />
         </Switch>
       </main>
     </div>

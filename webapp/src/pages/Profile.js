@@ -1,5 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import Footer from '../components/Footer'
 import Header from '../components/Header'
@@ -11,12 +10,13 @@ import PersonalData from '../components/PersonalData'
 
 const Profile = () => {
   const { t } = useTranslation(['translation', 'profile']);
+  // eslint-disable-next-line no-unused-vars
   const { token, role } = useSelector(
     (state) => state.auth
   )
 
   if (!token) {
-    //return <Redirect to='/login' />
+    return <Redirect to='/login' />
   }
   
   return (

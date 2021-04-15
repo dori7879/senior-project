@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux'
 import { useState } from 'react'
 
 import Form from 'react-validation/build/form'

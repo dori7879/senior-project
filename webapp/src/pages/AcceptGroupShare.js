@@ -10,6 +10,7 @@ import GroupService from '../services/group';
 const Group = () => {
   const { shareHash } = useParams()
   const { t } = useTranslation(['translation', 'profile']);
+  // eslint-disable-next-line no-unused-vars
   const { token, role } = useSelector(
     (state) => state.auth
   )
@@ -27,7 +28,7 @@ const Group = () => {
         console.log(error.message)
       }
     )
-  }, [])
+  }, [shareHash])
 
   if (!token) {
     return <Redirect to='/login' />

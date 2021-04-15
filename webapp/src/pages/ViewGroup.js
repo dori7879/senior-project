@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 
 import Footer from '../components/Footer'
@@ -11,11 +11,12 @@ import { BASE_URL } from '../services'
 
 const Group = () => {
   const { groupID } = useParams()
-  const dispatch = useDispatch()
   const { t } = useTranslation(['translation', 'profile']);
+  // eslint-disable-next-line no-unused-vars
   const { token, role } = useSelector(
     (state) => state.auth
   )
+  // eslint-disable-next-line no-unused-vars
   const { register, handleSubmit, errors } = useForm();
   const [title, setTitle] = useState("")
   const [shareLink, setShareLink] = useState("")
@@ -47,7 +48,7 @@ const Group = () => {
         console.log(error.message)
       }
     )
-  }, [])
+  }, [groupID])
 
   if (!token) {
     return <Redirect to='/login' />

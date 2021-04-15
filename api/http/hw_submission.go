@@ -13,13 +13,13 @@ import (
 func (s *Server) registerHWSubmissionPrivateRoutes(r *mux.Router) {
 	// Listing of all homework submissions a teacher is an owner of.
 	r.HandleFunc("/homeworks/submissions", s.handleHWSubmissionList).Methods("GET")
-
-	// View a single homework.
-	r.HandleFunc("/homeworks/submissions/{id}", s.handleHWSubmissionView).Methods("GET")
 }
 
 // registerHWSubmissionPublicRoutes is a helper function for registering public homework submission routes.
 func (s *Server) registerHWSubmissionPublicRoutes(r *mux.Router) {
+	// View a single homework.
+	r.HandleFunc("/homeworks/submissions/{id}", s.handleHWSubmissionView).Methods("GET")
+
 	// API endpoint for creating homework submissions.
 	r.HandleFunc("/homeworks/{hwID}/submissions", s.handleHWSubmissionCreate).Methods("POST")
 
@@ -66,13 +66,6 @@ func (s *Server) handleHWSubmissionList(w http.ResponseWriter, r *http.Request) 
 // handleHWSubmissionView handles the "GET /homeworks/submissions/:id" route.
 func (s *Server) handleHWSubmissionView(w http.ResponseWriter, r *http.Request) {
 	user := api.UserFromContext(r.Context())
-	if user == nil {
-		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "You must be logged in"))
-		return
-	} else if user.IsTeacher {
-		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "You are not a student"))
-		return
-	}
 
 	// Parse ID from path.
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
@@ -88,7 +81,7 @@ func (s *Server) handleHWSubmissionView(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if sub.StudentID != user.ID {
+	if user != nil && !user.IsTeacher && sub.StudentID != user.ID {
 		w.Header().Set("Content-type", "application/json")
 		w.Write([]byte(`{}`))
 		return

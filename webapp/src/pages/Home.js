@@ -20,7 +20,7 @@ const Home = () => {
               />
             </div>
             <div className='ml-10 lg:mt-20 sm:mt-10'>
-              <Link to='/homework'>
+              <Link to='/homeworks'>
                 <button
                   type='button'
                   className='relative flex items-center justify-center w-full h-10 px-2 py-1 mb-2 text-sm font-medium leading-4 text-purple-200 transition duration-150 ease-in-out bg-purple-800 border border-transparent rounded-md hover:bg-purple-500 focus:outline-none'
@@ -28,7 +28,7 @@ const Home = () => {
                   {t('home:hw', 'Create homework page')}
                 </button>
               </Link>
-              <Link to='/quiz'>
+              <Link to='/quizzes'>
                 <button
                   type='button'
                   className='relative flex items-center justify-center w-full h-10 px-2 py-1 mb-2 text-sm font-medium leading-4 text-purple-200 transition duration-150 ease-in-out bg-purple-800 border border-transparent rounded-md hover:bg-purple-500 focus:outline-none'
