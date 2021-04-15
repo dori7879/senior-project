@@ -35,7 +35,7 @@ const ViewQuizSubmission = (props) => {
           if (response.data.StudentFullName !== "") {
             setStudentFullName(response.data.StudentFullName)
           } else if (response.data.Student != null) {
-            setStudentFullName(response.data.User.FirstName + response.data.User.LastName)
+            setStudentFullName(response.data.User.FirstName + " " + response.data.User.LastName)
           }
           setResponses(response.data.Responses)
         }

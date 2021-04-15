@@ -105,7 +105,10 @@ const ListQuizSubmissions = () => {
                       <p className='block px-4 pt-1 text-xs tracking-wide text-gray-700'>
                         <strong>Student Name:</strong>{' '}
                         <span className='text-purple-900'>
-                          {sub.StudentFullName}
+                          {sub.StudentFullName ? sub.StudentFullName :
+                            sub.Student != null ? sub.Student.FirstName + " " + sub.Student.LastName :
+                            ""
+                          }
                         </span>
                       </p>
                       <p className='block px-4 pt-1 mb-2 text-xs tracking-wide text-gray-700'>

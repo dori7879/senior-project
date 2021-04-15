@@ -3,36 +3,32 @@ import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
-import HomeworkService from '../services/homework';
+import AttendanceService from '../services/attendance';
 
-const ListHWSubmissions = () => {
+const ListAttSubmissions = () => {
   const { randomStr } = useParams()
   const role = useSelector((state) => state.auth.role)
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
 
-  // Homework related state
+  // Attendance related state
   // eslint-disable-next-line no-unused-vars
-  const [homeworkID, setHomeworkID] = useState(-1)
-  const [subs, setHWSubs] = useState([])
+  const [attendanceID, setAttendanceID] = useState(-1)
+  const [subs, setAttSubs] = useState([])
   const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
+  const [pin, setPIN] = useState('')
   // eslint-disable-next-line no-unused-vars
   const [closeDate, setCloseDate] = useState(new Date())
 
-  // Form related state
-  // eslint-disable-next-line no-unused-vars
-  const [attachments, setAttachments] = useState([])
-
   useEffect(() => {
-    HomeworkService.fetchTeacherHomework(randomStr)
+    AttendanceService.fetchTeacherAttendance(randomStr)
       .then((response) => {
         if (response.data) {
-          setHomeworkID(response.data.ID)
+          setAttendanceID(response.data.ID)
           setTitle(response.data.Title)
-          setDescription(response.data.Content)
           setCloseDate(response.data.ClosedAt)
+          setPIN(response.data.PIN)
           if ('Submissions' in response.data) {
-            setHWSubs(response.data.Submissions)
+            setAttSubs(response.data.Submissions)
           }
         }
       })
@@ -41,19 +37,11 @@ const ListHWSubmissions = () => {
       })
   }, [randomStr])
 
-  const ckEditorRemoveTags = (data) => {
-    const editedData = data.replace('<p>', '').replace('</p>', '')
-    return editedData
-  }
-
   if (isLoggedIn && role === 'student') {
     return <Redirect to='/' />
   }
 
-  const data = ckEditorRemoveTags(description)
-  const isEmptyDesc = data.trim() === ''
-  const isEmptyFiles = attachments.length === 0
-  const submittedHWs = subs.length > 0 ? subs.length : 0
+  const submittedAtts = subs.length > 0 ? subs.length : 0
 
   return (
     <div>
@@ -61,30 +49,20 @@ const ListHWSubmissions = () => {
       <div className='flex flex-col items-center min-h-screen px-4 py-2 bg-purple-100 justify-top sm:px-6 lg:px-8 '>
         <div className='flex flex-col items-center justify-center pb-4'></div>
         <div className='pt-4 text-xl font-bold text-purple-900'>
-          Homework Submissions
+          Successful Attendance Submissions
         </div>
 
         <div className='w-3/4 p-4 bg-purple-300 border border-purple-300 rounded'>
           <div className='flex flex-row'>
             <div className='flex flex-col w-3/4'>
               <h2 className='block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase'>
-                <strong>Homework Title:</strong>{' '}
+                <strong>Attendance Title:</strong>{' '}
                 <span className='text-purple-900'>{title}</span>
               </h2>
-
-              {isEmptyDesc ? null : (
-                <h2 className='block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase'>
-                  <strong>Description:</strong>
-                  <br></br> <span className='text-purple-900'>{data}</span>
-                </h2>
-              )}
-
-              {isEmptyFiles ? null : (
-                <h2 className='block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase'>
-                  <strong>Attachments:</strong>
-                  <br></br> <span className='text-purple-900'>{attachments}</span>
-                </h2>
-              )}
+              <h2 className='block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase'>
+                <strong>PIN:</strong>{' '}
+                <span className='text-purple-900'>{pin}</span>
+              </h2>
 
               <div className='flex flex-col ml-2 items '>
                 {subs.map((sub, index) => (
@@ -92,12 +70,6 @@ const ListHWSubmissions = () => {
                     key={index}
                     className='flex flex-col mb-2 border border-purple-700 rounded'
                   >
-                    <Link className="block px-4 pt-1 tracking-wide text-gray-900" to={{
-                      pathname: "/homeworks/view",
-                      state: { id: sub.ID }
-                    }}>
-                      View Submission
-                    </Link>
                     <div className='flex flex-col pb-2 items'>
                       <p className='block px-4 pt-1 text-xs tracking-wide text-gray-700'>
                         <strong>Student Name:</strong>{' '}
@@ -114,31 +86,9 @@ const ListHWSubmissions = () => {
                           {sub.SubmittedAt}
                         </span>
                       </p>
-                      {sub.Response.trim() === '' ? null : (
-                        <p className='block px-4 pt-1 text-xs tracking-wide text-gray-700'>
-                          <strong>Content:</strong>
-                          <br />{' '}
-                          <span className='text-purple-900'>
-                            {ckEditorRemoveTags(sub.Response)}
-                          </span>
-                        </p>
-                      )}
-                      {'Grade' in sub && sub.Grade !== 0 ? (
-                        <p className='block px-4 pt-1 text-xs tracking-wide text-gray-700'>
-                          <strong>Grade:</strong>
-                          <span className='text-purple-900'>
-                            {sub.Grade}
-                          </span>
-                        </p>
-                      ) : null}
-                      {'Comments' in sub && sub.Comments.trim() === '' ? null : (
-                        <p className='block px-4 pt-1 text-xs tracking-wide text-gray-700'>
-                          <strong>Comments:</strong>
-                          <span className='text-purple-900'>
-                            {sub.Comments}
-                          </span>
-                        </p>
-                      )}
+                      <p className='block px-4 pt-1 mb-2 text-xs tracking-wide text-gray-700'>
+                        <strong>{sub.Present ? 'PRESENT' : 'NOT PRESENT'}</strong>
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -150,9 +100,9 @@ const ListHWSubmissions = () => {
               <p className='block px-4 pt-1 text-xs tracking-wide text-gray-700'>
                 <strong>
                   <span className='font-bold text-purple-800'>
-                    {submittedHWs}
+                    {submittedAtts}
                   </span>{' '}
-                  Homeworks Submitted
+                  Attendances Submitted
                 </strong>{' '}
               </p>
               <p className='block px-4 pt-1 text-xs tracking-wide text-gray-700'>
@@ -167,4 +117,4 @@ const ListHWSubmissions = () => {
   )
 }
 
-export default ListHWSubmissions
+export default ListAttSubmissions

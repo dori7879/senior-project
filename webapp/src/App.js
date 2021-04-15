@@ -15,8 +15,10 @@ import ListQuizSubmissions from './pages/ListQuizSubmissions'
 import SubmitQuiz from './pages/SubmitQuiz'
 import ViewHWSubmission from './pages/ViewHWSubmission'
 import ViewQuizSubmission from './pages/ViewQuizSubmission'
-
-// import Attendance from './pages/Attendance'
+import CreateAttendance from './pages/CreateAttendance'
+import SubmitAttendance from './pages/SubmitAttendance'
+import ListAttSubmissions from './pages/ListAttSubmissions'
+import LinksAttendance from './pages/LinksAttendance'
 
 function App() {
   return (
@@ -58,6 +60,14 @@ function App() {
           />
           <Route path='/link-quiz' exact render={(props) => <LinksQuiz {...props}/>} />
           <Route path='/quizzes/view' exact render={(props) => <ViewQuizSubmission {...props}/>} />
+          {/* Attendance */}
+          <Route path='/attendances' exact component={CreateAttendance} />
+          <Route
+            path='/attendances/submit/:randomStr'
+            component={SubmitAttendance}
+          />
+          <Route path='/attendances/list-submissions/:randomStr' component={ListAttSubmissions} />
+          <Route path='/link-attendance' exact render={(props) => <LinksAttendance {...props}/>} />
         </Switch>
       </main>
     </div>
