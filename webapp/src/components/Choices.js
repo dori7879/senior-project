@@ -1,7 +1,8 @@
 import { useFieldArray } from "react-hook-form";
 import { useTranslation } from 'react-i18next';
+import { Controller } from "react-hook-form";
 
-const Choices = ({ nestIndex, control, register, question }) => {
+const Choices = ({ nestIndex, control, register, getValues, question }) => {
   // eslint-disable-next-line no-unused-vars
   const { t } = useTranslation(['translation', 'steps']);
   const { fields, remove, append } = useFieldArray({
@@ -9,6 +10,52 @@ const Choices = ({ nestIndex, control, register, question }) => {
     name: `Questions[${nestIndex}].Choices`,
     keyName: "keyID"
   });
+
+  const renderInput = (idx, qType) => {
+    if (qType === 'multiple') {
+      return (
+        <Controller
+          control={control}
+          name={`Questions[${nestIndex}].MultipleChoiceAnswer`}
+          defaultValue={[]}
+          render={(props) => (
+            <input
+              type='checkbox'
+              className='mx-2 outline-none'
+              onChange={(e) => {
+                let current = getValues(`Questions[${nestIndex}].MultipleChoiceAnswer`)
+                if (current.includes(+e.target.value)) {
+                  props.onChange(current.filter(el => el !== +e.target.value))
+                } else {
+                  props.onChange([...current, +e.target.value])
+                }
+              }}
+              value={idx}
+            />
+          )}
+        />
+      )
+    } else if (qType === 'single') {
+      return (
+        <Controller
+          control={control}
+          name={`Questions[${nestIndex}].SingleChoiceAnswer`}
+          defaultValue={idx}
+          render={(props) => (
+            <input
+              type='radio'
+              name={`Questions[${nestIndex}].SingleChoiceAnswer`}
+              className='mx-2 outline-none'
+              onChange={(e) => props.onChange(+e.target.value)}
+              value={props.value}
+            />
+          )}
+        />
+      )
+    }
+
+    return null
+  } 
 
   return (
     <div className='flex flex-row justify-between'>
@@ -24,25 +71,24 @@ const Choices = ({ nestIndex, control, register, question }) => {
               Option #{idx+1}
             </label>
 
-            <input
-              name={`Questions[${nestIndex}].Choices[${idx}]`}
-              ref={register()}
+            <Controller
+              control={control}
+              name={`Questions[${nestIndex}].Choices[${idx}].value`}
               defaultValue={choice.value}
-              className='px-2 py-1 text-xs leading-tight text-gray-700 border border-purple-400 rounded focus:outline-none focus:bg-white'
-              placeholder='Enter your option'
+              render={(props) => (
+                <input
+                  type="text"
+                  onChange={(e) => {
+                    props.onChange(e.target.value)
+                  }}
+                  value={props.value}
+                  className='px-2 py-1 text-xs leading-tight text-gray-700 border border-purple-400 rounded focus:outline-none focus:bg-white'
+                  placeholder='Enter your option'
+                />
+              )}
             />
 
-            <input
-              ref={register()}
-              type={question.Type === 'multiple' ? 'checkbox' : 'radio'}
-              className='mx-2 outline-none'
-              name={question.Type === 'multiple' ? 
-                `Questions[${nestIndex}].MultipleChoiceAnswer` : 
-                `Questions[${nestIndex}].SingleChoiceAnswer`
-              }
-              control={control}
-              defaultValue={idx} // make sure to set up defaultValue
-            />
+            {renderInput(idx, question.Type)}
             
             <button
               type="button" 
@@ -63,17 +109,7 @@ const Choices = ({ nestIndex, control, register, question }) => {
         <button
           type="button"
           className='px-2 py-1 mt-1 mr-2 text-xs text-purple-900 border border-purple-400 rounded focus:outline-none hover:bg-purple-400'
-          onClick={() => {
-            let c = {
-              Content: ''
-            }
-
-            if (question.Type === 'multiple') {
-              c.Correct = false
-            }
-
-            append(c)
-          }}
+          onClick={() => append({ value: "" })}
         >
           Add option
         </button>

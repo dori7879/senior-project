@@ -21,6 +21,15 @@ const Open = ({ index, control, register, remove, question }) => {
                   className='px-2 py-1 text-xs leading-tight text-gray-700 border border-purple-400 rounded w-80 focus:outline-none focus:bg-white'
                   placeholder='Enter your question'
                 />
+
+                <input
+                  ref={register()}
+                  control={control}
+                  type='hidden'
+                  name={`Questions[${index}].Type`}
+                  className='outline-none'
+                  defaultValue={'open'}
+                />
               </div>
 
               <div>

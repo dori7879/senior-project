@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Controller } from "react-hook-form";
 
 const TrueFalse = ({ index, control, register, remove, question }) => {
     // eslint-disable-next-line no-unused-vars
@@ -21,6 +22,14 @@ const TrueFalse = ({ index, control, register, remove, question }) => {
                   className='px-2 py-1 text-xs leading-tight text-gray-700 border border-purple-400 rounded w-80 focus:outline-none focus:bg-white'
                   placeholder='Enter your question'
                 />
+
+                <input
+                  ref={register}
+                  type='hidden'
+                  name={`Questions[${index}].Type`}
+                  className='outline-none'
+                  defaultValue={'truefalse'}
+                />
               </div>
 
               <div>
@@ -42,12 +51,19 @@ const TrueFalse = ({ index, control, register, remove, question }) => {
         </div>
 
         <div className='ml-4'>
-            <input
-                type='radio'
-                ref={register()}
-                name={`Questions[${index}].TrueFalseAnswer`}
-                defaultValue={true}
-                className='outline-none'
+            <Controller
+              control={control}
+              name={`Questions[${index}].TrueFalseAnswer`}
+              defaultValue="true"
+              render={(props) => (
+                <input
+                  type="radio"
+                  name={`Questions[${index}].TrueFalseAnswer`}
+                  className='outline-none'
+                  onChange={(e) => props.onChange(e.target.value === 'true')}
+                  value={props.value.toString()}
+                />
+              )}
             />
             <label
                 className='px-1 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase '
@@ -55,12 +71,19 @@ const TrueFalse = ({ index, control, register, remove, question }) => {
                 true
             </label>
             <br></br>
-            <input
-                type='radio'
-                ref={register()}
-                name={`Questions[${index}].TrueFalseAnswer`}
-                defaultValue={false}
-                className='outline-none'
+            <Controller
+              control={control}
+              name={`Questions[${index}].TrueFalseAnswer`}
+              className='outline-none'
+              defaultValue="false"
+              render={(props) => (
+                <input
+                  type="radio"
+                  name={`Questions[${index}].TrueFalseAnswer`}
+                  onChange={(e) => props.onChange(e.target.value === 'true')}
+                  value={props.value.toString()}
+                />
+              )}
             />
             <label
                 className='px-1 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase '

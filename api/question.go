@@ -5,15 +5,24 @@ import (
 	"time"
 )
 
+type QuestionType int
+
+const (
+	Single QuestionType = iota + 1
+	Multiple
+	Truefalse
+	Open
+)
+
 // Question represents a question in the system.
 type Question struct {
 	ID int `json:"ID"`
 
-	Content string `json:"Content"`
-	Type    int    `json:"Type"`
-	Fixed   bool   `json:"Fixed"`
+	Content string       `json:"Content"`
+	Type    QuestionType `json:"Type"`
+	Fixed   bool         `json:"Fixed"`
 
-	Choices []*string `json:"Choices"`
+	Choices []string `json:"Choices"`
 
 	OpenAnswer           string `json:"OpenAnswer"`
 	TrueFalseAnswer      bool   `json:"TrueFalseAnswer" db:"truefalse_answer"`
@@ -62,9 +71,9 @@ type QuestionService interface {
 // QuestionFilter represents a filter passed to FindQuestions().
 type QuestionFilter struct {
 	// Filtering fields.
-	ID    *int  `json:"ID"`
-	Type  *int  `json:"Type"`
-	Fixed *bool `json:"Fixed"`
+	ID    *int          `json:"ID"`
+	Type  *QuestionType `json:"Type"`
+	Fixed *bool         `json:"Fixed"`
 
 	QuizID *int `json:"QuizID"`
 
@@ -75,11 +84,11 @@ type QuestionFilter struct {
 
 // QuestionUpdate represents a set of fields to be updated via UpdateQuestion().
 type QuestionUpdate struct {
-	Content *string `json:"Content"`
-	Type    *int    `json:"Type"`
-	Fixed   *bool   `json:"Fixed"`
+	Content *string       `json:"Content"`
+	Type    *QuestionType `json:"Type"`
+	Fixed   *bool         `json:"Fixed"`
 
-	Choices *[]*string `json:"Choices"`
+	Choices *[]string `json:"Choices"`
 
 	OpenAnswer           *string `json:"OpenAnswer"`
 	TrueFalseAnswer      *bool   `json:"TrueFalseAnswer"`

@@ -228,6 +228,9 @@ func createQuestion(ctx context.Context, tx *Tx, q *api.Question) error {
 	}
 
 	// Content is nullable so ensure we store blank fields as NULLs.
+	if len(q.Choices) == 0 {
+		q.Choices = make([]string, 0)
+	}
 	var updatedAt *time.Time
 	if !q.UpdatedAt.IsZero() {
 		updatedAt = &q.UpdatedAt

@@ -24,13 +24,13 @@ const Questions = ({ control, register, getValues, setValue, errors }) => {
           case 'single':
             return (
               <li key={question.keyID} className="mt-5">
-                  <Single index={index} {...{ control, register, remove, question }} />
+                  <Single index={index} {...{ control, register, getValues, remove, question }} />
               </li>
             );
           case 'multiple':
             return (
               <li key={question.keyID} className="mt-5">
-                  <Multiple index={index} {...{ control, register, remove, question }} />
+                  <Multiple index={index} {...{ control, register, getValues, remove, question }} />
               </li>
             );
           case 'truefalse':
@@ -59,12 +59,6 @@ const Questions = ({ control, register, getValues, setValue, errors }) => {
                   Content: '',
                   Fixed: false,
                   Type: 'multiple',
-                  Choices: [
-                    {
-                      Content: '',
-                      Correct: false,
-                    },
-                  ]
                 })
                 break
               case 'single':
@@ -72,11 +66,6 @@ const Questions = ({ control, register, getValues, setValue, errors }) => {
                   Content: '',
                   Fixed: false,
                   Type: 'single',
-                  Choices: [
-                    {
-                      Content: '',
-                    },
-                  ],
                   SingleChoiceAnswer: null,
                 })
                 break

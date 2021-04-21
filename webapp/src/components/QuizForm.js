@@ -39,18 +39,53 @@ const QuizForm = () => {
   }, [register, isLoggedIn])
 
   const onSubmit = (data) => {
-    console.log(data);
-    // QuizService.createQuiz(data)
-    //   .then(
-    //     (response) => {
-    //       setStudentLink(response.data.studentLink)
-    //       setTeacherLink(response.data.teacherLink)
-    //       setSuccessfull(true);
-    //     },
-    //     (error) => {
-    //       alert(error.message);
-    //     }
-    //   )
+    let body = {...data, Questions: data.Questions.map((q, i) => {
+      let type
+
+      switch (q.Type) {
+        case 'single':
+          type = 1
+          break;
+        case 'multiple':
+          type = 2
+          break;
+        case 'truefalse':
+          type = 3
+          break;
+        case 'open':
+          type = 4
+          break;
+        default:
+          break;
+      }
+
+      if (q.Type === "multiple" || q.Type === "single") {
+        return {
+          ...q,
+          Type: type,
+          Choices: q.Choices.map((c, i) => {
+            return c.value
+          })
+        }
+      }
+
+      return {
+        ...q,
+        Type: type,
+      }
+    })}
+    
+    QuizService.createQuiz(body)
+      .then(
+        (response) => {
+          setStudentLink(response.data.StudentLink)
+          setTeacherLink(response.data.TeacherLink)
+          setSuccessfull(true);
+        },
+        (error) => {
+          alert(error.message);
+        }
+      )
   }
 
   if (successfull) {

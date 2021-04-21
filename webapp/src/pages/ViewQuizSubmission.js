@@ -120,7 +120,7 @@ const ViewQuizSubmission = (props) => {
 
                 {questions.map((question, index) => {
                   switch (question.Type) {
-                    case 'single':
+                    case 1:
                       return (
                         <li key={question.ID}>
                           <div className='flex flex-col'>
@@ -184,7 +184,7 @@ const ViewQuizSubmission = (props) => {
                           </div>
                         </li>
                       );
-                    case 'multiple':
+                    case 2:
                       return (
                         <li key={question.ID}>
                           <div className='flex flex-col'>
@@ -248,7 +248,7 @@ const ViewQuizSubmission = (props) => {
                           </div>
                         </li>
                       );
-                    case 'truefalse':
+                    case 3:
                       return (
                         <li key={question.ID}>
                           <div className='flex flex-col w-full'>
@@ -332,7 +332,7 @@ const ViewQuizSubmission = (props) => {
                           </div>
                         </li>
                       );
-                    case 'open':
+                    case 4:
                       return (
                         <li key={question.ID}>
                           <div className='flex flex-col w-full'>
