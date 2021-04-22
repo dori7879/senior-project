@@ -17,9 +17,15 @@
   "entername": "Enter your full name",
   "time": "Time Remaining:",
   "min": "min",
-  "attachments": "Attachments",
   "submitted": "Submitted",
   "answer": "answer",
+  "attachments": "Attachments",
   "files": "Attach files",
-  "submithw": "Submit"
+  "submithw": "Submit",
+  "hwsubmission": "Homework Submission",
+  "submittedat": "Submitted At:",
+  "updated": "Updated",
+  "entergrade": "Enter grade",
+  "entercomments": "Enter comments",
+  "updatehw": "Update"
 }

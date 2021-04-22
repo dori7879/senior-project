@@ -1,0 +1,23 @@
+{
+  "fullname": "Full Name*:",
+  "submit": "Set who can submit attendances*",
+  "everyone": "Everyone",
+  "registered": "Registered Accounts",
+  "coursetitle": "Course Title",
+  "group": "Group",
+  "title": "Title*",
+  "open": "Open date and time*",
+  "close": "Close date and time*",
+  "generate": "Generate Link",
+  "caption": "Creating an Attendance Assignment",
+  "required": "* - Required field",
+  "attendance": "Attendance",
+  "attTitle": "Attendance Title:",
+  "entername": "Enter your full name",
+  "time": "Time Remaining:",
+  "min": "min",
+  "submitted": "Submitted",
+  "pin": "PIN",
+  "enterpin": "Enter PIN",
+  "submitatt": "Submit"
+}
