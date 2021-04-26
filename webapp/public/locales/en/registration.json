@@ -1,0 +1,12 @@
+{
+  "registered": "Registered",
+  "caption": "Register",
+  "firstname": "First Name",
+  "lastname": "Last Name",
+  "role": "Role",
+  "teacher": "Teacher",
+  "student": "Student",
+  "email": "Email address",
+  "password": "Password",
+  "signup": "Sign Up"
+}

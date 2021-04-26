@@ -1,0 +1,28 @@
+import axios from 'axios'
+import authHeader from './auth-header'
+import { BASE_API_URL } from './index'
+
+const getGroup = (id) => {
+  return axios.get(BASE_API_URL + '/api/v1/groups/' + id.toString(), { headers: authHeader() })
+}
+
+const acceptGroupShare = (shareHash) => {
+  return axios.post(BASE_API_URL + '/api/v1/groups/' + shareHash + "/accept", {}, { headers: authHeader() })
+}
+
+const createGroup = (title) => {
+  return axios.post(BASE_API_URL + '/api/v1/groups', { Title: title }, { headers: authHeader() })
+}
+
+const addMembers = (groupID, memberIDs) => {
+  return axios.post(BASE_API_URL + '/api/v1/groups/' + groupID.toString() + '/members', { Users: memberIDs }, { headers: authHeader() })
+}
+
+const GroupService = {
+  getGroup,
+  acceptGroupShare,
+  createGroup,
+  addMembers,
+}
+
+export default GroupService

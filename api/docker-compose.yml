@@ -1,0 +1,24 @@
+version: '3.1'
+services:
+
+  db:
+    image: postgres:13.2
+    restart: always
+    environment:
+      POSTGRES_DB: easysubmit_db
+      POSTGRES_USER: main_user
+      POSTGRES_PASSWORD: mysecretuserpassword
+    volumes:
+      - easysubmitdb_local:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8075:8080
+
+volumes:
+  easysubmitdb_local:
+    external: true
