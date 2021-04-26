@@ -114,7 +114,6 @@ func (m *Main) ParseFlags(ctx context.Context, args []string) error {
 	flag.Parse()
 
 	m.Config.DB.DSN = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	fmt.Printf("%+v\n", m.Config)
 	return nil
 }
 
@@ -127,7 +126,6 @@ func (m *Main) Run(ctx context.Context) (err error) {
 	// Open the database. This will instantiate the MariaDB connection
 	// and execute any pending migration files.
 	m.DB.DSN = m.Config.DB.DSN
-	fmt.Println(m.DB.DSN)
 	if err := m.DB.Open(); err != nil {
 		return fmt.Errorf("cannot open db: %w", err)
 	}
