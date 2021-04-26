@@ -1,7 +1,0 @@
-{
-  "hw": "Create homework page",
-  "quiz": "Create quiz page",
-  "attendance": "Create attendance page",
-  "caption": " Introducing EasySubmit",
-  "intro": "A progressive web application (PWA) that allows teachers/instructors to post homework (quiz or attendance) simply by opening the website and generating a link for the new homework page. This link could then be shared with students to submit their solutions. Furthermore, the proposed tool allows creating different types of quizzes with an auto grading system. Another functionality of the system is in-class attendance checking mechanism using QR codes or a generated link ID. In the second case, the teacher/instructor can tick one or more required functionalities and this check will be added into the link."
-}
