@@ -1,3 +1,5 @@
 build:
   docker:
     web: Dockerfile
+run:
+  web: apid --db-host=$DB_HOST --db-port=$DB_PORT --db-user=$DB_USER --db-password=$DB_PASS --db-name=$DB_NAME --domain=$DOMAIN --addr=:$PORT --sign-key=$SIGN_KEY --fs-hash-key=$HASH_KEY 
