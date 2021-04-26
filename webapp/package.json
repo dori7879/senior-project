@@ -1,36 +1,76 @@
 {
-  "name": "senior-project",
+  "name": "easy-submit",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^23.1.0",
-    "@ckeditor/ckeditor5-react": "^3.0.0",
-    "axios": "^0.21.0",
-    "ckeditor4-react": "^1.2.1",
-    "draft-js": "^0.11.7",
-    "history": "^5.0.0",
-    "react": "^16.13.1",
-    "react-datetime-picker": "^3.0.4",
-    "react-dom": "^16.13.1",
-    "react-draft-wysiwyg": "^1.14.5",
-    "react-redux": "^7.2.1",
+    "@craco/craco": "^6.1.1",
+    "@testing-library/jest-dom": "^5.11.10",
+    "@testing-library/react": "^11.2.6",
+    "@testing-library/user-event": "^12.8.3",
+    "axios": "^0.21.1",
+    "ckeditor4-react": "^1.4.0",
+    "html-react-parser": "^1.2.5",
+    "i18next": "^20.1.0",
+    "i18next-xhr-backend": "^3.2.2",
+    "qrcode.react": "^1.0.1",
+    "react": "^17.0.2",
+    "react-datetime-picker": "^3.2.0",
+    "react-dom": "^17.0.2",
+    "react-hook-form": "^6.15.5",
+    "react-i18next": "^11.8.12",
+    "react-multi-select-component": "^4.0.1",
+    "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "0.9.5",
-    "react-user-profile": "^1.0.3",
+    "react-scripts": "4.0.3",
     "react-validation": "^3.0.7",
     "redux": "^4.0.5",
-    "redux-logger": "^3.0.6",
+    "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^5.2.1",
-    "validator": "^13.1.17"
-  },
-  "devDependencies": {
-    "redux-devtools-extension": "^2.13.8"
+    "validator": "^13.5.2",
+    "web-vitals": "^0.2.4",
+    "workbox-background-sync": "^5.1.4",
+    "workbox-broadcast-update": "^5.1.4",
+    "workbox-cacheable-response": "^5.1.4",
+    "workbox-core": "^5.1.4",
+    "workbox-expiration": "^5.1.4",
+    "workbox-google-analytics": "^5.1.4",
+    "workbox-navigation-preload": "^5.1.4",
+    "workbox-precaching": "^5.1.4",
+    "workbox-range-requests": "^5.1.4",
+    "workbox-routing": "^5.1.4",
+    "workbox-strategies": "^5.1.4",
+    "workbox-streams": "^5.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject",
+    "extract": "i18next --config i18next-parser.config.js"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.0.4",
+    "autoprefixer": "^9.8.6",
+    "i18next-parser": "^3.7.0",
+    "postcss": "^7.0.35",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4"
   }
 }
