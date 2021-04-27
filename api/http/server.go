@@ -72,9 +72,6 @@ func NewServer() *Server {
 	// This includes changing route paths for JSON endpoints & overridding methods.
 	s.server.Handler = c.Handler(http.HandlerFunc(s.serveHTTP))
 
-	// Serve static files
-	fileServer(s.router)
-
 	// Setup error handling routes.
 	s.router.NotFoundHandler = http.HandlerFunc(s.handleNotFound)
 
@@ -115,6 +112,9 @@ func NewServer() *Server {
 		s.registerAttSubmissionPrivateRoutes(r)
 		s.registerAttendancePrivateRoutes(r)
 	}
+
+	// Serve static files
+	fileServer(s.router)
 
 	return s
 }
