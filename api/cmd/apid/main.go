@@ -100,7 +100,7 @@ func (m *Main) Close() error {
 // This exists separately from the Run() function so that we can skip it
 // during end-to-end tests. Those tests will configure manually and call Run().
 func (m *Main) ParseFlags(ctx context.Context, args []string) error {
-	var host, port, user, password, dbname string
+	var host, port, user, password, dbname, sslmode string
 	flag.StringVar(&host, "db-host", "localhost", "PostgreSQL database: host")
 	flag.StringVar(&port, "db-port", "5432", "PostgreSQL database: port")
 	flag.StringVar(&user, "db-user", "main_user", "PostgreSQL database: user")
@@ -113,7 +113,13 @@ func (m *Main) ParseFlags(ctx context.Context, args []string) error {
 	flag.StringVar(&m.Config.VerifyKey, "verify-key", "000000000000000000000000000000000000000000000000000000000000000", "Verification key for JWT")
 	flag.Parse()
 
-	m.Config.DB.DSN = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	if host != "" {
+		sslmode = "require"
+	} else {
+		sslmode = "disable"
+	}
+
+	m.Config.DB.DSN = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", host, port, user, password, dbname, sslmode)
 	return nil
 }
 
