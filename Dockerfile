@@ -22,4 +22,4 @@ COPY --from=node_builder /build ./web
 EXPOSE 8080
 
 RUN chmod +x ./app
-ENTRYPOINT ["./app"]
+#ENTRYPOINT ["./app"]
