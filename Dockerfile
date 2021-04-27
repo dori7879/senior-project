@@ -19,6 +19,4 @@ RUN apk update && apk --no-cache add ca-certificates bash
 COPY --from=builder /app/api/bin ./
 COPY --from=node_builder /build ./web
 
-EXPOSE 8080
-
 RUN chmod +x ./app
