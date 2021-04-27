@@ -113,7 +113,7 @@ func (m *Main) ParseFlags(ctx context.Context, args []string) error {
 	flag.StringVar(&m.Config.VerifyKey, "verify-key", "000000000000000000000000000000000000000000000000000000000000000", "Verification key for JWT")
 	flag.Parse()
 
-	if host != "" {
+	if host != "localhost" {
 		sslmode = "require"
 	} else {
 		sslmode = "disable"

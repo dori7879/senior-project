@@ -8,7 +8,6 @@ import (
 	"net"
 	"net/http"
 	_ "net/http/pprof"
-	"os"
 	"strings"
 	"time"
 
@@ -273,12 +272,5 @@ func fileServer(router *mux.Router) {
 	root := "./web"
 	fs := http.FileServer(http.Dir(root))
 
-	router.HandleFunc("/*", func(w http.ResponseWriter, r *http.Request) {
-		if _, err := os.Stat(root + r.RequestURI); os.IsNotExist(err) {
-			http.StripPrefix(r.RequestURI, fs).ServeHTTP(w, r)
-		} else {
-			fs.ServeHTTP(w, r)
-		}
-	}).Methods("GET")
-
+	router.PathPrefix("/").Handler(fs)
 }

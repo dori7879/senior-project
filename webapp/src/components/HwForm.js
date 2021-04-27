@@ -38,18 +38,18 @@ const HwForm = () => {
   }, [register, isLoggedIn])
 
   const onSubmit = (data) => {
-    console.log(data);
-    // HomeworkService.createHomework(data)
-    //   .then(
-    //     (response) => {
-    //       setStudentLink(response.data.StudentLink)
-    //       setTeacherLink(response.data.TeacherLink)
-    //       setSuccessfull(true);
-    //     },
-    //     (error) => {
-    //       alert(error.message);
-    //     }
-    //   )
+    // console.log(data);
+    HomeworkService.createHomework(data)
+      .then(
+        (response) => {
+          setStudentLink(response.data.StudentLink)
+          setTeacherLink(response.data.TeacherLink)
+          setSuccessfull(true);
+        },
+        (error) => {
+          alert(error.message);
+        }
+      )
   };
 
   if (successfull) {
