@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/dori7879/senior-project/api"
 	"github.com/gorilla/mux"
@@ -131,6 +132,14 @@ func (s *Server) handleAttSubmissionCreate(w http.ResponseWriter, r *http.Reques
 
 	if att.Mode == "registered" && user == nil {
 		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "Log in to be able to submit"))
+		return
+	}
+
+	if time.Now().Before(att.OpenedAt) {
+		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "Assignment has not yet been started"))
+		return
+	} else if time.Now().After(att.ClosedAt) {
+		Error(w, r, api.Errorf(api.EUNAUTHORIZED, "Assignment has not already been started"))
 		return
 	}
 
