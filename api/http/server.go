@@ -8,6 +8,8 @@ import (
 	"net"
 	"net/http"
 	_ "net/http/pprof"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -53,6 +55,9 @@ func NewServer() *Server {
 		server: &http.Server{},
 		router: mux.NewRouter(),
 	}
+
+	// Serve static files
+	fileServer(s.router)
 
 	// Report panics to external service.
 	s.router.Use(reportPanic)
@@ -112,9 +117,6 @@ func NewServer() *Server {
 		s.registerAttSubmissionPrivateRoutes(r)
 		s.registerAttendancePrivateRoutes(r)
 	}
-
-	// Serve static files
-	fileServer(s.router)
 
 	return s
 }
@@ -269,8 +271,35 @@ func (s *Server) handleNotFound(w http.ResponseWriter, r *http.Request) {
 
 // fileServer is serving static files.
 func fileServer(router *mux.Router) {
-	root := "./web"
-	fs := http.FileServer(http.Dir(root))
+	root := "web"
 
-	router.PathPrefix("/").Handler(fs)
+	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// get the absolute path to prevent directory traversal
+		path, err := filepath.Abs(r.URL.Path)
+		if err != nil {
+			// if we failed to get the absolute path respond with a 400 bad request
+			// and stop
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		// prepend the path with the path to the static directory
+		path = filepath.Join(root, path)
+
+		// check whether a file exists at the given path
+		_, err = os.Stat(path)
+		if os.IsNotExist(err) {
+			// file does not exist, serve index.html
+			http.ServeFile(w, r, filepath.Join(root, "index.html"))
+			return
+		} else if err != nil {
+			// if we got an error (that wasn't that the file doesn't exist) stating the
+			// file, return a 500 internal server error and stop
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// otherwise, use http.FileServer to serve the static dir
+		http.FileServer(http.Dir(root)).ServeHTTP(w, r)
+	})
 }
