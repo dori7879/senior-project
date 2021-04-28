@@ -18,8 +18,6 @@ const SubmitAttendance = () => {
   const [title, setTitle] = useState('')
   const [mode, setMode] = useState('all')
   // eslint-disable-next-line no-unused-vars
-  const [closeDate, setCloseDate] = useState(new Date())
-  // eslint-disable-next-line no-unused-vars
   const [attendanceID, setAttendanceID] = useState(-1)
   
   // Form related state
@@ -34,7 +32,6 @@ const SubmitAttendance = () => {
           setMode(response.data.Mode)
           setCourseTitle(response.data.CourseTitle)
           setTitle(response.data.Title)
-          setCloseDate(response.data.ClosedAt)
         }
       })
       .catch((error) => {

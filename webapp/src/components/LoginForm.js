@@ -55,20 +55,6 @@ const LoginForm = () => {
         </div>
       )}
 
-      <div className='flex flex-row justify-between mt-2'>
-        <div className='flex items-center'>
-          <input name='remember-me' type='checkbox' />
-          <span className='text-xs text-purple-900'>{t('login:remember', 'Remember me')}</span>
-        </div>
-        <div className='flex items-center'>
-          <a
-            href='/'
-            className='text-xs font-medium text-purple-900 transition duration-150 ease-in-out hover:text-purple-700 focus:outline-none focus:underline'
-          >
-            {t('login:forgotpass', 'Forgot your password?')}
-          </a>
-        </div>
-      </div>
       <div className='pb-3 mt-3'>
         <button
           type='submit'

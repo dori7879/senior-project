@@ -158,32 +158,6 @@ const AttendanceForm = () => {
           placeholder="Enter the attendance title"
         />
       </div>
-      <div className="flex flex-row items-center pb-2 items">
-        <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-          {t("attendance:open", "Open date and time*")}
-        </label>
-        <Controller
-          as={DateTimePicker}
-          control={control}
-          value="selected"
-          name="OpenedAt"
-          onChange={(date) => date}
-          defaultValue={new Date()}
-        />
-      </div>
-      <div className="flex flex-row items-center pb-3 items">
-        <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-          {t("attendance:close", "Close date and time*")}
-        </label>
-        <Controller
-          as={DateTimePicker}
-          control={control}
-          value="selected"
-          name="ClosedAt"
-          onChange={(date) => date}
-          defaultValue={new Date()}
-        />
-      </div>
       <div className="flex justify-center">
         <button
           type="submit"

@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
+import moment from "moment";
 import Parser from "html-react-parser";
 import CKEditor from "ckeditor4-react";
 import Footer from "../components/Footer";
@@ -118,7 +119,7 @@ const SubmitHomework = () => {
                 <h2 className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
                   <strong>Closes At:</strong>{" "}
                   <span className="text-purple-900">
-                    {closeDate.toString()}
+                    {moment(closeDate, moment.ISO_8601)}
                   </span>
                 </h2>
               </div>

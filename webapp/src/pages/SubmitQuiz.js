@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import moment from "moment";
 import Parser from "html-react-parser";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -118,7 +119,7 @@ const SubmitQuiz = () => {
                 <h2 className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
                   <strong>Closes At:</strong>{" "}
                   <span className="text-purple-900">
-                    {closeDate.toString()}
+                    {moment(closeDate, moment.ISO_8601)}
                   </span>
                 </h2>
               </div>

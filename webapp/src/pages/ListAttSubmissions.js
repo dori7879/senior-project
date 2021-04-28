@@ -1,6 +1,7 @@
 import { Redirect, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
+import moment from "moment";
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import AttendanceService from '../services/attendance';
@@ -156,7 +157,7 @@ const ListAttSubmissions = () => {
                       <p className='block px-4 pt-1 mb-2 text-xs tracking-wide text-gray-700'>
                         <strong>Submitted at:</strong>{' '}
                         <span className='text-purple-900'>
-                          {sub.SubmittedAt}
+                          {moment(sub.SubmittedAt, moment.ISO_8601)}
                         </span>
                       </p>
                       <p className='block px-4 pt-1 mb-2 text-xs tracking-wide text-gray-700'>
