@@ -56,9 +56,6 @@ func NewServer() *Server {
 		router: mux.NewRouter(),
 	}
 
-	// Serve static files
-	fileServer(s.router)
-
 	// Report panics to external service.
 	s.router.Use(reportPanic)
 
@@ -117,6 +114,9 @@ func NewServer() *Server {
 		s.registerAttSubmissionPrivateRoutes(r)
 		s.registerAttendancePrivateRoutes(r)
 	}
+
+	// Serve static files
+	fileServer(s.router)
 
 	return s
 }
