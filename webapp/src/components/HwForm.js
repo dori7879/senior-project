@@ -1,62 +1,69 @@
-import { useSelector } from 'react-redux'
+import { useSelector } from "react-redux";
 
 import CKEditor from "ckeditor4-react";
 import DateTimePicker from "react-datetime-picker";
-import { Redirect } from 'react-router-dom'
-import { useState, useEffect } from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import { useTranslation } from 'react-i18next';
-import UserService from '../services/user';
-import HomeworkService from '../services/homework';
+import { Redirect } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import UserService from "../services/user";
+import HomeworkService from "../services/homework";
 
 const HwForm = () => {
-  const { t } = useTranslation(['translation', 'homework']);
+  const { t } = useTranslation(["translation", "homework"]);
   const { register, handleSubmit, control, setValue } = useForm();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
-  
-  const [successfull, setSuccessfull] = useState(false)
-  const [ownedGroups, setOwnedGroups] = useState([])
-  const [studentLink, setStudentLink] = useState("")
-  const [teacherLink, setTeacherLink] = useState("")
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
-  useEffect(()=> {
+  const [successfull, setSuccessfull] = useState(false);
+  const [ownedGroups, setOwnedGroups] = useState([]);
+  const [sharedGroups, setSharedGroups] = useState([]);
+
+  const [studentLink, setStudentLink] = useState("");
+  const [teacherLink, setTeacherLink] = useState("");
+
+  useEffect(() => {
     register("Content");
-    
+
     if (isLoggedIn) {
-      UserService.getProfile()
-        .then(
-          (response) => {
-            if (response.data.OwnedGroups) {
-              setOwnedGroups(response.data.OwnedGroups.Groups)
-            }
-          },
-          (error) => {
-            console.log(error.message)
+      UserService.getProfile().then(
+        (response) => {
+          if (response.data.OwnedGroups) {
+            setOwnedGroups(response.data.OwnedGroups.Groups);
           }
-        )
+          if (response.data.SharedGroups) {
+            setSharedGroups(response.data.SharedGroups.Groups);
+          }
+        },
+        (error) => {
+          console.log(error.message);
+        }
+      );
     }
-  }, [register, isLoggedIn])
+  }, [register, isLoggedIn]);
 
   const onSubmit = (data) => {
     // console.log(data);
-    HomeworkService.createHomework(data)
-      .then(
-        (response) => {
-          setStudentLink(response.data.StudentLink)
-          setTeacherLink(response.data.TeacherLink)
-          setSuccessfull(true);
-        },
-        (error) => {
-          alert(error.message);
-        }
-      )
+    HomeworkService.createHomework(data).then(
+      (response) => {
+        setStudentLink(response.data.StudentLink);
+        setTeacherLink(response.data.TeacherLink);
+        setSuccessfull(true);
+      },
+      (error) => {
+        alert(error.message);
+      }
+    );
   };
 
   if (successfull) {
-    return <Redirect to={{
-      pathname: "/link",
-      state: { studentLink, teacherLink }
-    }} />
+    return (
+      <Redirect
+        to={{
+          pathname: "/link",
+          state: { studentLink, teacherLink },
+        }}
+      />
+    );
   }
 
   return (
@@ -67,7 +74,7 @@ const HwForm = () => {
       {isLoggedIn ? null : (
         <div className="flex flex-row items-center pb-2 items">
           <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-          {t('homework:fullname', 'Full name*')}
+            {t("homework:fullname", "Full name*")}
           </label>
           <input
             name="TeacherFullName"
@@ -80,20 +87,22 @@ const HwForm = () => {
       )}
       <div className="flex flex-row items-center pb-2 items">
         <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-        {t('homework:submit', 'Set who can submit homeworks*')}
+          {t("homework:submit", "Set who can submit homeworks*")}
         </label>
         <select
           name="Mode"
           ref={register}
           className="text-xs bg-purple-100 border border-purple-300"
         >
-          <option value="all">{t('homework:everyone', 'Everyone')}</option>
-          <option value="registered">{t('homework:registered', 'Registered Accounts')}</option>
+          <option value="all">{t("homework:everyone", "Everyone")}</option>
+          <option value="registered">
+            {t("homework:registered", "Registered Accounts")}
+          </option>
         </select>
       </div>
       <div className="flex flex-row items-center pb-2 items">
         <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-        {t('homework:coursetitle', 'Course Title')}*
+          {t("homework:coursetitle", "Course Title")}*
         </label>
         <input
           ref={register}
@@ -106,7 +115,7 @@ const HwForm = () => {
       {isLoggedIn ? (
         <div className="flex flex-row items-center pb-2 items">
           <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-          {t('homework:group', 'Group')}
+            {t("homework:group", "Group")}
           </label>
           <Controller
             control={control}
@@ -119,9 +128,22 @@ const HwForm = () => {
                 onChange={(e) => props.onChange(+e.target.value)}
                 value={props.value}
               >
-                <option value={0} key={0}>Choose a group</option>
+                <option value={0} key={0}>
+                  Choose a group
+                </option>
                 {ownedGroups.map((group, idx) => {
-                  return <option value={group.ID} key={group.ID}>{group.Title}</option>
+                  return (
+                    <option value={group.ID} key={group.ID}>
+                      {group.Title}
+                    </option>
+                  );
+                })}
+                {sharedGroups.map((group, idx) => {
+                  return (
+                    <option value={group.ID} key={group.ID}>
+                      {group.Title}
+                    </option>
+                  );
                 })}
               </select>
             )}
@@ -130,7 +152,7 @@ const HwForm = () => {
       ) : null}
       <div className="flex flex-row items-center pb-2 items">
         <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-        {t('homework:title', 'Title*')}
+          {t("homework:title", "Title*")}
         </label>
         <input
           ref={register}
@@ -142,7 +164,7 @@ const HwForm = () => {
       </div>
       <div className="flex flex-row pb-2">
         <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-        {t('homework:description', 'Description')}
+          {t("homework:description", "Description")}
         </label>
         <CKEditor
           name="Content"
@@ -165,7 +187,7 @@ const HwForm = () => {
       */}
       <div className="flex flex-row items-center pb-2 items">
         <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-          {t('homework:open', 'Open date and time*')}
+          {t("homework:open", "Open date and time*")}
         </label>
         <Controller
           as={DateTimePicker}
@@ -178,7 +200,7 @@ const HwForm = () => {
       </div>
       <div className="flex flex-row items-center pb-3 items">
         <label className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-        {t('homework:close', 'Close date and time*')} 
+          {t("homework:close", "Close date and time*")}
         </label>
         <Controller
           as={DateTimePicker}
@@ -194,11 +216,11 @@ const HwForm = () => {
           type="submit"
           className="relative flex justify-center w-full px-2 py-1 mb-2 text-sm font-medium leading-4 text-purple-200 transition duration-150 ease-in-out bg-purple-800 border border-transparent rounded-md hover:text-white hover:bg-purple-500 focus:outline-none"
         >
-         {t('homework:generate', 'Generate Link')}
+          {t("homework:generate", "Generate Link")}
         </button>
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default HwForm
+export default HwForm;
