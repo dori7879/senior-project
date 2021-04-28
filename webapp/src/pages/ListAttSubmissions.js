@@ -157,7 +157,7 @@ const ListAttSubmissions = () => {
                       <p className='block px-4 pt-1 mb-2 text-xs tracking-wide text-gray-700'>
                         <strong>Submitted at:</strong>{' '}
                         <span className='text-purple-900'>
-                          {moment(sub.SubmittedAt, moment.ISO_8601)}
+                          {moment(sub.SubmittedAt, moment.ISO_8601).format('lll')}
                         </span>
                       </p>
                       <p className='block px-4 pt-1 mb-2 text-xs tracking-wide text-gray-700'>

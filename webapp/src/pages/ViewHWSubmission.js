@@ -80,7 +80,7 @@ const ViewHWSubmission = (props) => {
               <div className='flex flex-row items-center items'>
                 <h2 className='block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase'>
                   <strong>{t('homework:submittedat', 'Submitted At:')}</strong>{' '}
-                  <span className='text-purple-900'>{moment(submittedDate, moment.ISO_8601)}</span>
+                  <span className='text-purple-900'>{moment(submittedDate, moment.ISO_8601).format('lll')}</span>
                 </h2>
               </div>
             </div>

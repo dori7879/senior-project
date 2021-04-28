@@ -119,7 +119,7 @@ const SubmitQuiz = () => {
                 <h2 className="block px-4 pt-1 mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
                   <strong>Closes At:</strong>{" "}
                   <span className="text-purple-900">
-                    {moment(closeDate, moment.ISO_8601)}
+                    {moment(closeDate, moment.ISO_8601).format('lll')}
                   </span>
                 </h2>
               </div>
